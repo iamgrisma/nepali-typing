@@ -1,5 +1,5 @@
 ---
-// Detailed Statistics Modal (Monkeytype / Loksewa grade result report)
+// Detailed Statistics Modal (Monkeytype grade result report)
 ---
 
 <div id="stats-modal" class="modal-backdrop">
@@ -12,12 +12,12 @@
           <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)]">
             Test Results
           </h2>
-          <span id="modal-loksewa-pill" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            Passed
+          <span id="modal-rank-pill" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+            ⚡ Master Typist
           </span>
         </div>
         <p class="text-xs text-[var(--text-muted)] mt-0.5" id="modal-test-metadata">
-          Nepali Traditional • 60 Seconds • Medium Difficulty
+          नेपाली Traditional • 60 Seconds • Medium Difficulty
         </p>
       </div>
 
@@ -91,26 +91,25 @@
       </div>
     </div>
 
-    <!-- Detailed Matrix Grid (CPM, Keystrokes, Loksewa Grade) -->
+    <!-- Detailed Matrix Grid (CPM, Keystrokes, Performance Feedback) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-      <!-- Loksewa Evaluation Box -->
+      <!-- Performance Diagnosis Box -->
       <div class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
         <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2 flex items-center gap-1.5">
-          <span>🏛️</span> लोकसेवा आयोग मूल्याङ्कन (Evaluation)
+          <span>🎯</span> Performance Analysis & Feedback
         </h3>
-        <div class="space-y-1.5 text-xs text-[var(--text-secondary)]">
+        <div class="space-y-2 text-xs text-[var(--text-secondary)]">
           <div class="flex justify-between">
-            <span>Minimum Pass Criteria:</span>
-            <span class="font-bold text-[var(--text-primary)]">20 WPM (90% Acc)</span>
+            <span>Proficiency Tier:</span>
+            <span class="font-bold text-[var(--text-primary)]" id="modal-rank-label">Master Typist</span>
           </div>
           <div class="flex justify-between">
-            <span>Your Grade:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400" id="loksewa-grade-label">Distinction</span>
+            <span>Characters Per Minute:</span>
+            <span class="font-bold text-[var(--text-primary)]" id="modal-cpm">0 CPM</span>
           </div>
-          <div class="flex justify-between">
-            <span>Marks Awarded:</span>
-            <span class="font-bold text-[var(--text-primary)]" id="loksewa-marks-label">25 / 25</span>
-          </div>
+          <p class="text-[11px] text-[var(--text-muted)] italic pt-1 border-t border-[var(--border-subtle)]" id="modal-rank-feedback">
+            उत्कृष्ट गति र शुद्धता! व्यावसायिक स्तरको लेखन क्षमता।
+          </p>
         </div>
       </div>
 
@@ -121,16 +120,16 @@
         </h3>
         <div class="space-y-1.5 text-xs text-[var(--text-secondary)]">
           <div class="flex justify-between">
-            <span>Characters Per Minute (CPM):</span>
-            <span class="font-bold text-[var(--text-primary)]" id="modal-cpm">0 CPM</span>
-          </div>
-          <div class="flex justify-between">
             <span>Correct / Error Strokes:</span>
             <span class="font-bold text-[var(--text-primary)]"><span id="modal-strokes-correct" class="text-emerald-500">0</span> / <span id="modal-strokes-error" class="text-red-500">0</span></span>
           </div>
           <div class="flex justify-between items-center">
             <span>Most Missed Keys:</span>
             <span class="font-bold font-mono text-[var(--accent-primary)]" id="modal-missed-keys">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Error Rate:</span>
+            <span class="font-bold text-[var(--text-primary)]" id="modal-error-rate">0%</span>
           </div>
         </div>
       </div>

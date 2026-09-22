@@ -6,7 +6,7 @@ interface Props {
 const { siteTitle = 'नेपाली Typing' } = Astro.props;
 ---
 
-<header class="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
+<header class="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
   <div class="container flex items-center justify-between h-16">
     <!-- Logo & Brand -->
     <a href="/" class="flex items-center gap-3 text-decoration-none group">
@@ -18,27 +18,24 @@ const { siteTitle = 'नेपाली Typing' } = Astro.props;
           <span class="font-bold text-lg font-display tracking-tight text-[var(--text-primary)]">
             Nepali<span class="text-red-600">Typing</span>
           </span>
-          <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300">
+          <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">
             PRO
           </span>
         </div>
-        <p class="text-xs text-[var(--text-muted)] -mt-0.5">English • Unicode • Romanized • Preeti</p>
+        <p class="text-xs text-[var(--text-muted)] -mt-0.5">English • Traditional • Romanized • Preeti</p>
       </div>
     </a>
 
     <!-- Top Navigation Actions -->
     <div class="flex items-center gap-2">
-      <!-- Loksewa Exam Mode Quick Pill -->
+      <!-- Quick Poetry / Literature Mode -->
       <button 
-        id="quick-loksewa-btn" 
-        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
-        title="Start 5-Minute Official Loksewa Speed Exam"
+        id="quick-quotes-btn" 
+        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+        title="Type Beautiful Nepali Poetry & Literature Quotes"
       >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span>लोकसेवा 5 Min</span>
+        <span>📜</span>
+        <span>साहित्य र सुविचार</span>
       </button>
 
       <!-- History Modal Trigger -->
@@ -59,7 +56,7 @@ const { siteTitle = 'नेपाली Typing' } = Astro.props;
       <button 
         id="sound-toggle-btn" 
         class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Mechanical Keystroke Sound Effects"
+        title="Toggle Keystroke Sound Effects"
         aria-label="Toggle Sound"
       >
         <svg id="sound-icon-on" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -80,7 +77,6 @@ const { siteTitle = 'नेपाली Typing' } = Astro.props;
         title="Toggle Dark / Light Theme"
         aria-label="Toggle Theme"
       >
-        <!-- Sun Icon (shown in dark mode) -->
         <svg id="theme-icon-sun" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -92,8 +88,7 @@ const { siteTitle = 'नेपाली Typing' } = Astro.props;
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <!-- Moon Icon (shown in light mode) -->
-        <svg id="theme-icon-moon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon-moon" class="w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>

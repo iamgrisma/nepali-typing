@@ -1,6 +1,6 @@
 /**
  * Professional Typing Speed & Accuracy Statistics Calculator
- * Implements international Monkeytype standard formulas and Nepal Loksewa Aayog examination scoring rules.
+ * Implements international Monkeytype standard formulas and typing proficiency tier benchmarks.
  */
 
 export interface TestKeystrokeLog {
@@ -30,8 +30,9 @@ export interface DetailedTestResult {
   consistency: number; // Percentage (100% = perfectly steady rhythm)
   timeline: WpmTimelinePoint[];
   errorMap: Record<string, number>; // Most frequent missed characters
-  loksewaGrade: 'Distinction' | 'First Class' | 'Passed' | 'Needs Practice';
-  loksewaMarks: number; // Out of standard Loksewa test marks
+  rankTitle: string; // e.g. Speed Demon, Master Typist, Proficient, Intermediate, Beginner
+  rankBadgeColor: string;
+  rankFeedback: string;
 }
 
 /**
@@ -135,26 +136,31 @@ export function calculateDetailedStats(options: {
     }
   }
 
-  // Loksewa scoring assessment
-  let loksewaGrade: 'Distinction' | 'First Class' | 'Passed' | 'Needs Practice' = 'Needs Practice';
-  let loksewaMarks = 0;
+  // Typist Rank Assessment
+  let rankTitle = 'Beginner';
+  let rankBadgeColor = 'emerald';
+  let rankFeedback = 'नियमित अभ्यासले किबोर्डमा गति र आत्मविश्वास बढ्दै जान्छ।';
 
-  const passBenchmark = isNepali ? 20 : 25;
-  const firstBenchmark = isNepali ? 30 : 35;
-  const distinctionBenchmark = isNepali ? 40 : 50;
-
-  if (netWpm >= distinctionBenchmark && accuracy >= 95) {
-    loksewaGrade = 'Distinction';
-    loksewaMarks = 25; // Full practical marks
-  } else if (netWpm >= firstBenchmark && accuracy >= 90) {
-    loksewaGrade = 'First Class';
-    loksewaMarks = 20;
-  } else if (netWpm >= passBenchmark && accuracy >= 85) {
-    loksewaGrade = 'Passed';
-    loksewaMarks = 15;
+  if (netWpm >= 50 && accuracy >= 95) {
+    rankTitle = '🚀 Speed Demon';
+    rankBadgeColor = 'purple';
+    rankFeedback = 'अविश्वसनीय गति! तपाईं प्रो स्तरको टाइपिस्ट हुनुहुन्छ।';
+  } else if (netWpm >= 40 && accuracy >= 90) {
+    rankTitle = '⚡ Master Typist';
+    rankBadgeColor = 'amber';
+    rankFeedback = 'उत्कृष्ट गति र शुद्धता! व्यावसायिक स्तरको लेखन क्षमता।';
+  } else if (netWpm >= 30 && accuracy >= 88) {
+    rankTitle = '🎯 Proficient';
+    rankBadgeColor = 'blue';
+    rankFeedback = 'धेरै राम्रो गति! दैनिक काम, पत्रकारिता र साहित्य लेखनका लागि उत्कृष्ट।';
+  } else if (netWpm >= 20 && accuracy >= 80) {
+    rankTitle = '🌱 Intermediate';
+    rankBadgeColor = 'emerald';
+    rankFeedback = 'सन्तोषजनक गति। औँलाको बसाइ र निरन्तरतामा अलिकति ध्यान दिनुहोस्।';
   } else {
-    loksewaGrade = 'Needs Practice';
-    loksewaMarks = Math.max(0, Math.round((netWpm / passBenchmark) * 10));
+    rankTitle = '🐣 Learner';
+    rankBadgeColor = 'rose';
+    rankFeedback = 'हतार नगरी शुद्धतामा ध्यान दिनुहोस्, गति आफैँ बढ्दै जानेछ।';
   }
 
   return {
@@ -169,7 +175,8 @@ export function calculateDetailedStats(options: {
     consistency,
     timeline,
     errorMap,
-    loksewaGrade,
-    loksewaMarks
+    rankTitle,
+    rankBadgeColor,
+    rankFeedback
   };
 }

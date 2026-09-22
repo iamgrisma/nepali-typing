@@ -6,8 +6,8 @@ interface Props {
 }
 
 const {
-  title = 'Nepali Typing Test — Free Preeti, Unicode Traditional, Romanized & English Practice',
-  description = 'Test and boost your Nepali typing speed with our online typing test platform. Features English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII layouts with live keyboard visualization, detailed WPM/CPM stats, and Loksewa exam prep.',
+  title = 'नेपाली Typing PRO — English, Unicode Traditional, Romanized & Preeti Typing',
+  description = 'A sleek, modern Nepali typing test platform. Practice and benchmark your typing speed across English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII with live keyboard maps and deep analytics.',
   canonicalUrl = 'https://typing.topnepali.com'
 } = Astro.props;
 
@@ -23,8 +23,8 @@ import Footer from '../components/Footer.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="Nepali typing test, Preeti typing test, Nepali Unicode traditional typing, Romanized typing test, Loksewa computer test, WPM test Nepali, Devanagari typing speed" />
-    <meta name="author" content="TopNepali / Grisma" />
+    <meta name="keywords" content="Nepali typing, Preeti typing, Nepali Unicode traditional, Romanized typing test, Devanagari typing speed, WPM typing test Nepal" />
+    <meta name="author" content="Grisma / TopNepali" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -35,17 +35,41 @@ import Footer from '../components/Footer.astro';
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="Nepali Typing Platform" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-
-    <!-- Preload Fonts for Instant Non-Blocking Rendering -->
+    <!-- Preload Fonts -->
     <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="/fonts/preeti.ttf" as="font" type="font/ttf" crossorigin />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Tailwind CSS Play CDN & Config (Guarantees 100% utility class rendering) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script is:inline>
+      tailwind.config = {
+        darkMode: ['class', '[data-theme="dark"]'],
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              display: ['Outfit', 'Inter', 'sans-serif'],
+              nepali: ['Font_kokila', 'Mukta', 'Kalimati', 'sans-serif'],
+              preeti: ['Font_preeti', 'Preeti', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              brand: {
+                50: '#fef2f2',
+                100: '#fee2e2',
+                200: '#fecaca',
+                500: '#ef4444',
+                600: '#dc2626',
+                700: '#b91c1c',
+              }
+            }
+          }
+        }
+      }
+    </script>
 
     <!-- Structured Data: WebApplication -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -70,7 +94,7 @@ import Footer from '../components/Footer.astro';
       document.documentElement.className = savedTheme;
     </script>
   </head>
-  <body>
+  <body class="bg-[var(--bg-app)] text-[var(--text-primary)] min-h-screen flex flex-col antialiased">
     <Header />
     <main class="flex-1 py-8">
       <slot />

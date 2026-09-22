@@ -9,14 +9,6 @@
     <div class="flex items-center gap-1.5 p-1 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto max-w-full">
       <button 
         type="button"
-        class="lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-        data-lang="english"
-      >
-        English QWERTY
-      </button>
-
-      <button 
-        type="button"
         class="lang-tab-btn active px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm"
         data-lang="nepali_unicode"
       >
@@ -38,11 +30,19 @@
       >
         Preeti (ASCII)
       </button>
+
+      <button 
+        type="button"
+        class="lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        data-lang="english"
+      >
+        English QWERTY
+      </button>
     </div>
 
-    <!-- Group 2: Mode & Difficulty -->
+    <!-- Group 2: Mode & Content Types -->
     <div class="flex items-center gap-2 flex-wrap">
-      <!-- Mode (Time / Words / Sentences) -->
+      <!-- Content Mode (Time / Words / Sentences / Quotes) -->
       <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
         <button type="button" class="mode-tab-btn active px-2.5 py-1 rounded-lg font-medium text-[var(--accent-blue)] bg-[var(--bg-surface)]" data-mode="time">
           Time
@@ -51,7 +51,10 @@
           Words
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="sentences">
-          Quotes
+          Sentences
+        </button>
+        <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="quotes">
+          Poetry & Quotes
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="special">
           123 & !?
@@ -64,7 +67,6 @@
         <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="30">30s</button>
         <button type="button" class="time-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-seconds="60">60s</button>
         <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="120">120s</button>
-        <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="300" title="5 Minute Loksewa Exam Standard">300s</button>
       </div>
 
       <!-- Word Count Options (Shown when mode == 'words') -->
@@ -78,7 +80,7 @@
       <!-- Difficulty Level Selection -->
       <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
         <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="easy">Easy</button>
-        <button type="button" class="diff-btn active px-2.5 py-1 rounded-lg font-medium font-bold text-amber-500 bg-[var(--bg-surface)]" data-diff="medium">Med</button>
+        <button type="button" class="diff-btn active px-2.5 py-1 rounded-lg font-medium font-bold text-amber-500 bg-[var(--bg-surface)]" data-diff="medium">Medium</button>
         <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="hard">Hard</button>
       </div>
 

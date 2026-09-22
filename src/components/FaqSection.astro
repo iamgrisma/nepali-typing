@@ -2,24 +2,24 @@
 // FAQ Section with JSON-LD Schema for SEO Rich Results
 const faqs = [
   {
-    q: "What is the passing typing speed for Loksewa Aayog computer tests in Nepal?",
-    a: "For Nepali typing in Loksewa Aayog (Public Service Commission), candidates are generally required to achieve a minimum speed of 20 Net Words Per Minute (WPM) with at least 85% to 90% accuracy in a 5-minute timed test. For English typing, the pass requirement is 25 Net WPM."
+    q: "प्रिती (Preeti) र नेपाली युनिकोड (Unicode) मा के भिन्नता छ?",
+    a: "प्रिती एक पुरानो ASCII फन्ट हो, जहाँ अङ्ग्रेजी अक्षरका ठाउँमा नेपाली आकृतिहरू देखाइन्थ्यो। प्रितीमा टाइप गरिएको पाठ इन्टरनेटमा सर्च गर्न मिल्दैन र फन्ट नभएको कम्प्युटरमा बिग्रिएर देखिन्छ। नेपाली युनिकोड भने अन्तर्राष्ट्रिय UTF-8 मानकमा आधारित छ, जसले गर्दा संसारको जुनसुकै कम्प्युटर वा मोबाइलमा फन्ट इन्स्टल नगरीकनै पाठ शुद्ध रूपमा पढ्न, गुगलमा खोज्न र शेयर गर्न सकिन्छ।"
   },
   {
-    q: "What is the difference between Preeti and Nepali Unicode?",
-    a: "Preeti is a legacy ASCII-mapped font developed in the 1990s where Latin letters are visually swapped with Devanagari shapes. Texts typed in Preeti appear as gibberish on systems without the font and cannot be searched online. Nepali Unicode (Traditional & Romanized) is based on the universal UTF-8 standard, making the text universally readable, searchable on Google, and shareable across all modern devices and operating systems."
+    q: "नेपाली रोमनाइज्ड (Romanized) टाइपिङ कसरी गर्ने?",
+    a: "रोमनाइज्ड लेआउटमा अङ्ग्रेजी उच्चारण (Phonetic) अनुसार टाइप गर्न सकिन्छ। जस्तै: 'k' थिच्दा 'क', 'kh' वा 'K' थिच्दा 'ख', 'g' थिच्दा 'ग', र 'm' थिच्दा 'म' आउँछ। यसले गर्दा अङ्ग्रेजी किबोर्डमा बानी परेकाहरूलाई नेपाली टाइप गर्न निकै सहज हुन्छ।"
   },
   {
-    q: "How can I type Raswa Ikaar (ि) in Preeti?",
-    a: "In Preeti typing, the Raswa Ikaar (ि) is typed BEFORE the consonant by pressing the 'l' key. For example, to type 'कि', you must type 'l' followed by 's'."
+    q: "प्रितीमा ह्रस्व इकार (ि) कसरी टाइप गर्ने?",
+    a: "प्रिती फन्टमा ह्रस्व इकार (ि) व्यञ्जन वर्णभन्दा अगाडि टाइप गर्नुपर्छ। यसका लागि पहिले 'l' थिचेर त्यसपछि व्यञ्जन वर्ण थिच्नुपर्छ (जस्तै: l + s = कि)।"
   },
   {
-    q: "Do I need to install any software or font to use this typing platform?",
-    a: "No! All fonts (including authentic Preeti and Kokila Devanagari) are loaded dynamically through our edge font CDN and local cache. The platform works directly in your web browser on mobile phones, tablets, and desktop computers."
+    q: "के यो टाइपिङ प्लेटफर्म चलाउन कुनै फन्ट डाउनलोड गर्नुपर्छ?",
+    a: "पर्दैन! हाम्रो प्लेटफर्मले क्लाउड तथा स्थानीय क्यासबाट प्रिती र कोकिला फन्टहरू स्वतः लोड गर्छ। तपाईंले कुनै सफ्टवेयर वा फन्ट इन्स्टल नगरी सोझै ब्राउजरबाट अभ्यास गर्न सक्नुहुन्छ।"
   },
   {
-    q: "Can I practice for government banking exams on this site?",
-    a: "Yes! Our dataset includes official administrative, financial, and legal terminology tailored specifically for banking examinations (Nepal Rastra Bank, Rastriya Banijya Bank, Agricultural Development Bank) as well as Loksewa Aayog."
+    q: "टाइपिङ स्पिड (WPM) राम्रो मानिने गति कति हो?",
+    a: "सामान्यतया दैनिक काम र कार्यालयका लागि ३० देखि ४० WPM (शब्द प्रति मिनेट) को गति राम्रो मानिन्छ। निरन्तर अभ्यास गर्ने व्यावसायिक टाइपिस्टहरूले ५०+ WPM सम्म सजिलै हासिल गर्न सक्छन्।"
   }
 ];
 ---
@@ -27,11 +27,11 @@ const faqs = [
 <section class="mt-12 mb-16">
   <div class="max-w-4xl mx-auto">
     <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)] mb-6 text-center">
-      Frequently Asked Questions (FAQs)
+      प्रायः सोधिने प्रश्नहरू (FAQs)
     </h2>
 
     <div class="space-y-4">
-      {faqs.map((faq, index) => (
+      {faqs.map((faq) => (
         <details class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 group transition-colors">
           <summary class="font-semibold text-sm text-[var(--text-primary)] cursor-pointer list-none flex items-center justify-between">
             <span>{faq.q}</span>

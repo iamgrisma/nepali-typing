@@ -52,13 +52,13 @@
       <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Esc</kbd>
       <span>or</span>
       <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Tab</kbd>+<kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Enter</kbd>
-      <span>to restart test</span>
+      <span>to restart</span>
     </div>
 
     <button 
       type="button" 
       id="manual-restart-btn" 
-      class="p-1.5 rounded-lg hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1"
+      class="p-1.5 rounded-lg hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 text-xs"
       title="Restart Current Test"
     >
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
@@ -74,7 +74,7 @@
 
   // APPLICATION STATE
   let currentLanguage: 'english' | 'nepali_unicode' | 'nepali_romanized' | 'nepali_preeti' = 'nepali_unicode';
-  let currentMode: 'time' | 'words' | 'sentences' | 'special' = 'time';
+  let currentMode: 'time' | 'words' | 'sentences' | 'quotes' | 'special' = 'time';
   let currentDurationSeconds = 60;
   let currentWordCount = 25;
   let currentDifficulty: 'easy' | 'medium' | 'hard' = 'medium';
@@ -101,7 +101,7 @@
   const liveWpmDisplay = document.getElementById('live-wpm-display');
   const liveAccDisplay = document.getElementById('live-acc-display');
 
-  // SOUND SYNTHESIZER (Web Audio API - Zero External Assets)
+  // SOUND SYNTHESIZER (Web Audio API)
   let audioCtx: AudioContext | null = null;
 
   function initAudio() {
@@ -121,7 +121,6 @@
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = 'sine';
-      // Crisp mechanical switch click sound frequency
       osc.frequency.setValueAtTime(450 + Math.random() * 80, audioCtx.currentTime);
       gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
@@ -210,7 +209,6 @@
         wordSpan.className = 'word-node';
         wordSpan.dataset.wordIndex = `${wIndex}`;
 
-        // Split by characters
         const chars = Array.from(w);
         chars.forEach((c, cIndex) => {
           const charSpan = document.createElement('span');
@@ -224,10 +222,8 @@
       });
     }
 
-    // Scroll back to top
     if (wordsContainer) wordsContainer.scrollTop = 0;
 
-    // Update Caret Position & Target Key
     updateCaretPosition();
     dispatchUpcomingKeyTarget();
   }
@@ -252,7 +248,6 @@
       caret.style.left = `${charRect.left - containerRect.left}px`;
       caret.style.top = `${charRect.top - containerRect.top + 4}px`;
     } else {
-      // End of word (space bar position)
       const lastCharEl = currentWordEl.lastElementChild;
       if (lastCharEl) {
         const lastRect = lastCharEl.getBoundingClientRect();
@@ -261,7 +256,6 @@
       }
     }
 
-    // Auto-scroll when moving to next lines
     if (currentWordEl) {
       const wordRect = currentWordEl.getBoundingClientRect();
       if (wordRect.top - containerRect.top > 80) {
@@ -279,7 +273,7 @@
     if (currentCharIndex < currentWord.length) {
       targetChar = Array.from(currentWord)[currentCharIndex] || '';
     } else {
-      targetChar = ' '; // Space key
+      targetChar = ' ';
     }
 
     window.dispatchEvent(new CustomEvent('typing-target-key', {
@@ -308,7 +302,6 @@
         if (liveTimerDisplay) liveTimerDisplay.textContent = `${elapsed}s`;
       }
 
-      // Update Live Instantaneous Stats
       updateLiveStats();
     }, 1000);
   }
@@ -339,7 +332,6 @@
     const elapsedSeconds = Math.max(1, (performance.now() - testStartTime) / 1000);
     const isNepali = currentLanguage !== 'english';
 
-    // Calculate detailed stats
     const stats = calculateDetailedStats({
       logs: keystrokeLogs,
       elapsedSeconds,
@@ -347,7 +339,6 @@
       isNepali
     });
 
-    // Populate Detailed Stats Modal
     const modalNetWpm = document.getElementById('modal-net-wpm');
     const modalAccuracy = document.getElementById('modal-accuracy');
     const modalRawWpm = document.getElementById('modal-raw-wpm');
@@ -358,9 +349,10 @@
     const modalStrokesError = document.getElementById('modal-strokes-error');
     const modalMissedKeys = document.getElementById('modal-missed-keys');
     const modalTestMetadata = document.getElementById('modal-test-metadata');
-    const modalLoksewaPill = document.getElementById('modal-loksewa-pill');
-    const loksewaGradeLabel = document.getElementById('loksewa-grade-label');
-    const loksewaMarksLabel = document.getElementById('loksewa-marks-label');
+    const modalRankPill = document.getElementById('modal-rank-pill');
+    const modalRankLabel = document.getElementById('modal-rank-label');
+    const modalRankFeedback = document.getElementById('modal-rank-feedback');
+    const modalErrorRate = document.getElementById('modal-error-rate');
 
     if (modalNetWpm) modalNetWpm.textContent = `${stats.netWpm}`;
     if (modalAccuracy) modalAccuracy.textContent = `${stats.accuracy}%`;
@@ -370,8 +362,8 @@
     if (modalAccDetail) modalAccDetail.textContent = `${stats.errorKeystrokes} errors`;
     if (modalStrokesCorrect) modalStrokesCorrect.textContent = `${stats.correctKeystrokes}`;
     if (modalStrokesError) modalStrokesError.textContent = `${stats.errorKeystrokes}`;
+    if (modalErrorRate) modalErrorRate.textContent = `${Math.round((100 - stats.accuracy) * 10) / 10}%`;
 
-    // Most missed keys
     const missedEntries = Object.entries(stats.errorMap).sort((a, b) => b[1] - a[1]).slice(0, 4);
     if (modalMissedKeys) {
       modalMissedKeys.textContent = missedEntries.length > 0 
@@ -380,26 +372,19 @@
     }
 
     if (modalTestMetadata) {
-      modalTestMetadata.textContent = `${currentLanguage.replace('_', ' ').toUpperCase()} • ${Math.round(stats.elapsedSeconds)}s • ${currentDifficulty.toUpperCase()} Difficulty`;
+      modalTestMetadata.textContent = `${currentLanguage.replace('nepali_', '').toUpperCase()} • ${Math.round(stats.elapsedSeconds)}s • ${currentDifficulty.toUpperCase()} Difficulty`;
     }
 
-    if (modalLoksewaPill) {
-      modalLoksewaPill.textContent = stats.loksewaGrade;
-      modalLoksewaPill.className = stats.loksewaGrade === 'Needs Practice'
-        ? 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20'
-        : 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
+    if (modalRankPill) {
+      modalRankPill.textContent = stats.rankTitle;
     }
 
-    if (loksewaGradeLabel) loksewaGradeLabel.textContent = stats.loksewaGrade;
-    if (loksewaMarksLabel) loksewaMarksLabel.textContent = `${stats.loksewaMarks} / 25 Marks`;
+    if (modalRankLabel) modalRankLabel.textContent = stats.rankTitle;
+    if (modalRankFeedback) modalRankFeedback.textContent = stats.rankFeedback;
 
-    // Render Timeline Chart SVG
     renderTimelineChart(stats.timeline);
-
-    // Save to LocalStorage History
     saveHistoryRecord(stats);
 
-    // Open Modal
     document.getElementById('stats-modal')?.classList.add('is-open');
   }
 
@@ -418,7 +403,6 @@
     const getX = (sec: number) => padding + ((sec - 1) / Math.max(1, totalSecs - 1)) * (width - 2 * padding);
     const getY = (val: number) => height - padding - (val / maxWpm) * (height - 2 * padding);
 
-    // Create Net WPM path
     let netPath = '';
     let rawPath = '';
     let errorDots = '';
@@ -462,7 +446,6 @@
       if (existing.length > 50) existing.pop();
       localStorage.setItem('nepali_typing_history', JSON.stringify(existing));
 
-      // Update PB
       const pbKey = `pb_${currentLanguage}`;
       const currentPb = parseInt(localStorage.getItem(pbKey) || '0', 10);
       if (stats.netWpm > currentPb) {
@@ -473,7 +456,6 @@
 
   // KEYSTROKE HANDLING
   window.addEventListener('keydown', (e) => {
-    // Ignore Tab / Ctrl / Alt / Function keys
     if (e.ctrlKey || e.altKey || e.metaKey) return;
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -489,7 +471,6 @@
 
     if (isTestFinished) return;
 
-    // Check if test needs to start
     if (!isTestRunning && e.key.length === 1) {
       startTestTimer();
     }
@@ -500,7 +481,6 @@
     const chars = Array.from(currentWord);
     const currentWordEl = wordsContainer?.querySelector(`.word-node[data-word-index="${currentWordIndex}"]`);
 
-    // Backspace handling
     if (e.key === 'Backspace') {
       if (currentCharIndex > 0) {
         currentCharIndex--;
@@ -514,16 +494,13 @@
       return;
     }
 
-    // Space bar handling (Word advancement)
     if (e.key === ' ') {
       e.preventDefault();
       playKeyClick();
 
-      // Complete current word
       currentWordIndex++;
       currentCharIndex = 0;
 
-      // Check if test is finished in words mode
       if (currentMode === 'words' && currentWordIndex >= currentWordCount) {
         finishTest();
         return;
@@ -539,20 +516,17 @@
       return;
     }
 
-    // Normal Character Input
     if (e.key.length === 1) {
       playKeyClick();
       const expectedChar = chars[currentCharIndex] || '';
       const typedChar = e.key;
 
-      // Direct Match Comparison
       const isCorrect = (typedChar === expectedChar);
 
       if (!isCorrect) {
         playErrorSound();
       }
 
-      // Log Keystroke
       keystrokeLogs.push({
         timestamp: performance.now(),
         charExpected: expectedChar,
@@ -561,7 +535,6 @@
         code: e.code
       });
 
-      // Update DOM character styling
       const charEl = currentWordEl?.querySelector(`.char-node[data-char-index="${currentCharIndex}"]`);
       if (charEl) {
         charEl.className = isCorrect ? 'char-node is-correct' : 'char-node is-error';
@@ -585,19 +558,16 @@
     }
   });
 
-  // MANUAL RESTART BUTTON
   document.getElementById('manual-restart-btn')?.addEventListener('click', resetAndInitTest);
   document.getElementById('restart-from-modal-btn')?.addEventListener('click', () => {
     document.getElementById('stats-modal')?.classList.remove('is-open');
     resetAndInitTest();
   });
 
-  // CLOSE MODAL
   document.getElementById('close-modal-btn')?.addEventListener('click', () => {
     document.getElementById('stats-modal')?.classList.remove('is-open');
   });
 
-  // COPY RESULT TEXT TO CLIPBOARD
   document.getElementById('copy-result-btn')?.addEventListener('click', () => {
     const netWpm = document.getElementById('modal-net-wpm')?.textContent || '0';
     const acc = document.getElementById('modal-accuracy')?.textContent || '0%';
@@ -610,11 +580,24 @@
     }
   });
 
-  // SOUND TOGGLE
   document.getElementById('sound-toggle-btn')?.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     document.getElementById('sound-icon-on')?.classList.toggle('hidden', !soundEnabled);
     document.getElementById('sound-icon-off')?.classList.toggle('hidden', soundEnabled);
+  });
+
+  // QUICK LITERATURE / POETRY BUTTON
+  document.getElementById('quick-quotes-btn')?.addEventListener('click', () => {
+    currentLanguage = 'nepali_unicode';
+    currentMode = 'quotes';
+    currentDifficulty = 'medium';
+
+    document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.lang === 'nepali_unicode'));
+    document.querySelectorAll('.mode-tab-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.mode === 'quotes'));
+    window.dispatchEvent(new CustomEvent('typing-layout-changed', { detail: { layout: 'nepali_unicode' } }));
+
+    resetAndInitTest();
+    workbench?.click();
   });
 
   // MODE SELECTOR LISTENERS
@@ -667,23 +650,6 @@
     });
   });
 
-  // QUICK LOKSEWA EXAM TRIGGER
-  document.getElementById('quick-loksewa-btn')?.addEventListener('click', () => {
-    currentLanguage = 'nepali_unicode';
-    currentMode = 'time';
-    currentDurationSeconds = 300; // 5 Minutes
-    currentDifficulty = 'hard';
-
-    // Update buttons
-    document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.lang === 'nepali_unicode'));
-    document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.diff === 'hard'));
-    window.dispatchEvent(new CustomEvent('typing-layout-changed', { detail: { layout: 'nepali_unicode' } }));
-
-    resetAndInitTest();
-    workbench?.click();
-  });
-
-  // TOGGLE KEYBOARD VISUALIZER
   const toggleKbBtn = document.getElementById('toggle-keyboard-btn');
   const kbContainer = document.getElementById('keyboard-visualizer-container');
   toggleKbBtn?.addEventListener('click', () => {
@@ -695,12 +661,10 @@
     }
   });
 
-  // HISTORY DRAWER OPEN & POPULATE
   document.getElementById('open-history-btn')?.addEventListener('click', () => {
     const historyModal = document.getElementById('history-modal');
     if (!historyModal) return;
 
-    // Load PBs
     const pbEng = localStorage.getItem('pb_english') || '0';
     const pbUni = localStorage.getItem('pb_nepali_unicode') || '0';
     const pbRom = localStorage.getItem('pb_nepali_romanized') || '0';
@@ -716,7 +680,6 @@
     if (elRom) elRom.textContent = `${pbRom} WPM`;
     if (elPre) elPre.textContent = `${pbPre} WPM`;
 
-    // Load History Rows
     const tableBody = document.getElementById('history-table-body');
     const records = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
 
@@ -757,6 +720,5 @@
     }
   });
 
-  // INITIAL RUN
   resetAndInitTest();
 </script>
