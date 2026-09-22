@@ -1,0 +1,762 @@
+---
+// TypingEngine Component
+// High-performance client island for typing test execution, live caret, audio, and stats
+---
+
+<div class="w-full relative mb-6">
+  
+  <!-- Live Status Floating Header (Timer / Live WPM / Accuracy) -->
+  <div class="flex items-center justify-between px-2 mb-3 text-sm font-mono">
+    <!-- Left: Time / Word Progress -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 text-[var(--accent-primary)] font-bold text-lg">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span id="live-timer-display">60</span>
+      </div>
+      <div class="text-xs text-[var(--text-muted)]" id="live-progress-display">0 / 25 words</div>
+    </div>
+
+    <!-- Right: Live Instantaneous WPM and Accuracy -->
+    <div class="flex items-center gap-4 text-xs font-semibold">
+      <div class="text-[var(--text-muted)]">
+        Live WPM: <span id="live-wpm-display" class="font-bold text-[var(--text-primary)] text-sm">0</span>
+      </div>
+      <div class="text-[var(--text-muted)]">
+        Acc: <span id="live-acc-display" class="font-bold text-emerald-500 text-sm">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Typing Workbench Box -->
+  <div id="typing-workbench" class="typing-box min-h-[160px] flex flex-col justify-center" tabindex="0">
+    <!-- Blinking / Sliding Caret -->
+    <div id="typing-caret" class="typing-caret hidden"></div>
+
+    <!-- Dynamic Words Stream Container -->
+    <div id="words-container" class="words-stream text-xl sm:text-2xl select-none font-medium">
+      <!-- Generated Words & Characters Nodes Inserted Here -->
+    </div>
+
+    <!-- Focus Prompt Overlay (Shown when blurred) -->
+    <div id="focus-overlay" class="absolute inset-0 bg-[var(--bg-surface)]/80 backdrop-blur-[2px] flex items-center justify-center rounded-2xl cursor-pointer z-20 transition-opacity">
+      <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] shadow-md text-xs font-medium text-[var(--text-secondary)]">
+        <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Click here or press any key to focus</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Quick Controls (Restart Button & Short Hint) -->
+  <div class="flex items-center justify-between px-2 mt-3 text-xs text-[var(--text-muted)]">
+    <div class="flex items-center gap-1.5">
+      <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Esc</kbd>
+      <span>or</span>
+      <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Tab</kbd>+<kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Enter</kbd>
+      <span>to restart test</span>
+    </div>
+
+    <button 
+      type="button" 
+      id="manual-restart-btn" 
+      class="p-1.5 rounded-lg hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1"
+      title="Restart Current Test"
+    >
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+      <span>Restart</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  import { generateTestText } from '../lib/typing-data';
+  import { calculateDetailedStats, type TestKeystrokeLog } from '../lib/wpm-calculator';
+
+  // APPLICATION STATE
+  let currentLanguage: 'english' | 'nepali_unicode' | 'nepali_romanized' | 'nepali_preeti' = 'nepali_unicode';
+  let currentMode: 'time' | 'words' | 'sentences' | 'special' = 'time';
+  let currentDurationSeconds = 60;
+  let currentWordCount = 25;
+  let currentDifficulty: 'easy' | 'medium' | 'hard' = 'medium';
+
+  let wordsList: string[] = [];
+  let currentWordIndex = 0;
+  let currentCharIndex = 0;
+  let keystrokeLogs: TestKeystrokeLog[] = [];
+  
+  let isTestRunning = false;
+  let isTestFinished = false;
+  let testStartTime = 0;
+  let timerInterval: any = null;
+  let secondsRemaining = 60;
+  let soundEnabled = true;
+
+  // DOM Elements
+  const workbench = document.getElementById('typing-workbench');
+  const wordsContainer = document.getElementById('words-container');
+  const caret = document.getElementById('typing-caret');
+  const focusOverlay = document.getElementById('focus-overlay');
+  const liveTimerDisplay = document.getElementById('live-timer-display');
+  const liveProgressDisplay = document.getElementById('live-progress-display');
+  const liveWpmDisplay = document.getElementById('live-wpm-display');
+  const liveAccDisplay = document.getElementById('live-acc-display');
+
+  // SOUND SYNTHESIZER (Web Audio API - Zero External Assets)
+  let audioCtx: AudioContext | null = null;
+
+  function initAudio() {
+    if (!audioCtx && typeof window !== 'undefined') {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+  }
+
+  function playKeyClick() {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      // Crisp mechanical switch click sound frequency
+      osc.frequency.setValueAtTime(450 + Math.random() * 80, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    } catch {}
+  }
+
+  function playErrorSound() {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    } catch {}
+  }
+
+  function playFinishBell() {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+    } catch {}
+  }
+
+  // INITIALIZE TEST DATA
+  function resetAndInitTest() {
+    clearInterval(timerInterval);
+    isTestRunning = false;
+    isTestFinished = false;
+    currentWordIndex = 0;
+    currentCharIndex = 0;
+    keystrokeLogs = [];
+    testStartTime = 0;
+
+    secondsRemaining = currentDurationSeconds;
+    if (liveTimerDisplay) {
+      liveTimerDisplay.textContent = currentMode === 'time' ? `${secondsRemaining}` : '0s';
+    }
+    if (liveWpmDisplay) liveWpmDisplay.textContent = '0';
+    if (liveAccDisplay) liveAccDisplay.textContent = '100%';
+    if (liveProgressDisplay) liveProgressDisplay.textContent = `0 / ${currentWordCount} words`;
+
+    // Generate Text Dataset
+    const targetCount = currentMode === 'words' ? currentWordCount : 40;
+    const generated = generateTestText({
+      language: currentLanguage,
+      mode: currentMode,
+      difficulty: currentDifficulty,
+      targetCount
+    });
+
+    wordsList = generated.wordsList;
+
+    // Render HTML Nodes for Words and Characters
+    if (wordsContainer) {
+      wordsContainer.innerHTML = '';
+      wordsContainer.style.fontFamily = generated.displayFont;
+
+      wordsList.forEach((w, wIndex) => {
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'word-node';
+        wordSpan.dataset.wordIndex = `${wIndex}`;
+
+        // Split by characters
+        const chars = Array.from(w);
+        chars.forEach((c, cIndex) => {
+          const charSpan = document.createElement('span');
+          charSpan.className = 'char-node';
+          charSpan.dataset.charIndex = `${cIndex}`;
+          charSpan.textContent = c;
+          wordSpan.appendChild(charSpan);
+        });
+
+        wordsContainer.appendChild(wordSpan);
+      });
+    }
+
+    // Scroll back to top
+    if (wordsContainer) wordsContainer.scrollTop = 0;
+
+    // Update Caret Position & Target Key
+    updateCaretPosition();
+    dispatchUpcomingKeyTarget();
+  }
+
+  // CARET POSITIONING
+  function updateCaretPosition() {
+    if (!caret || !wordsContainer) return;
+
+    const currentWordEl = wordsContainer.querySelector(`.word-node[data-word-index="${currentWordIndex}"]`);
+    if (!currentWordEl) {
+      caret.classList.add('hidden');
+      return;
+    }
+
+    caret.classList.remove('hidden');
+
+    const currentCharEl = currentWordEl.querySelector(`.char-node[data-char-index="${currentCharIndex}"]`);
+    const containerRect = wordsContainer.getBoundingClientRect();
+
+    if (currentCharEl) {
+      const charRect = currentCharEl.getBoundingClientRect();
+      caret.style.left = `${charRect.left - containerRect.left}px`;
+      caret.style.top = `${charRect.top - containerRect.top + 4}px`;
+    } else {
+      // End of word (space bar position)
+      const lastCharEl = currentWordEl.lastElementChild;
+      if (lastCharEl) {
+        const lastRect = lastCharEl.getBoundingClientRect();
+        caret.style.left = `${lastRect.right - containerRect.left}px`;
+        caret.style.top = `${lastRect.top - containerRect.top + 4}px`;
+      }
+    }
+
+    // Auto-scroll when moving to next lines
+    if (currentWordEl) {
+      const wordRect = currentWordEl.getBoundingClientRect();
+      if (wordRect.top - containerRect.top > 80) {
+        wordsContainer.scrollTop += 45;
+      }
+    }
+  }
+
+  // DISPATCH UPCOMING TARGET KEY TO KEYBOARD VISUALIZER
+  function dispatchUpcomingKeyTarget() {
+    const currentWord = wordsList[currentWordIndex];
+    if (!currentWord) return;
+
+    let targetChar = '';
+    if (currentCharIndex < currentWord.length) {
+      targetChar = Array.from(currentWord)[currentCharIndex] || '';
+    } else {
+      targetChar = ' '; // Space key
+    }
+
+    window.dispatchEvent(new CustomEvent('typing-target-key', {
+      detail: {
+        char: targetChar,
+        code: targetChar === ' ' ? 'Space' : undefined
+      }
+    }));
+  }
+
+  // START TIMER
+  function startTestTimer() {
+    if (isTestRunning) return;
+    isTestRunning = true;
+    testStartTime = performance.now();
+
+    timerInterval = setInterval(() => {
+      if (currentMode === 'time') {
+        secondsRemaining--;
+        if (liveTimerDisplay) liveTimerDisplay.textContent = `${secondsRemaining}`;
+        if (secondsRemaining <= 0) {
+          finishTest();
+        }
+      } else {
+        const elapsed = Math.floor((performance.now() - testStartTime) / 1000);
+        if (liveTimerDisplay) liveTimerDisplay.textContent = `${elapsed}s`;
+      }
+
+      // Update Live Instantaneous Stats
+      updateLiveStats();
+    }, 1000);
+  }
+
+  // UPDATE LIVE STATS
+  function updateLiveStats() {
+    if (keystrokeLogs.length === 0 || !isTestRunning) return;
+    const elapsedSeconds = Math.max(1, (performance.now() - testStartTime) / 1000);
+    const correctStrokes = keystrokeLogs.filter(l => l.isCorrect).length;
+    const totalStrokes = keystrokeLogs.length;
+
+    const wpm = Math.round((correctStrokes / 5) / (elapsedSeconds / 60));
+    const acc = totalStrokes > 0 ? Math.round((correctStrokes / totalStrokes) * 100) : 100;
+
+    if (liveWpmDisplay) liveWpmDisplay.textContent = `${wpm}`;
+    if (liveAccDisplay) liveAccDisplay.textContent = `${acc}%`;
+    if (liveProgressDisplay) liveProgressDisplay.textContent = `${currentWordIndex} / ${wordsList.length} words`;
+  }
+
+  // FINISH TEST & DISPLAY DETAILED RESULTS
+  function finishTest() {
+    if (isTestFinished) return;
+    clearInterval(timerInterval);
+    isTestRunning = false;
+    isTestFinished = true;
+    playFinishBell();
+
+    const elapsedSeconds = Math.max(1, (performance.now() - testStartTime) / 1000);
+    const isNepali = currentLanguage !== 'english';
+
+    // Calculate detailed stats
+    const stats = calculateDetailedStats({
+      logs: keystrokeLogs,
+      elapsedSeconds,
+      targetDurationSeconds: currentDurationSeconds,
+      isNepali
+    });
+
+    // Populate Detailed Stats Modal
+    const modalNetWpm = document.getElementById('modal-net-wpm');
+    const modalAccuracy = document.getElementById('modal-accuracy');
+    const modalRawWpm = document.getElementById('modal-raw-wpm');
+    const modalConsistency = document.getElementById('modal-consistency');
+    const modalCpm = document.getElementById('modal-cpm');
+    const modalAccDetail = document.getElementById('modal-acc-detail');
+    const modalStrokesCorrect = document.getElementById('modal-strokes-correct');
+    const modalStrokesError = document.getElementById('modal-strokes-error');
+    const modalMissedKeys = document.getElementById('modal-missed-keys');
+    const modalTestMetadata = document.getElementById('modal-test-metadata');
+    const modalLoksewaPill = document.getElementById('modal-loksewa-pill');
+    const loksewaGradeLabel = document.getElementById('loksewa-grade-label');
+    const loksewaMarksLabel = document.getElementById('loksewa-marks-label');
+
+    if (modalNetWpm) modalNetWpm.textContent = `${stats.netWpm}`;
+    if (modalAccuracy) modalAccuracy.textContent = `${stats.accuracy}%`;
+    if (modalRawWpm) modalRawWpm.textContent = `${stats.rawWpm}`;
+    if (modalConsistency) modalConsistency.textContent = `${stats.consistency}%`;
+    if (modalCpm) modalCpm.textContent = `${stats.cpm} CPM`;
+    if (modalAccDetail) modalAccDetail.textContent = `${stats.errorKeystrokes} errors`;
+    if (modalStrokesCorrect) modalStrokesCorrect.textContent = `${stats.correctKeystrokes}`;
+    if (modalStrokesError) modalStrokesError.textContent = `${stats.errorKeystrokes}`;
+
+    // Most missed keys
+    const missedEntries = Object.entries(stats.errorMap).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    if (modalMissedKeys) {
+      modalMissedKeys.textContent = missedEntries.length > 0 
+        ? missedEntries.map(([k, count]) => `'${k}' (${count})`).join(', ')
+        : 'None (Perfect!)';
+    }
+
+    if (modalTestMetadata) {
+      modalTestMetadata.textContent = `${currentLanguage.replace('_', ' ').toUpperCase()} • ${Math.round(stats.elapsedSeconds)}s • ${currentDifficulty.toUpperCase()} Difficulty`;
+    }
+
+    if (modalLoksewaPill) {
+      modalLoksewaPill.textContent = stats.loksewaGrade;
+      modalLoksewaPill.className = stats.loksewaGrade === 'Needs Practice'
+        ? 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20'
+        : 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
+    }
+
+    if (loksewaGradeLabel) loksewaGradeLabel.textContent = stats.loksewaGrade;
+    if (loksewaMarksLabel) loksewaMarksLabel.textContent = `${stats.loksewaMarks} / 25 Marks`;
+
+    // Render Timeline Chart SVG
+    renderTimelineChart(stats.timeline);
+
+    // Save to LocalStorage History
+    saveHistoryRecord(stats);
+
+    // Open Modal
+    document.getElementById('stats-modal')?.classList.add('is-open');
+  }
+
+  // RENDER SVG TIMELINE GRAPH
+  function renderTimelineChart(timeline: any[]) {
+    const svg = document.getElementById('timeline-chart-svg');
+    if (!svg || timeline.length === 0) return;
+
+    const width = 500;
+    const height = 120;
+    const padding = 15;
+
+    const maxWpm = Math.max(40, ...timeline.map(p => Math.max(p.wpm, p.rawWpm)));
+    const totalSecs = timeline.length;
+
+    const getX = (sec: number) => padding + ((sec - 1) / Math.max(1, totalSecs - 1)) * (width - 2 * padding);
+    const getY = (val: number) => height - padding - (val / maxWpm) * (height - 2 * padding);
+
+    // Create Net WPM path
+    let netPath = '';
+    let rawPath = '';
+    let errorDots = '';
+
+    timeline.forEach((pt, i) => {
+      const x = getX(pt.second);
+      const yNet = getY(pt.wpm);
+      const yRaw = getY(pt.rawWpm);
+
+      netPath += `${i === 0 ? 'M' : 'L'} ${x} ${yNet} `;
+      rawPath += `${i === 0 ? 'M' : 'L'} ${x} ${yRaw} `;
+
+      if (pt.errors > 0) {
+        errorDots += `<circle cx="${x}" cy="${yNet}" r="3.5" fill="#ef4444" stroke="#ffffff" stroke-width="1.5" />`;
+      }
+    });
+
+    svg.innerHTML = `
+      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
+      <path d="${rawPath}" fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="3 3" opacity="0.6" />
+      <path d="${netPath}" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" />
+      ${errorDots}
+    `;
+  }
+
+  // SAVE RECORD TO LOCALSTORAGE
+  function saveHistoryRecord(stats: any) {
+    try {
+      const existing = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
+      const newEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        layout: currentLanguage,
+        mode: currentMode,
+        wpm: stats.netWpm,
+        acc: stats.accuracy,
+        duration: Math.round(stats.elapsedSeconds)
+      };
+
+      existing.unshift(newEntry);
+      if (existing.length > 50) existing.pop();
+      localStorage.setItem('nepali_typing_history', JSON.stringify(existing));
+
+      // Update PB
+      const pbKey = `pb_${currentLanguage}`;
+      const currentPb = parseInt(localStorage.getItem(pbKey) || '0', 10);
+      if (stats.netWpm > currentPb) {
+        localStorage.setItem(pbKey, stats.netWpm.toString());
+      }
+    } catch {}
+  }
+
+  // KEYSTROKE HANDLING
+  window.addEventListener('keydown', (e) => {
+    // Ignore Tab / Ctrl / Alt / Function keys
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      resetAndInitTest();
+      return;
+    }
+    if (e.key === 'Escape') {
+      document.getElementById('stats-modal')?.classList.remove('is-open');
+      document.getElementById('history-modal')?.classList.remove('is-open');
+      resetAndInitTest();
+      return;
+    }
+
+    if (isTestFinished) return;
+
+    // Check if test needs to start
+    if (!isTestRunning && e.key.length === 1) {
+      startTestTimer();
+    }
+
+    const currentWord = wordsList[currentWordIndex];
+    if (!currentWord) return;
+
+    const chars = Array.from(currentWord);
+    const currentWordEl = wordsContainer?.querySelector(`.word-node[data-word-index="${currentWordIndex}"]`);
+
+    // Backspace handling
+    if (e.key === 'Backspace') {
+      if (currentCharIndex > 0) {
+        currentCharIndex--;
+        const charEl = currentWordEl?.querySelector(`.char-node[data-char-index="${currentCharIndex}"]`);
+        if (charEl) {
+          charEl.className = 'char-node';
+        }
+        updateCaretPosition();
+        dispatchUpcomingKeyTarget();
+      }
+      return;
+    }
+
+    // Space bar handling (Word advancement)
+    if (e.key === ' ') {
+      e.preventDefault();
+      playKeyClick();
+
+      // Complete current word
+      currentWordIndex++;
+      currentCharIndex = 0;
+
+      // Check if test is finished in words mode
+      if (currentMode === 'words' && currentWordIndex >= currentWordCount) {
+        finishTest();
+        return;
+      }
+
+      if (currentWordIndex >= wordsList.length) {
+        finishTest();
+        return;
+      }
+
+      updateCaretPosition();
+      dispatchUpcomingKeyTarget();
+      return;
+    }
+
+    // Normal Character Input
+    if (e.key.length === 1) {
+      playKeyClick();
+      const expectedChar = chars[currentCharIndex] || '';
+      const typedChar = e.key;
+
+      // Direct Match Comparison
+      const isCorrect = (typedChar === expectedChar);
+
+      if (!isCorrect) {
+        playErrorSound();
+      }
+
+      // Log Keystroke
+      keystrokeLogs.push({
+        timestamp: performance.now(),
+        charExpected: expectedChar,
+        charTyped: typedChar,
+        isCorrect,
+        code: e.code
+      });
+
+      // Update DOM character styling
+      const charEl = currentWordEl?.querySelector(`.char-node[data-char-index="${currentCharIndex}"]`);
+      if (charEl) {
+        charEl.className = isCorrect ? 'char-node is-correct' : 'char-node is-error';
+      }
+
+      currentCharIndex++;
+      updateCaretPosition();
+      dispatchUpcomingKeyTarget();
+    }
+  });
+
+  // FOCUS HANDLERS
+  workbench?.addEventListener('click', () => {
+    workbench.focus();
+    focusOverlay?.classList.add('opacity-0', 'pointer-events-none');
+  });
+
+  workbench?.addEventListener('blur', () => {
+    if (!isTestRunning) {
+      focusOverlay?.classList.remove('opacity-0', 'pointer-events-none');
+    }
+  });
+
+  // MANUAL RESTART BUTTON
+  document.getElementById('manual-restart-btn')?.addEventListener('click', resetAndInitTest);
+  document.getElementById('restart-from-modal-btn')?.addEventListener('click', () => {
+    document.getElementById('stats-modal')?.classList.remove('is-open');
+    resetAndInitTest();
+  });
+
+  // CLOSE MODAL
+  document.getElementById('close-modal-btn')?.addEventListener('click', () => {
+    document.getElementById('stats-modal')?.classList.remove('is-open');
+  });
+
+  // COPY RESULT TEXT TO CLIPBOARD
+  document.getElementById('copy-result-btn')?.addEventListener('click', () => {
+    const netWpm = document.getElementById('modal-net-wpm')?.textContent || '0';
+    const acc = document.getElementById('modal-accuracy')?.textContent || '0%';
+    const text = `🏆 Nepali Typing Test Result:\nSpeed: ${netWpm} WPM | Accuracy: ${acc}\nLayout: ${currentLanguage}\nPractice free at: https://typing.topnepali.com`;
+    navigator.clipboard?.writeText(text);
+    const btnText = document.getElementById('copy-result-text');
+    if (btnText) {
+      btnText.textContent = '✓ Copied!';
+      setTimeout(() => { btnText.textContent = 'Copy Summary'; }, 2000);
+    }
+  });
+
+  // SOUND TOGGLE
+  document.getElementById('sound-toggle-btn')?.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    document.getElementById('sound-icon-on')?.classList.toggle('hidden', !soundEnabled);
+    document.getElementById('sound-icon-off')?.classList.toggle('hidden', soundEnabled);
+  });
+
+  // MODE SELECTOR LISTENERS
+  document.querySelectorAll('.lang-tab-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-sm'));
+      (e.currentTarget as HTMLElement).classList.add('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-sm');
+      currentLanguage = (e.currentTarget as HTMLElement).dataset.lang as any;
+      window.dispatchEvent(new CustomEvent('typing-layout-changed', { detail: { layout: currentLanguage } }));
+      resetAndInitTest();
+    });
+  });
+
+  document.querySelectorAll('.mode-tab-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.mode-tab-btn').forEach(b => b.classList.remove('active', 'text-[var(--accent-blue)]', 'bg-[var(--bg-surface)]'));
+      (e.currentTarget as HTMLElement).classList.add('active', 'text-[var(--accent-blue)]', 'bg-[var(--bg-surface)]');
+      currentMode = (e.currentTarget as HTMLElement).dataset.mode as any;
+
+      document.getElementById('time-options')?.classList.toggle('hidden', currentMode !== 'time');
+      document.getElementById('words-options')?.classList.toggle('hidden', currentMode !== 'words');
+      resetAndInitTest();
+    });
+  });
+
+  document.querySelectorAll('.time-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active', 'font-bold', 'text-[var(--accent-primary)]', 'bg-[var(--bg-surface)]'));
+      (e.currentTarget as HTMLElement).classList.add('active', 'font-bold', 'text-[var(--accent-primary)]', 'bg-[var(--bg-surface)]');
+      currentDurationSeconds = parseInt((e.currentTarget as HTMLElement).dataset.seconds || '60', 10);
+      resetAndInitTest();
+    });
+  });
+
+  document.querySelectorAll('.word-count-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.word-count-btn').forEach(b => b.classList.remove('active', 'font-bold', 'text-[var(--accent-primary)]', 'bg-[var(--bg-surface)]'));
+      (e.currentTarget as HTMLElement).classList.add('active', 'font-bold', 'text-[var(--accent-primary)]', 'bg-[var(--bg-surface)]');
+      currentWordCount = parseInt((e.currentTarget as HTMLElement).dataset.words || '25', 10);
+      resetAndInitTest();
+    });
+  });
+
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active', 'font-bold', 'text-amber-500', 'bg-[var(--bg-surface)]'));
+      (e.currentTarget as HTMLElement).classList.add('active', 'font-bold', 'text-amber-500', 'bg-[var(--bg-surface)]');
+      currentDifficulty = (e.currentTarget as HTMLElement).dataset.diff as any;
+      resetAndInitTest();
+    });
+  });
+
+  // QUICK LOKSEWA EXAM TRIGGER
+  document.getElementById('quick-loksewa-btn')?.addEventListener('click', () => {
+    currentLanguage = 'nepali_unicode';
+    currentMode = 'time';
+    currentDurationSeconds = 300; // 5 Minutes
+    currentDifficulty = 'hard';
+
+    // Update buttons
+    document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.lang === 'nepali_unicode'));
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', (b as HTMLElement).dataset.diff === 'hard'));
+    window.dispatchEvent(new CustomEvent('typing-layout-changed', { detail: { layout: 'nepali_unicode' } }));
+
+    resetAndInitTest();
+    workbench?.click();
+  });
+
+  // TOGGLE KEYBOARD VISUALIZER
+  const toggleKbBtn = document.getElementById('toggle-keyboard-btn');
+  const kbContainer = document.getElementById('keyboard-visualizer-container');
+  toggleKbBtn?.addEventListener('click', () => {
+    if (kbContainer) {
+      const isHidden = kbContainer.classList.contains('hidden');
+      kbContainer.classList.toggle('hidden', !isHidden);
+      const text = document.getElementById('toggle-keyboard-text');
+      if (text) text.textContent = isHidden ? 'Hide Keys' : 'Keyboard';
+    }
+  });
+
+  // HISTORY DRAWER OPEN & POPULATE
+  document.getElementById('open-history-btn')?.addEventListener('click', () => {
+    const historyModal = document.getElementById('history-modal');
+    if (!historyModal) return;
+
+    // Load PBs
+    const pbEng = localStorage.getItem('pb_english') || '0';
+    const pbUni = localStorage.getItem('pb_nepali_unicode') || '0';
+    const pbRom = localStorage.getItem('pb_nepali_romanized') || '0';
+    const pbPre = localStorage.getItem('pb_nepali_preeti') || '0';
+
+    const elEng = document.getElementById('pb-english');
+    const elUni = document.getElementById('pb-unicode');
+    const elRom = document.getElementById('pb-romanized');
+    const elPre = document.getElementById('pb-preeti');
+
+    if (elEng) elEng.textContent = `${pbEng} WPM`;
+    if (elUni) elUni.textContent = `${pbUni} WPM`;
+    if (elRom) elRom.textContent = `${pbRom} WPM`;
+    if (elPre) elPre.textContent = `${pbPre} WPM`;
+
+    // Load History Rows
+    const tableBody = document.getElementById('history-table-body');
+    const records = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
+
+    const totalCountEl = document.getElementById('total-tests-count');
+    if (totalCountEl) totalCountEl.textContent = `${records.length} tests completed`;
+
+    if (tableBody) {
+      if (records.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-[var(--text-muted)]">No typing tests recorded yet.</td></tr>`;
+      } else {
+        tableBody.innerHTML = records.map((r: any) => `
+          <tr class="hover:bg-[var(--bg-surface-subtle)] transition-colors">
+            <td class="p-2.5 font-mono">${r.date}</td>
+            <td class="p-2.5 font-medium">${r.layout.replace('nepali_', '').toUpperCase()}</td>
+            <td class="p-2.5">${r.duration}s</td>
+            <td class="p-2.5 font-bold text-[var(--accent-primary)] font-mono">${r.wpm} WPM</td>
+            <td class="p-2.5 font-mono text-emerald-500">${r.acc}%</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    historyModal.classList.add('is-open');
+  });
+
+  document.getElementById('close-history-btn')?.addEventListener('click', () => {
+    document.getElementById('history-modal')?.classList.remove('is-open');
+  });
+
+  document.getElementById('clear-history-btn')?.addEventListener('click', () => {
+    if (confirm('Clear all typing history and records?')) {
+      localStorage.removeItem('nepali_typing_history');
+      localStorage.removeItem('pb_english');
+      localStorage.removeItem('pb_nepali_unicode');
+      localStorage.removeItem('pb_nepali_romanized');
+      localStorage.removeItem('pb_nepali_preeti');
+      document.getElementById('open-history-btn')?.click();
+    }
+  });
+
+  // INITIAL RUN
+  resetAndInitTest();
+</script>

@@ -1,0 +1,400 @@
+/* Nepali Typing Test — Elite Typography & Typing Workbench Design System
+   Modern dark/light mode, 3D keycaps, smooth cursor, responsive layout */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* Font Face: Preeti (Legacy ASCII) */
+@font-face {
+  font-family: 'Font_preeti';
+  src: url('/fonts/preeti.ttf') format('truetype'),
+       url('/pluto/preeti.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Font Face: Kokila (Devanagari Unicode) */
+@font-face {
+  font-family: 'Font_kokila';
+  src: url('/fonts/kokila.ttf') format('truetype'),
+       url('/pluto/kokila.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-nepali: 'Font_kokila', 'Mukta', 'Kalimati', sans-serif;
+  --font-preeti: 'Font_preeti', 'Preeti', sans-serif;
+
+  /* Light Theme Palette */
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --bg-key: #ffffff;
+  --bg-key-active: #e0e7ff;
+  --bg-key-special: #f1f5f9;
+
+  --border-subtle: #e2e8f0;
+  --border-focus: #3b82f6;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-dim: #cbd5e1;
+
+  --accent-primary: #dc2626; /* Crimson Red (Nepal Flag inspired) */
+  --accent-primary-hover: #b91c1c;
+  --accent-blue: #2563eb;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+
+  /* Typing Text Colors */
+  --char-untouched: #94a3b8;
+  --char-correct: #0f172a;
+  --char-error: #ef4444;
+  --char-error-bg: rgba(239, 68, 68, 0.15);
+  --caret-color: #dc2626;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-key: 0 2px 0 #cbd5e1;
+}
+
+[data-theme="dark"] {
+  --bg-app: #090d16;
+  --bg-surface: #0f172a;
+  --bg-surface-elevated: #1e293b;
+  --bg-surface-subtle: #1e293b;
+  --bg-key: #1e293b;
+  --bg-key-active: #312e81;
+  --bg-key-special: #131d31;
+
+  --border-subtle: #1e293b;
+  --border-focus: #60a5fa;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --text-dim: #334155;
+
+  --accent-primary: #f87171;
+  --accent-primary-hover: #ef4444;
+  --accent-blue: #60a5fa;
+  --accent-emerald: #34d399;
+  --accent-amber: #fbbf24;
+
+  /* Typing Text Colors Dark */
+  --char-untouched: #475569;
+  --char-correct: #f1f5f9;
+  --char-error: #f87171;
+  --char-error-bg: rgba(248, 113, 113, 0.2);
+  --caret-color: #f87171;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  --shadow-key: 0 2px 0 #0b1120;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Typography Helpers */
+.font-nepali {
+  font-family: var(--font-nepali);
+}
+.font-preeti {
+  font-family: var(--font-preeti);
+}
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Base Container */
+.container {
+  width: 100%;
+  max-width: 1160px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Typing Workbench Styles */
+.typing-box {
+  position: relative;
+  border-radius: 1rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  user-select: none;
+  cursor: text;
+}
+
+.typing-box:focus-within,
+.typing-box.is-active {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Words Container */
+.words-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  line-height: 2.2;
+  letter-spacing: 0.02em;
+  max-height: 160px;
+  overflow: hidden;
+  position: relative;
+}
+
+.word-node {
+  display: inline-flex;
+  position: relative;
+}
+
+.char-node {
+  position: relative;
+  color: var(--char-untouched);
+  transition: color 0.1s ease-in-out;
+}
+
+.char-node.is-correct {
+  color: var(--char-correct);
+}
+
+.char-node.is-error {
+  color: var(--char-error);
+  background-color: var(--char-error-bg);
+  border-radius: 2px;
+}
+
+.char-node.is-extra {
+  color: var(--char-error);
+  opacity: 0.8;
+}
+
+/* Monkeytype Caret Animation */
+.typing-caret {
+  position: absolute;
+  width: 2.5px;
+  height: 1.6em;
+  background-color: var(--caret-color);
+  border-radius: 1px;
+  pointer-events: none;
+  transition: left 0.08s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.08s cubic-bezier(0.1, 0.9, 0.2, 1);
+  animation: caret-pulse 1s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes caret-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Hardware Keyboard Visualizer Styles */
+.kb-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.kb-row {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+  width: 100%;
+}
+
+.keycap {
+  background: var(--bg-key);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-key);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.4rem;
+  height: 3.25rem;
+  min-width: 0;
+  transition: all 0.08s ease;
+  user-select: none;
+  position: relative;
+}
+
+.keycap.is-pressed {
+  transform: translateY(2px);
+  box-shadow: none;
+  background: var(--bg-key-active);
+  border-color: var(--border-focus);
+}
+
+.keycap.is-target {
+  border-color: var(--accent-primary);
+  background: rgba(220, 38, 38, 0.1);
+  animation: target-pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes target-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.2); }
+}
+
+.keycap-shift-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  align-self: flex-start;
+  line-height: 1;
+}
+
+.keycap-main-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.keycap.special-key {
+  background: var(--bg-key-special);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  justify-content: center;
+}
+
+/* Badges and Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary);
+}
+
+.btn-active {
+  background-color: var(--accent-blue) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-blue) !important;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+
+.modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  max-width: 760px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.is-open .modal-content {
+  transform: translateY(0);
+}
+
+/* Scrollbar Minimalist */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

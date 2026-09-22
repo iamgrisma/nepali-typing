@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+import SeoContent from '../components/SeoContent.astro';
+import FaqSection from '../components/FaqSection.astro';
+---
+
+<Layout>
+  <div class="container">
+    
+    <!-- Hero / Intro Badge -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 mb-2">
+        <span>🇳🇵 Official Devanagari Speed Testing Platform</span>
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Nepali Typing Test <span class="text-[var(--accent-primary)]">PRO</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto mt-1">
+        Benchmarking English, Nepali Unicode (Traditional & Romanized) and Preeti ASCII layouts with live keyboard analytics.
+      </p>
+    </div>
+
+    <!-- Mode Selector Toolbar -->
+    <ModeSelector />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- Comprehensive In-depth SEO Articles & Guides -->
+    <SeoContent />
+
+    <!-- Structured FAQs Section -->
+    <FaqSection />
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>

@@ -1,0 +1,319 @@
+---
+// Hardware Keyboard Visualizer Component
+// Supports English QWERTY, Nepali Unicode Traditional, Nepali Romanized, and Preeti ASCII
+---
+
+<div id="keyboard-visualizer-container" class="w-full transition-all duration-300">
+  <div class="kb-wrapper mb-8">
+    <!-- Header of Keyboard Visualizer -->
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-[var(--border-subtle)] text-xs">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-sm text-[var(--text-primary)]" id="kb-current-layout-name">
+          नेपाली युनिकोड (Traditional) Keyboard Layout
+        </span>
+        <span class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400" id="kb-layout-pill">
+          MPP STANDARD
+        </span>
+      </div>
+
+      <!-- Quick Action Controls for Keyboard -->
+      <div class="flex items-center gap-2">
+        <button 
+          type="button" 
+          id="kb-shift-toggle" 
+          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono flex items-center gap-1 text-[11px]"
+          title="Toggle Shift Layer (Shift Key)"
+        >
+          <span>Shift</span>
+          <span id="kb-shift-indicator" class="w-2 h-2 rounded-full bg-neutral-400"></span>
+        </button>
+
+        <button 
+          type="button" 
+          id="kb-export-svg" 
+          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[11px] flex items-center gap-1"
+          title="Download vector SVG layout diagram"
+        >
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>SVG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5 Rows Keyboard Matrix Container -->
+    <div id="keyboard-matrix" class="w-full flex flex-col gap-1 select-none overflow-x-auto">
+      <!-- ROW 1 -->
+      <div class="kb-row flex gap-1 w-full" data-row="1"></div>
+      <!-- ROW 2 -->
+      <div class="kb-row flex gap-1 w-full" data-row="2"></div>
+      <!-- ROW 3 -->
+      <div class="kb-row flex gap-1 w-full" data-row="3"></div>
+      <!-- ROW 4 -->
+      <div class="kb-row flex gap-1 w-full" data-row="4"></div>
+      <!-- ROW 5 (Space Bar) -->
+      <div class="kb-row flex gap-1 w-full justify-center" data-row="5"></div>
+    </div>
+
+    <!-- Keystroke Detail Helper Bar -->
+    <div class="mt-3 pt-2.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
+      <div class="flex items-center gap-4">
+        <div>Next Key: <span id="kb-target-char" class="font-bold text-[var(--accent-primary)] font-mono text-sm ml-1">-</span></div>
+        <div>Active Key: <span id="kb-active-char" class="font-bold text-[var(--text-primary)] font-mono ml-1">-</span></div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-sm bg-[var(--accent-primary)] opacity-40 inline-block"></span>
+        <span>Target Key Indicator</span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 opacity-60 inline-block ml-2"></span>
+        <span>Pressed Key</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // KEYBOARD MATRIX DEFINITIONS (4 LAYOUTS)
+  interface KeyData {
+    code: string;
+    key: string;
+    label?: string;
+    flex: string;
+    isSpecial?: boolean;
+    // Layer mappings: [Normal, Shift]
+    english: [string, string];
+    unicode: [string, string];
+    romanized: [string, string];
+    preeti: [string, string]; // [ASCII, Dev Preview]
+  }
+
+  const ROW_1: KeyData[] = [
+    { code: 'Backquote', key: '`', flex: '1', english: ['`', '~'], unicode: ['ञ', '॥'], romanized: ['`', '~'], preeti: ['`', 'ञ'] },
+    { code: 'Digit1', key: '1', flex: '1', english: ['1', '!'], unicode: ['१', 'ज्ञ'], romanized: ['१', '!'], preeti: ['1', 'ज्ञ'] },
+    { code: 'Digit2', key: '2', flex: '1', english: ['2', '@'], unicode: ['२', 'ई'], romanized: ['२', '@'], preeti: ['2', 'द्द'] },
+    { code: 'Digit3', key: '3', flex: '1', english: ['3', '#'], unicode: ['३', 'घ'], romanized: ['३', '#'], preeti: ['3', 'घ'] },
+    { code: 'Digit4', key: '4', flex: '1', english: ['4', '$'], unicode: ['४', 'द्ध'], romanized: ['४', '$'], preeti: ['4', 'द्ध'] },
+    { code: 'Digit5', key: '5', flex: '1', english: ['5', '%'], unicode: ['५', 'छ'], romanized: ['५', '%'], preeti: ['5', 'छ'] },
+    { code: 'Digit6', key: '6', flex: '1', english: ['6', '^'], unicode: ['६', 'ट'], romanized: ['६', '^'], preeti: ['6', 'ट'] },
+    { code: 'Digit7', key: '7', flex: '1', english: ['7', '&'], unicode: ['७', 'ठ'], romanized: ['७', '&'], preeti: ['7', 'ठ'] },
+    { code: 'Digit8', key: '8', flex: '1', english: ['8', '*'], unicode: ['८', 'ड'], romanized: ['८', '*'], preeti: ['8', 'ड'] },
+    { code: 'Digit9', key: '9', flex: '1', english: ['9', '('], unicode: ['९', 'ढ'], romanized: ['९', '('], preeti: ['9', 'ढ'] },
+    { code: 'Digit0', key: '0', flex: '1', english: ['0', ')'], unicode: ['०', 'ण'], romanized: ['०', ')'], preeti: ['0', 'ण'] },
+    { code: 'Minus', key: '-', flex: '1', english: ['-', '_'], unicode: ['औ', 'ओ'], romanized: ['-', '_'], preeti: ['-', '('] },
+    { code: 'Equal', key: '=', flex: '1', english: ['=', '+'], unicode: ['‍', '‌'], romanized: ['=', '+'], preeti: ['.', '.'] },
+    { code: 'Backspace', key: 'Backspace', flex: '2', label: 'Backspace ⌫', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] }
+  ];
+
+  const ROW_2: KeyData[] = [
+    { code: 'Tab', key: 'Tab', flex: '1.5', label: 'Tab ⇥', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] },
+    { code: 'KeyQ', key: 'q', flex: '1', english: ['q', 'Q'], unicode: ['त्र', 'त्त'], romanized: ['ौ', 'ऒ'], preeti: ['q', 'त्र'] },
+    { code: 'KeyW', key: 'w', flex: '1', english: ['w', 'W'], unicode: ['ध', 'ध्'], romanized: ['ो', 'ऒ'], preeti: ['w', 'ध'] },
+    { code: 'KeyE', key: 'e', flex: '1', english: ['e', 'E'], unicode: ['भ', 'भ्'], romanized: ['े', 'ऐ'], preeti: ['e', 'भ'] },
+    { code: 'KeyR', key: 'r', flex: '1', english: ['r', 'R'], unicode: ['च', 'च्'], romanized: ['र', 'ऋ'], preeti: ['r', 'च'] },
+    { code: 'KeyT', key: 't', flex: '1', english: ['t', 'T'], unicode: ['त', 'त्'], romanized: ['त', 'ट'], preeti: ['t', 'त'] },
+    { code: 'KeyY', key: 'y', flex: '1', english: ['y', 'Y'], unicode: ['थ', 'थ्'], romanized: ['य', 'ञ'], preeti: ['y', 'थ'] },
+    { code: 'KeyU', key: 'u', flex: '1', english: ['u', 'U'], unicode: ['ग', 'ग्'], romanized: ['ु', 'ू'], preeti: ['u', 'ग'] },
+    { code: 'KeyI', key: 'i', flex: '1', english: ['i', 'I'], unicode: ['ष', 'क्ष्'], romanized: ['ि', 'ी'], preeti: ['i', 'ष'] },
+    { code: 'KeyO', key: 'o', flex: '1', english: ['o', 'O'], unicode: ['य', 'इ'], romanized: ['ओ', 'ऒ'], preeti: ['o', 'य'] },
+    { code: 'KeyP', key: 'p', flex: '1', english: ['p', 'P'], unicode: ['उ', 'ए'], romanized: ['प', 'फ'], preeti: ['p', 'उ'] },
+    { code: 'BracketLeft', key: '[', flex: '1', english: ['[', '{'], unicode: ['र्', 'ृ'], romanized: ['[', '{'], preeti: ['[', 'ृ'] },
+    { code: 'BracketRight', key: ']', flex: '1', english: [']', '}'], unicode: ['े', 'ै'], romanized: [']', '}'], preeti: [']', 'े'] },
+    { code: 'Backslash', key: '\\', flex: '1.5', english: ['\\', '|'], unicode: ['्', 'ं'], romanized: ['्र', 'ृ'], preeti: ['\\', '्'] }
+  ];
+
+  const ROW_3: KeyData[] = [
+    { code: 'CapsLock', key: 'CapsLock', flex: '1.75', label: 'Caps ⇪', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] },
+    { code: 'KeyA', key: 'a', flex: '1', english: ['a', 'A'], unicode: ['ब', 'ब्'], romanized: ['ा', 'आ'], preeti: ['a', 'ब'] },
+    { code: 'KeyS', key: 's', flex: '1', english: ['s', 'S'], unicode: ['क', 'क्'], romanized: ['स', 'श'], preeti: ['s', 'क'] },
+    { code: 'KeyD', key: 'd', flex: '1', english: ['d', 'D'], unicode: ['म', 'म्'], romanized: ['द', 'ड'], preeti: ['d', 'म'] },
+    { code: 'KeyF', key: 'f', flex: '1', english: ['f', 'F'], unicode: ['ा', 'ँ'], romanized: ['फ', 'ँ'], preeti: ['f', 'ा'] },
+    { code: 'KeyG', key: 'g', flex: '1', english: ['g', 'G'], unicode: ['न', 'न्'], romanized: ['ग', 'घ'], preeti: ['g', 'न'] },
+    { code: 'KeyH', key: 'h', flex: '1', english: ['h', 'H'], unicode: ['ज', 'ज्'], romanized: ['ह', 'ः'], preeti: ['h', 'ज'] },
+    { code: 'KeyJ', key: 'j', flex: '1', english: ['j', 'J'], unicode: ['व', 'व्'], romanized: ['ज', 'झ'], preeti: ['j', 'व'] },
+    { code: 'KeyK', key: 'k', flex: '1', english: ['k', 'K'], unicode: ['प', 'फ्'], romanized: ['क', 'ख'], preeti: ['k', 'प'] },
+    { code: 'KeyL', key: 'l', flex: '1', english: ['l', 'L'], unicode: ['ि', 'ी'], romanized: ['ल', 'ळ'], preeti: ['l', 'ि'] },
+    { code: 'Semicolon', key: ';', flex: '1', english: [';', ':'], unicode: ['स', 'स्'], romanized: [';', ':'], preeti: [';', 'स'] },
+    { code: 'Quote', key: '\'', flex: '1', english: ['\'', '"'], unicode: ['ु', 'ू'], romanized: ['\'', '"'], preeti: ['\'', 'ु'] },
+    { code: 'Enter', key: 'Enter', flex: '2.25', label: 'Enter ↵', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] }
+  ];
+
+  const ROW_4: KeyData[] = [
+    { code: 'ShiftLeft', key: 'Shift', flex: '2.25', label: 'Shift ⇧', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] },
+    { code: 'KeyZ', key: 'z', flex: '1', english: ['z', 'Z'], unicode: ['श', 'श्'], romanized: ['श', 'ष'], preeti: ['z', 'श'] },
+    { code: 'KeyX', key: 'x', flex: '1', english: ['x', 'X'], unicode: ['ह', 'ह्'], romanized: ['क्ष', 'ज्ञ'], preeti: ['x', 'ह'] },
+    { code: 'KeyC', key: 'c', flex: '1', english: ['c', 'C'], unicode: ['अ', 'ऋ'], romanized: ['च', 'छ'], preeti: ['c', 'अ'] },
+    { code: 'KeyV', key: 'v', flex: '1', english: ['v', 'V'], unicode: ['ख', 'ख्'], romanized: ['व', 'ॐ'], preeti: ['v', 'ख'] },
+    { code: 'KeyB', key: 'b', flex: '1', english: ['b', 'B'], unicode: ['द', 'द्य'], romanized: ['ब', 'भ'], preeti: ['b', 'द'] },
+    { code: 'KeyN', key: 'n', flex: '1', english: ['n', 'N'], unicode: ['ल', 'ल्'], romanized: ['न', 'ण'], preeti: ['n', 'ल'] },
+    { code: 'KeyM', key: 'm', flex: '1', english: ['m', 'M'], unicode: ['ः', 'ड्ड'], romanized: ['म', 'ङ'], preeti: ['m', 'फ'] },
+    { code: 'Comma', key: ',', flex: '1', english: [',', '<'], unicode: ['ऽ', 'ङ'], romanized: [',', 'ङ'], preeti: [',', ','] },
+    { code: 'Period', key: '.', flex: '1', english: ['.', '>'], unicode: ['।', 'श्र'], romanized: ['।', '॥'], preeti: ['.', '।'] },
+    { code: 'Slash', key: '/', flex: '1', english: ['/', '?'], unicode: ['र', 'रु'], romanized: ['्', '?'], preeti: ['/', 'र'] },
+    { code: 'ShiftRight', key: 'Shift', flex: '2.75', label: 'Shift ⇧', isSpecial: true, english: ['', ''], unicode: ['', ''], romanized: ['', ''], preeti: ['', ''] }
+  ];
+
+  const ROW_5: KeyData[] = [
+    { code: 'Space', key: ' ', flex: '8', label: 'Space Bar', isSpecial: true, english: [' ', ' '], unicode: [' ', ' '], romanized: [' ', ' '], preeti: [' ', ' '] }
+  ];
+
+  const ALL_ROWS = [ROW_1, ROW_2, ROW_3, ROW_4, ROW_5];
+
+  // State
+  let currentLayout: 'english' | 'nepali_unicode' | 'nepali_romanized' | 'nepali_preeti' = 'nepali_unicode';
+  let isShiftActive = false;
+
+  const layoutTitles = {
+    english: 'English QWERTY Layout',
+    nepali_unicode: 'नेपाली युनिकोड (Traditional) Keyboard Layout',
+    nepali_romanized: 'नेपाली युनिकोड (Romanized) Phonetic Layout',
+    nepali_preeti: 'Preeti (ASCII Typewriter) Layout'
+  };
+
+  const layoutBadges = {
+    english: 'LATIN QWERTY',
+    nepali_unicode: 'MPP TRADITIONAL',
+    nepali_romanized: 'PHONETIC QWERTY',
+    nepali_preeti: 'LEGACY TYPEWRITER'
+  };
+
+  function renderKeyboard() {
+    ALL_ROWS.forEach((row, rowIndex) => {
+      const rowElem = document.querySelector(`.kb-row[data-row="${rowIndex + 1}"]`);
+      if (!rowElem) return;
+      rowElem.innerHTML = '';
+
+      row.forEach(k => {
+        const keyDiv = document.createElement('div');
+        keyDiv.className = `keycap ${k.isSpecial ? 'special-key' : ''}`;
+        keyDiv.dataset.code = k.code;
+        keyDiv.style.flex = `${k.flex} 1 0%`;
+
+        if (k.isSpecial) {
+          keyDiv.textContent = k.label || k.key;
+        } else {
+          // Determine top and bottom labels based on layout
+          let topLabel = '';
+          let mainLabel = '';
+          let fontFamily = 'var(--font-sans)';
+
+          if (currentLayout === 'english') {
+            topLabel = k.english[1] !== k.english[0].toUpperCase() ? k.english[1] : '';
+            mainLabel = isShiftActive ? k.english[1] : k.english[0];
+          } else if (currentLayout === 'nepali_unicode') {
+            topLabel = k.unicode[1];
+            mainLabel = isShiftActive ? k.unicode[1] : k.unicode[0];
+            fontFamily = 'var(--font-nepali)';
+          } else if (currentLayout === 'nepali_romanized') {
+            topLabel = k.romanized[1];
+            mainLabel = isShiftActive ? k.romanized[1] : k.romanized[0];
+            fontFamily = 'var(--font-nepali)';
+          } else if (currentLayout === 'nepali_preeti') {
+            // In Preeti mode: show Preeti ASCII char + Devanagari meaning
+            topLabel = k.preeti[1];
+            mainLabel = isShiftActive ? k.english[1] : k.preeti[0];
+            fontFamily = 'var(--font-preeti)';
+          }
+
+          const topSpan = document.createElement('span');
+          topSpan.className = 'keycap-shift-label';
+          topSpan.textContent = topLabel;
+
+          const mainSpan = document.createElement('span');
+          mainSpan.className = 'keycap-main-label';
+          mainSpan.style.fontFamily = fontFamily;
+          mainSpan.textContent = mainLabel;
+
+          keyDiv.appendChild(topSpan);
+          keyDiv.appendChild(mainSpan);
+        }
+
+        rowElem.appendChild(keyDiv);
+      });
+    });
+
+    // Update Header
+    const titleEl = document.getElementById('kb-current-layout-name');
+    const badgeEl = document.getElementById('kb-layout-pill');
+    if (titleEl) titleEl.textContent = layoutTitles[currentLayout];
+    if (badgeEl) badgeEl.textContent = layoutBadges[currentLayout];
+  }
+
+  // Event Listeners for Physical Keypresses
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Shift') {
+      isShiftActive = true;
+      const ind = document.getElementById('kb-shift-indicator');
+      if (ind) ind.className = 'w-2 h-2 rounded-full bg-blue-500';
+      renderKeyboard();
+    }
+
+    const keycap = document.querySelector(`.keycap[data-code="${e.code}"]`);
+    if (keycap) {
+      keycap.classList.add('is-pressed');
+    }
+
+    const activeCharEl = document.getElementById('kb-active-char');
+    if (activeCharEl) activeCharEl.textContent = e.key === ' ' ? 'Space' : e.key;
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'Shift') {
+      isShiftActive = false;
+      const ind = document.getElementById('kb-shift-indicator');
+      if (ind) ind.className = 'w-2 h-2 rounded-full bg-neutral-400';
+      renderKeyboard();
+    }
+
+    const keycap = document.querySelector(`.keycap[data-code="${e.code}"]`);
+    if (keycap) {
+      keycap.classList.remove('is-pressed');
+    }
+  });
+
+  // Shift Toggle Click
+  document.getElementById('kb-shift-toggle')?.addEventListener('click', () => {
+    isShiftActive = !isShiftActive;
+    const ind = document.getElementById('kb-shift-indicator');
+    if (ind) ind.className = isShiftActive ? 'w-2 h-2 rounded-full bg-blue-500' : 'w-2 h-2 rounded-full bg-neutral-400';
+    renderKeyboard();
+  });
+
+  // Listen to external layout change event from ModeSelector
+  window.addEventListener('typing-layout-changed', (e: any) => {
+    if (e.detail && e.detail.layout) {
+      currentLayout = e.detail.layout;
+      renderKeyboard();
+    }
+  });
+
+  // Target Key Highlighter from Typing Engine
+  window.addEventListener('typing-target-key', (e: any) => {
+    const code = e.detail?.code;
+    const char = e.detail?.char;
+
+    // Remove old target
+    document.querySelectorAll('.keycap.is-target').forEach(el => el.classList.remove('is-target'));
+
+    if (code) {
+      const targetKey = document.querySelector(`.keycap[data-code="${code}"]`);
+      if (targetKey) targetKey.classList.add('is-target');
+    }
+
+    const targetCharEl = document.getElementById('kb-target-char');
+    if (targetCharEl) targetCharEl.textContent = char === ' ' ? '␣ Space' : char;
+  });
+
+  // Export SVG Feature
+  document.getElementById('kb-export-svg')?.addEventListener('click', () => {
+    const matrix = document.getElementById('keyboard-matrix');
+    if (!matrix) return;
+    const svgBlob = new Blob([`<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="350"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family: sans-serif; padding: 20px; background: #0f172a; color: white;">${matrix.innerHTML}</div></foreignObject></svg>`], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nepali-keyboard-${currentLayout}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Initial Render
+  renderKeyboard();
+</script>
