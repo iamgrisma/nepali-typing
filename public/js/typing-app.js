@@ -107,9 +107,9 @@
           'Walking beneath the green canopy of the forest fills the heart with pure calm.'
         ],
         quotes: [
-          'The journey of a thousand miles begins with a single step. — Lao Tzu',
-          'In the middle of difficulty lies opportunity. — Albert Einstein',
-          'Simplicity is the ultimate sophistication. — Leonardo da Vinci'
+          'The journey of a thousand miles begins with a single step. - Lao Tzu',
+          'In the middle of difficulty lies opportunity. - Albert Einstein',
+          'Simplicity is the ultimate sophistication. - Leonardo da Vinci'
         ],
         special: [
           'Day & Night | Coffee & Tea | Peace & Harmony',
@@ -129,12 +129,12 @@
           'Mastering touch typing transforms your keyboard from an obstacle into a direct extension of your thoughts.'
         ],
         quotes: [
-          'Not all those who wander are lost. — J.R.R. Tolkien',
-          'We do not see things as they are, we see them as we are. — Anaïs Nin',
-          'The only true wisdom is in knowing you know nothing. — Socrates'
+          'Not all those who wander are lost. - J.R.R. Tolkien',
+          'We do not see things as they are, we see them as we are. - Anais Nin',
+          'The only true wisdom is in knowing you know nothing. - Socrates'
         ],
         special: [
-          'Latitude: 27°42\'N, Longitude: 85°19\'E (Kathmandu Valley)',
+          'Latitude: 27 deg 42 min N, Longitude: 85 deg 19 min E (Kathmandu Valley)',
           'API endpoint: https://typing.topnepali.com/api/v1/ping [200 OK]'
         ]
       },
@@ -150,11 +150,11 @@
           'Cultivating effortless keystroke rhythm requires harmonizing sensory feedback, cognitive muscle memory, and disciplined breathing.'
         ],
         quotes: [
-          'Two things awe me most: the starry sky above me and the moral law within me. — Immanuel Kant',
-          'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. — Ralph Waldo Emerson'
+          'Two things awe me most: the starry sky above me and the moral law within me. - Immanuel Kant',
+          'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. - Ralph Waldo Emerson'
         ],
         special: [
-          'Formula: E = mc² | Limits: lim_{x -> ∞} (1 + 1/x)^x = e ≈ 2.71828',
+          'Formula: E = m*c^2 | Limits: lim (1 + 1/x)^x = e = 2.71828',
           'Unicode range: [U+0900 - U+097F] Devanagari Script Specification'
         ]
       }
@@ -279,8 +279,8 @@
     wordCount: 25,
     difficulty: 'medium',
     words: [],
+    typedWords: [],
     wordIdx: 0,
-    charIdx: 0,
     isRunning: false,
     isFinished: false,
     startTime: 0,
@@ -343,7 +343,7 @@
     state.isRunning = false;
     state.isFinished = false;
     state.wordIdx = 0;
-    state.charIdx = 0;
+    state.typedWords = [];
     state.logs = [];
     state.secsLeft = state.duration;
 
@@ -392,15 +392,7 @@
         const wSpan = document.createElement('span');
         wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
         wSpan.dataset.wordIndex = `${wI}`;
-
-        Array.from(w).forEach((ch, cI) => {
-          const cSpan = document.createElement('span');
-          cSpan.className = 'char-node';
-          cSpan.dataset.charIndex = `${cI}`;
-          cSpan.textContent = ch;
-          wSpan.appendChild(cSpan);
-        });
-
+        wSpan.innerHTML = `<span class="char-node">${w}</span>`;
         container.appendChild(wSpan);
       });
       container.scrollTop = 0;
@@ -411,7 +403,40 @@
     updateCaret();
   }
 
-  // --- 6. CARET POSITION ---
+  // --- 6. WORD HIGHLIGHT & CARET POSITION ---
+  function renderActiveWordHighlight() {
+    const curWord = state.words[state.wordIdx];
+    const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
+    const inputField = document.getElementById('typing-input');
+    if (!curWord || !curWordEl || !inputField) return;
+
+    const typed = inputField.value;
+    if (!typed) {
+      curWordEl.innerHTML = `<span class="char-node">${curWord}</span>`;
+      curWordEl.classList.remove('is-word-error');
+      return;
+    }
+
+    let k = 0;
+    while (k < typed.length && k < curWord.length && typed[k] === curWord[k]) {
+      k++;
+    }
+
+    const isMatch = (k === typed.length);
+    if (isMatch) {
+      curWordEl.classList.remove('is-word-error');
+      const correctPart = curWord.slice(0, k);
+      const remainingPart = curWord.slice(k);
+      curWordEl.innerHTML = `<span class="char-node is-correct">${correctPart}</span><span class="char-node">${remainingPart}</span>`;
+    } else {
+      curWordEl.classList.add('is-word-error');
+      const correctPart = curWord.slice(0, k);
+      const errorPart = typed.slice(k);
+      const remainingPart = curWord.slice(k + errorPart.length);
+      curWordEl.innerHTML = `<span class="char-node is-correct">${correctPart}</span><span class="char-node is-error">${errorPart}</span><span class="char-node">${remainingPart}</span>`;
+    }
+  }
+
   function updateCaret() {
     const caret = document.getElementById('typing-caret');
     const container = document.getElementById('words-container');
@@ -424,22 +449,17 @@
     }
 
     caret.classList.remove('hidden');
-    const curCharEl = curWordEl.querySelector(`.char-node[data-char-index="${state.charIdx}"]`);
     const cRect = container.getBoundingClientRect();
+    const wRect = curWordEl.getBoundingClientRect();
 
-    if (curCharEl) {
-      const r = curCharEl.getBoundingClientRect();
-      caret.style.left = `${r.left - cRect.left}px`;
-      caret.style.top = `${r.top - cRect.top + 4}px`;
-    } else {
-      const lastEl = curWordEl.lastElementChild;
-      if (lastEl) {
-        const r = lastEl.getBoundingClientRect();
-        caret.style.left = `${r.right - cRect.left}px`;
-        caret.style.top = `${r.top - cRect.top + 4}px`;
-      }
-    }
+    const inputField = document.getElementById('typing-input');
+    const typedLen = inputField ? inputField.value.length : 0;
+    const curWord = state.words[state.wordIdx] || '';
+    const curWordLen = Math.max(1, curWord.length);
+    const ratio = Math.min(1, typedLen / curWordLen);
 
+    caret.style.left = `${wRect.left - cRect.left + (wRect.width * ratio)}px`;
+    caret.style.top = `${wRect.top - cRect.top + 4}px`;
     if (curWordEl) {
       const wRect = curWordEl.getBoundingClientRect();
       if (wRect.top - cRect.top > 80) {
@@ -523,12 +543,13 @@
   function highlightTargetKey() {
     document.querySelectorAll('.keycap.is-target').forEach(el => el.classList.remove('is-target'));
     const curWord = state.words[state.wordIdx];
+    const inputField = document.getElementById('typing-input');
     if (!curWord) return;
 
-    const chars = Array.from(curWord);
+    const typed = inputField ? inputField.value : '';
     let targetCh = '';
-    if (state.charIdx < chars.length) {
-      targetCh = chars[state.charIdx];
+    if (typed.length < curWord.length) {
+      targetCh = curWord[typed.length];
     } else {
       targetCh = ' ';
     }
@@ -584,11 +605,34 @@
   }
 
   function updateLiveStats() {
-    if (!state.isRunning || state.logs.length === 0) return;
+    if (!state.isRunning) return;
     const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
-    const correct = state.logs.filter(l => l.ok).length;
-    const wpm = Math.round((correct / 5) / (elapsed / 60));
-    const acc = Math.round((correct / state.logs.length) * 100);
+    let correctChars = 0;
+    let totalChars = 0;
+
+    const inputField = document.getElementById('typing-input');
+    const currentTyped = inputField ? inputField.value : '';
+
+    state.words.forEach((w, idx) => {
+      let typed = '';
+      if (idx === state.wordIdx) {
+        typed = currentTyped;
+      } else if (idx < state.wordIdx) {
+        typed = state.typedWords[idx] || '';
+      } else {
+        return;
+      }
+      if (!typed) return;
+
+      totalChars += typed.length + 1;
+      let k = 0;
+      while (k < typed.length && k < w.length && typed[k] === w[k]) k++;
+      correctChars += k;
+      if (typed === w) correctChars += 1; // space bonus
+    });
+
+    const wpm = Math.round((correctChars / 5) / (elapsed / 60));
+    const acc = totalChars > 0 ? Math.min(100, Math.round((correctChars / totalChars) * 100)) : 100;
 
     const wpmDisp = document.getElementById('live-wpm-display');
     const accDisp = document.getElementById('live-acc-display');
@@ -607,12 +651,27 @@
     playBeep(880, 'triangle', 0.5, 0.15);
 
     const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
-    const correct = state.logs.filter(l => l.ok).length;
-    const total = state.logs.length;
-    const netWpm = Math.max(0, Math.round((correct / 5) / (elapsed / 60)));
-    const rawWpm = Math.round((total / 5) / (elapsed / 60));
-    const acc = total > 0 ? Math.round((correct / total) * 1000) / 10 : 100;
-    const cpm = Math.round(correct / (elapsed / 60));
+    let correctChars = 0;
+    let totalChars = 0;
+    let correctWords = 0;
+
+    state.words.forEach((w, idx) => {
+      const typed = state.typedWords[idx] || (idx === state.wordIdx ? (document.getElementById('typing-input')?.value || '') : '');
+      if (!typed) return;
+      totalChars += typed.length + 1;
+      let k = 0;
+      while (k < typed.length && k < w.length && typed[k] === w[k]) k++;
+      correctChars += k;
+      if (typed === w) {
+        correctChars += 1;
+        correctWords++;
+      }
+    });
+
+    const netWpm = Math.max(0, Math.round((correctChars / 5) / (elapsed / 60)));
+    const rawWpm = Math.round((totalChars / 5) / (elapsed / 60));
+    const acc = totalChars > 0 ? Math.min(100, Math.round((correctChars / totalChars) * 1000) / 10) : 100;
+    const cpm = Math.round(correctChars / (elapsed / 60));
 
     // Typist Ranking
     let rank = '🌱 Intermediate';
@@ -649,8 +708,8 @@
     if (mRankPill) mRankPill.textContent = rank;
     if (mRankLbl) mRankLbl.textContent = rank;
     if (mRankFeed) mRankFeed.textContent = feedback;
-    if (mCorrect) mCorrect.textContent = `${correct}`;
-    if (mError) mError.textContent = `${total - correct}`;
+    if (mCorrect) mCorrect.textContent = `${correctChars}`;
+    if (mError) mError.textContent = `${Math.max(0, totalChars - correctChars)}`;
 
     document.getElementById('stats-modal')?.classList.add('is-open');
 
@@ -691,59 +750,107 @@
       }
     });
 
+    // Real-time Input Event: updates highlight, caret, target key, and stats
+    inputField?.addEventListener('input', () => {
+      if (state.isFinished) return;
+      if (!state.isRunning && inputField.value.length > 0) startTimer();
+
+      renderActiveWordHighlight();
+      highlightTargetKey();
+      updateCaret();
+      updateLiveStats();
+    });
+
     inputField?.addEventListener('keydown', (e) => {
-      // PREVENT SPACE SCROLLING THE ENTIRE BROWSER WINDOW!
+      // PREVENT SPACE SCROLLING AND ADVANCE TO NEXT WORD
       if (e.key === ' ' || e.code === 'Space') {
         e.preventDefault();
 
         if (state.isFinished) return;
         if (!state.isRunning) startTimer();
-        playBeep(450, 'sine', 0.05, 0.08);
 
-        // Advance to next word
+        const curWord = state.words[state.wordIdx];
+        const typed = inputField.value.trim();
+        if (!curWord) return;
+
+        const isCorrect = (typed === curWord);
+        if (isCorrect) {
+          playBeep(480, 'sine', 0.05, 0.08);
+        } else {
+          playBeep(160, 'sawtooth', 0.1, 0.1);
+        }
+
+        state.typedWords[state.wordIdx] = typed;
+
         const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-        if (curWordEl) curWordEl.classList.remove('is-active-word');
+        if (curWordEl) {
+          curWordEl.classList.remove('is-active-word', 'is-word-error');
+          curWordEl.classList.add(isCorrect ? 'is-word-correct' : 'is-word-error');
+          curWordEl.innerHTML = `<span class="${isCorrect ? 'char-node is-correct' : 'char-node is-error'}">${curWord}</span>`;
+        }
 
         state.wordIdx++;
-        state.charIdx = 0;
         inputField.value = '';
 
         if (state.mode === 'words' && state.wordIdx >= state.wordCount) {
           finishTest();
           return;
         }
-
         if (state.wordIdx >= state.words.length) {
           finishTest();
           return;
         }
 
         const nextWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-        if (nextWordEl) nextWordEl.classList.add('is-active-word');
+        if (nextWordEl) {
+          nextWordEl.classList.add('is-active-word');
+          const container = document.getElementById('words-container');
+          if (container) {
+            const wRect = nextWordEl.getBoundingClientRect();
+            const cRect = container.getBoundingClientRect();
+            if (wRect.top - cRect.top > 80) {
+              container.scrollTop += 45;
+            }
+          }
+        }
 
-        updateCaret();
+        renderActiveWordHighlight();
         highlightTargetKey();
+        updateCaret();
+        updateLiveStats();
         return;
       }
 
-      // Backspace handling
+      // FREEDOM BACKSPACE: If input is empty, jump back to previous word for correction!
       if (e.key === 'Backspace') {
-        e.preventDefault();
-        if (state.charIdx > 0) {
-          state.charIdx--;
-          inputField.value = Array.from(inputField.value).slice(0, -1).join('');
+        if (inputField.value.length === 0 && state.wordIdx > 0) {
+          e.preventDefault();
+
+          // Reset current word to untouched
           const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-          const extraEl = curWordEl?.querySelector('.char-node.is-extra:last-child');
-          if (extraEl) {
-            extraEl.remove();
-          } else {
-            const charEl = curWordEl?.querySelector(`.char-node[data-char-index="${state.charIdx}"]`);
-            if (charEl) charEl.className = 'char-node';
+          if (curWordEl) {
+            curWordEl.classList.remove('is-active-word', 'is-word-error');
+            curWordEl.innerHTML = `<span class="char-node">${state.words[state.wordIdx]}</span>`;
           }
-          if (state.logs.length > 0) state.logs.pop();
-          updateCaret();
+
+          // Move back to previous word
+          state.wordIdx--;
+          const prevWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
+          if (prevWordEl) {
+            prevWordEl.classList.remove('is-word-correct', 'is-word-error');
+            prevWordEl.classList.add('is-active-word');
+          }
+
+          // Restore previously typed string into input field
+          inputField.value = state.typedWords[state.wordIdx] || '';
+
+          renderActiveWordHighlight();
           highlightTargetKey();
+          updateCaret();
+          updateLiveStats();
+          return;
         }
+        // If inputField has text, natural backspace executes and 'input' event updates highlight!
         return;
       }
 
@@ -760,80 +867,31 @@
         return;
       }
 
-      // Normal single keypress
+      // Intelligent hardware layout key mapping when typing on standard US QWERTY physical keyboard
       if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
         if (state.isFinished) return;
         if (!state.isRunning) startTimer();
 
-        const curWord = state.words[state.wordIdx];
-        if (!curWord) return;
-
-        const chars = Array.from(curWord);
-        const expectedCh = chars[state.charIdx] || '';
-        let typedCh = e.key;
-
-        // Intelligent Hardware Key Mapping when typing on physical US QWERTY keyboard
         const isAscii = e.key.charCodeAt(0) < 128;
         if (state.lang === 'nepali_unicode' && isAscii) {
           const matched = KEY_CODE_MAP[e.code];
           if (matched && matched.uni) {
-            typedCh = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
             e.preventDefault();
-            inputField.value += typedCh;
+            const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
+            inputField.value += ch;
+            inputField.dispatchEvent(new Event('input'));
+            return;
           }
         } else if (state.lang === 'nepali_romanized' && isAscii) {
           const matched = KEY_CODE_MAP[e.code];
           if (matched && matched.rom) {
-            typedCh = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
             e.preventDefault();
-            inputField.value += typedCh;
+            const ch = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
+            inputField.value += ch;
+            inputField.dispatchEvent(new Event('input'));
+            return;
           }
         }
-
-        // Handle typing past the end of the word
-        if (state.charIdx >= chars.length) {
-          playBeep(160, 'sawtooth', 0.1, 0.1);
-          state.logs.push({
-            time: performance.now(),
-            ok: false,
-            expected: ' ',
-            typed: typedCh
-          });
-          const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-          if (curWordEl) {
-            const extraSpan = document.createElement('span');
-            extraSpan.className = 'char-node is-error is-extra';
-            extraSpan.textContent = typedCh;
-            curWordEl.appendChild(extraSpan);
-          }
-          state.charIdx++;
-          updateCaret();
-          return;
-        }
-
-        const isOk = (typedCh === expectedCh);
-        if (isOk) {
-          playBeep(480, 'sine', 0.05, 0.08);
-        } else {
-          playBeep(160, 'sawtooth', 0.1, 0.1);
-        }
-
-        state.logs.push({
-          time: performance.now(),
-          ok: isOk,
-          expected: expectedCh,
-          typed: typedCh
-        });
-
-        const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-        const charEl = curWordEl?.querySelector(`.char-node[data-char-index="${state.charIdx}"]`);
-        if (charEl) {
-          charEl.className = isOk ? 'char-node is-correct' : 'char-node is-error';
-        }
-
-        state.charIdx++;
-        updateCaret();
-        highlightTargetKey();
       }
     });
 

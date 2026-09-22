@@ -41,9 +41,7 @@ const initialWords = [
     <div id="words-container" class="words-stream text-xl sm:text-2xl select-none font-medium">
       {initialWords.map((word, wIdx) => (
         <span class={`word-node ${wIdx === 0 ? 'is-active-word' : ''}`} data-word-index={wIdx}>
-          {Array.from(word).map((char, cIdx) => (
-            <span class="char-node" data-char-index={cIdx}>{char}</span>
-          ))}
+          <span class="char-node">{word}</span>
         </span>
       ))}
     </div>

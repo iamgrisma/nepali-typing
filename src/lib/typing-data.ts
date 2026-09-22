@@ -135,9 +135,9 @@ export const ENGLISH_DATA: LanguageData = {
       'True friendship multiplies the good in life and divides its troubles.'
     ],
     quotes: [
-      'The journey of a thousand miles begins with a single step. — Lao Tzu',
-      'In the middle of difficulty lies opportunity. — Albert Einstein',
-      'Simplicity is the ultimate sophistication. — Leonardo da Vinci'
+      'The journey of a thousand miles begins with a single step. - Lao Tzu',
+      'In the middle of difficulty lies opportunity. - Albert Einstein',
+      'Simplicity is the ultimate sophistication. - Leonardo da Vinci'
     ],
     special: [
       'Day & Night | Coffee & Tea | Peace & Harmony',
@@ -158,12 +158,12 @@ export const ENGLISH_DATA: LanguageData = {
       'Mastering touch typing transforms your keyboard from an obstacle into a direct extension of your thoughts.'
     ],
     quotes: [
-      'Not all those who wander are lost. — J.R.R. Tolkien',
-      'We do not see things as they are, we see them as we are. — Anaïs Nin',
-      'The only true wisdom is in knowing you know nothing. — Socrates'
+      'Not all those who wander are lost. - J.R.R. Tolkien',
+      'We do not see things as they are, we see them as we are. - Anais Nin',
+      'The only true wisdom is in knowing you know nothing. - Socrates'
     ],
     special: [
-      'Latitude: 27°42\'N, Longitude: 85°19\'E (Kathmandu Valley)',
+      'Latitude: 27 deg 42 min N, Longitude: 85 deg 19 min E (Kathmandu Valley)',
       'API endpoint: https://typing.topnepali.com/api/v1/ping [200 OK]',
       'Ratio: {width: 16, height: 9} | Bitrate: 4.5 Mbps'
     ]
@@ -181,11 +181,11 @@ export const ENGLISH_DATA: LanguageData = {
       'Technological innovation reaches its highest zenith when it genuinely elevates human empathy, dignity, and global understanding.'
     ],
     quotes: [
-      'Two things awe me most: the starry sky above me and the moral law within me. — Immanuel Kant',
-      'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. — Ralph Waldo Emerson'
+      'Two things awe me most: the starry sky above me and the moral law within me. - Immanuel Kant',
+      'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. - Ralph Waldo Emerson'
     ],
     special: [
-      'Formula: E = mc² | Limits: lim_{x -> ∞} (1 + 1/x)^x = e ≈ 2.71828',
+      'Formula: E = m*c^2 | Limits: lim (1 + 1/x)^x = e = 2.71828',
       'Unicode range: [U+0900 - U+097F] Devanagari Script Specification',
       'Coordinates: (x: 1024, y: 768, z: 0.95); Hash: #0xDEVA_NEPALI'
     ]

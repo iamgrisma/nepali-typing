@@ -392,11 +392,31 @@ button {
 }
 
 .word-node {
-  display: inline-flex;
+  display: inline-block;
   position: relative;
+  margin-right: 0.65rem;
+  margin-bottom: 0.35rem;
+  padding: 0.1rem 0.25rem;
+  border-radius: 0.35rem;
+  transition: all 0.12s ease-in-out;
+}
+
+.word-node.is-active-word {
+  background-color: var(--bg-surface-subtle);
+  box-shadow: inset 0 -2.5px 0 var(--accent-primary);
+}
+
+.word-node.is-word-correct {
+  color: var(--accent-emerald) !important;
+}
+
+.word-node.is-word-error {
+  color: var(--char-error) !important;
+  text-decoration: underline wavy var(--char-error);
 }
 
 .char-node {
+  display: inline;
   position: relative;
   color: var(--char-untouched);
   transition: color 0.08s ease-in-out;
