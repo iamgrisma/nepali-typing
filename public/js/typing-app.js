@@ -507,19 +507,7 @@
 
     if (inputField) {
       inputField.value = '';
-      if (state.lang === 'nepali_preeti') {
-        inputField.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
-        inputField.placeholder = "यहाँ टाइप गर्नुहोस्... (Preeti layout, Space थिच्नुहोस्)";
-      } else if (state.lang === 'english') {
-        inputField.style.fontFamily = "'Inter', sans-serif";
-        inputField.placeholder = "Type here... (Press Space for next word)";
-      } else if (state.lang === 'nepali_romanized') {
-        inputField.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-        inputField.placeholder = "यहाँ टाइप गर्नुहोस्... (Romanized phonetic layout, Space थिच्नुहोस्)";
-      } else {
-        inputField.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-        inputField.placeholder = "यहाँ टाइप गर्नुहोस्... (Traditional Unicode layout, Space थिच्नुहोस्)";
-      }
+      inputField.removeAttribute('placeholder');
       inputField.focus();
     }
 

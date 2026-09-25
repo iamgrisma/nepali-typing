@@ -370,6 +370,23 @@ button {
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
 }
 
+#typing-input {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: -1 !important;
+}
+
 .words-stream {
   display: flex;
   flex-wrap: wrap;
