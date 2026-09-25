@@ -303,13 +303,13 @@
     [
       { code: 'Tab', key: 'Tab', flex: '1.5', special: true, label: 'Tab ⇥' },
       { code: 'KeyQ', key: 'q', eng: ['q', 'Q'], uni: ['त्र', 'त्त'], rom: ['ट', 'ठ'], pre: ['q', 'Q', 'त्र', 'त्त'], flex: '1' },
-      { code: 'KeyW', key: 'w', eng: ['w', 'W'], uni: ['ध', 'ध्'], rom: ['ौ', 'औ'], pre: ['w', 'W', 'ध', 'ध्'], flex: '1' },
-      { code: 'KeyE', key: 'e', eng: ['e', 'E'], uni: ['भ', 'भ्'], rom: ['े', 'ै'], pre: ['e', 'E', 'भ', 'भ्'], flex: '1' },
-      { code: 'KeyR', key: 'r', eng: ['r', 'R'], uni: ['च', 'च्'], rom: ['र', 'ृ'], pre: ['r', 'R', 'च', 'च्'], flex: '1' },
-      { code: 'KeyT', key: 't', eng: ['t', 'T'], uni: ['त', 'त्'], rom: ['त', 'थ'], pre: ['t', 'T', 'त', 'त्'], flex: '1' },
-      { code: 'KeyY', key: 'y', eng: ['y', 'Y'], uni: ['थ', 'थ्'], rom: ['य', 'ञ'], pre: ['y', 'Y', 'थ', 'थ्'], flex: '1' },
-      { code: 'KeyU', key: 'u', eng: ['u', 'U'], uni: ['ग', 'ग्'], rom: ['ु', 'ू'], pre: ['u', 'U', 'ग', 'ग्'], flex: '1' },
-      { code: 'KeyI', key: 'i', eng: ['i', 'I'], uni: ['ष', 'क्ष्'], rom: ['ि', 'ी'], pre: ['i', 'I', 'ष', 'क्ष्'], flex: '1' },
+      { code: 'KeyW', key: 'w', eng: ['w', 'W'], uni: ['ध', 'ड्ढ'], rom: ['ौ', 'औ'], pre: ['w', 'W', 'ध', 'ध्'], flex: '1' },
+      { code: 'KeyE', key: 'e', eng: ['e', 'E'], uni: ['भ', 'ऐ'], rom: ['े', 'ै'], pre: ['e', 'E', 'भ', 'भ्'], flex: '1' },
+      { code: 'KeyR', key: 'r', eng: ['r', 'R'], uni: ['च', 'द्ब'], rom: ['र', 'ृ'], pre: ['r', 'R', 'च', 'च्'], flex: '1' },
+      { code: 'KeyT', key: 't', eng: ['t', 'T'], uni: ['त', 'ट्ट'], rom: ['त', 'थ'], pre: ['t', 'T', 'त', 'त्'], flex: '1' },
+      { code: 'KeyY', key: 'y', eng: ['y', 'Y'], uni: ['थ', 'ठ्ठ'], rom: ['य', 'ञ'], pre: ['y', 'Y', 'थ', 'थ्'], flex: '1' },
+      { code: 'KeyU', key: 'u', eng: ['u', 'U'], uni: ['ग', 'ऊ'], rom: ['ु', 'ू'], pre: ['u', 'U', 'ग', 'ग्'], flex: '1' },
+      { code: 'KeyI', key: 'i', eng: ['i', 'I'], uni: ['ष', 'क्ष'], rom: ['ि', 'ी'], pre: ['i', 'I', 'ष', 'क्ष्'], flex: '1' },
       { code: 'KeyO', key: 'o', eng: ['o', 'O'], uni: ['य', 'इ'], rom: ['ो', 'ओ'], pre: ['o', 'O', 'य', 'इ'], flex: '1' },
       { code: 'KeyP', key: 'p', eng: ['p', 'P'], uni: ['उ', 'ए'], rom: ['प', 'फ'], pre: ['p', 'P', 'उ', 'ए'], flex: '1' },
       { code: 'BracketLeft', key: '[', eng: ['[', '{'], uni: ['र्', 'ृ'], rom: ['इ', 'ई'], pre: ['[', '{', 'ृ', 'र्'], flex: '1' },
@@ -320,27 +320,27 @@
     [
       { code: 'CapsLock', key: 'CapsLock', flex: '1.75', special: true, label: 'Caps ⇪' },
       { code: 'KeyA', key: 'a', eng: ['a', 'A'], uni: ['ब', 'आ'], rom: ['ा', 'आ'], pre: ['a', 'A', 'ब', 'ब्'], flex: '1' },
-      { code: 'KeyS', key: 's', eng: ['s', 'S'], uni: ['क', 'क्'], rom: ['स', 'श'], pre: ['s', 'S', 'क', 'क्'], flex: '1' },
-      { code: 'KeyD', key: 'd', eng: ['d', 'D'], uni: ['म', 'म्'], rom: ['द', 'ध'], pre: ['d', 'D', 'म', 'म्'], flex: '1' },
+      { code: 'KeyS', key: 's', eng: ['s', 'S'], uni: ['क', 'ङ्क'], rom: ['स', 'श'], pre: ['s', 'S', 'क', 'क्'], flex: '1' },
+      { code: 'KeyD', key: 'd', eng: ['d', 'D'], uni: ['म', 'ङ्ग'], rom: ['द', 'ध'], pre: ['d', 'D', 'म', 'म्'], flex: '1' },
       { code: 'KeyF', key: 'f', eng: ['f', 'F'], uni: ['ा', 'ँ'], rom: ['उ', 'ऊ'], pre: ['f', 'F', 'ा', 'ँ'], flex: '1' },
-      { code: 'KeyG', key: 'g', eng: ['g', 'G'], uni: ['न', 'न्'], rom: ['ग', 'घ'], pre: ['g', 'G', 'न', 'न्'], flex: '1' },
-      { code: 'KeyH', key: 'h', eng: ['h', 'H'], uni: ['ज', 'ज्'], rom: ['ह', 'अ'], pre: ['h', 'H', 'ज', 'ज्'], flex: '1' },
+      { code: 'KeyG', key: 'g', eng: ['g', 'G'], uni: ['न', 'द्द'], rom: ['ग', 'घ'], pre: ['g', 'G', 'न', 'न्'], flex: '1' },
+      { code: 'KeyH', key: 'h', eng: ['h', 'H'], uni: ['ज', 'झ'], rom: ['ह', 'अ'], pre: ['h', 'H', 'ज', 'ज्'], flex: '1' },
       { code: 'KeyJ', key: 'j', eng: ['j', 'J'], uni: ['व', 'ो'], rom: ['ज', 'झ'], pre: ['j', 'J', 'व', 'व्'], flex: '1' },
       { code: 'KeyK', key: 'k', eng: ['k', 'K'], uni: ['प', 'फ'], rom: ['क', 'ख'], pre: ['k', 'K', 'प', 'प्'], flex: '1' },
       { code: 'KeyL', key: 'l', eng: ['l', 'L'], uni: ['ि', 'ी'], rom: ['ल', '॥'], pre: ['l', 'L', 'ि', 'ी'], flex: '1' },
-      { code: 'Semicolon', key: ';', eng: [';', ':'], uni: ['स', 'स्'], rom: [';', ':'], pre: [';', ':', 'स', 'स्'], flex: '1' },
+      { code: 'Semicolon', key: ';', eng: [';', ':'], uni: ['स', 'ट्ठ'], rom: [';', ':'], pre: [';', ':', 'स', 'स्'], flex: '1' },
       { code: 'Quote', key: '\'', eng: ['\'', '"'], uni: ['ु', 'ू'], rom: ['\'', '"'], pre: ['\'', '"', 'ु', 'ू'], flex: '1' },
       { code: 'Enter', key: 'Enter', flex: '2.25', special: true, label: 'Enter ↵' }
     ],
     // Row 4
     [
       { code: 'ShiftLeft', key: 'Shift', flex: '2.25', special: true, label: 'Shift ⇧' },
-      { code: 'KeyZ', key: 'z', eng: ['z', 'Z'], uni: ['श', 'श्'], rom: ['ष', 'ऋ'], pre: ['z', 'Z', 'श', 'श्'], flex: '1' },
-      { code: 'KeyX', key: 'x', eng: ['x', 'X'], uni: ['ह', 'ह्'], rom: ['ड', 'ढ'], pre: ['x', 'X', 'ह', 'ह्'], flex: '1' },
+      { code: 'KeyZ', key: 'z', eng: ['z', 'Z'], uni: ['श', 'क्क'], rom: ['ष', 'ऋ'], pre: ['z', 'Z', 'श', 'श्'], flex: '1' },
+      { code: 'KeyX', key: 'x', eng: ['x', 'X'], uni: ['ह', 'ह्य'], rom: ['ड', 'ढ'], pre: ['x', 'X', 'ह', 'ह्'], flex: '1' },
       { code: 'KeyC', key: 'c', eng: ['c', 'C'], uni: ['अ', 'ऋ'], rom: ['च', 'छ'], pre: ['c', 'C', 'अ', 'ऋ'], flex: '1' },
-      { code: 'KeyV', key: 'v', eng: ['v', 'V'], uni: ['ख', 'ख्'], rom: ['व', 'ँ'], pre: ['v', 'V', 'ख', 'ख्'], flex: '1' },
+      { code: 'KeyV', key: 'v', eng: ['v', 'V'], uni: ['ख', 'ॐ'], rom: ['व', 'ँ'], pre: ['v', 'V', 'ख', 'ख्'], flex: '1' },
       { code: 'KeyB', key: 'b', eng: ['b', 'B'], uni: ['द', 'ौ'], rom: ['ब', 'भ'], pre: ['b', 'B', 'द', 'द्य'], flex: '1' },
-      { code: 'KeyN', key: 'n', eng: ['n', 'N'], uni: ['ल', 'ल्'], rom: ['न', 'ण'], pre: ['n', 'N', 'ल', 'ल्'], flex: '1' },
+      { code: 'KeyN', key: 'n', eng: ['n', 'N'], uni: ['ल', 'द्य'], rom: ['न', 'ण'], pre: ['n', 'N', 'ल', 'ल्'], flex: '1' },
       { code: 'KeyM', key: 'm', eng: ['m', 'M'], uni: ['ः', 'ड्ड'], rom: ['म', 'ं'], pre: ['m', 'M', 'फ', 'ः'], flex: '1' },
       { code: 'Comma', key: ',', eng: [',', '<'], uni: ['ऽ', 'ङ'], rom: [',', 'ङ'], pre: [',', '<', ',', '?'], flex: '1' },
       { code: 'Period', key: '.', eng: ['.', '>'], uni: ['।', 'श्र'], rom: ['।', '.'], pre: ['.', '>', '।', 'श्र'], flex: '1' },
@@ -349,7 +349,7 @@
     ],
     // Row 5
     [
-      { code: 'Space', key: ' ', flex: '8', special: true, label: 'Space Bar' }
+      { code: 'Space', key: ' ', eng: [' ', ' '], uni: [' ', ' '], rom: [' ', ' '], pre: [' ', ' '], flex: '8', special: true, label: 'Space Bar' }
     ]
   ];
 
@@ -749,10 +749,58 @@
     if (targetDisp) {
       if (targetCh === ' ') {
         targetDisp.textContent = '␣ Space';
+      } else if (state.lang === 'nepali_unicode' && targetCh === '्') {
+        targetDisp.textContent = '् (halanta \\)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'आ') {
+        targetDisp.textContent = 'आ (Shift + A or अ + ा)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'ऐ') {
+        targetDisp.textContent = 'ऐ (Shift + E)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'ऊ') {
+        targetDisp.textContent = 'ऊ (Shift + U)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'झ') {
+        targetDisp.textContent = 'झ (Shift + H)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'ॐ') {
+        targetDisp.textContent = 'ॐ (Shift + V)';
+      } else if (state.lang === 'nepali_unicode' && targetCh === 'फ') {
+        targetDisp.textContent = 'फ (Shift + K)';
       } else if (state.lang === 'nepali_romanized' && targetCh === '्') {
         targetDisp.textContent = '् (q or /)';
+      } else if (state.lang === 'nepali_romanized' && targetCh === 'अ') {
+        targetDisp.textContent = 'अ (Shift + H or a)';
       } else {
         targetDisp.textContent = targetCh;
+      }
+
+      // In Traditional layout, show informative hints for multi-char ligatures
+      if (state.lang === 'nepali_unicode') {
+        const remaining = curWord.slice(typed.length);
+        const tradLigatures = [
+          ['क्ष', 'क्ष (Shift + I or क+्+ष)'],
+          ['ज्ञ', 'ज्ञ (Shift + 1 or ज+्+ञ)'],
+          ['त्र', 'त्र (q or त+्+र)'],
+          ['श्र', 'श्र (Shift + . or श+्+र)'],
+          ['रु', 'रु (Shift + / or र+ु)'],
+          ['द्ध', 'द्ध (Shift + 4 or द+्+ध)'],
+          ['द्द', 'द्द (Shift + G or द+्+द)'],
+          ['त्त', 'त्त (Shift + Q or त+्+त)'],
+          ['ट्ट', 'ट्ट (Shift + T or ट+्+ट)'],
+          ['ठ्ठ', 'ठ्ठ (Shift + Y or ठ+्+ठ)'],
+          ['ड्ढ', 'ड्ढ (Shift + W or ड+्+ढ)'],
+          ['ड्ड', 'ड्ड (Shift + M or ड+्+ड)'],
+          ['ट्ठ', 'ट्ठ (Shift + ; or ट+्+ठ)'],
+          ['ङ्ग', 'ङ्ग (Shift + D or ङ+्+ग)'],
+          ['ङ्क', 'ङ्क (Shift + S or ङ+्+क)'],
+          ['क्क', 'क्क (Shift + Z or क+्+क)'],
+          ['ह्य', 'ह्य (Shift + X or ह+्+य)'],
+          ['द्य', 'द्य (Shift + N or द+्+य)'],
+          ['द्ब', 'द्ब (Shift + R or द+्+ब)']
+        ];
+        for (const [lig, desc] of tradLigatures) {
+          if (remaining.startsWith(lig)) {
+            targetDisp.textContent = desc;
+            break;
+          }
+        }
       }
     }
 
@@ -765,6 +813,14 @@
     if (state.lang === 'nepali_romanized' && targetCh === '्') {
       document.querySelector('.keycap[data-code="Slash"]')?.classList.add('is-target');
       document.querySelector('.keycap[data-code="KeyQ"]')?.classList.add('is-target');
+      return;
+    }
+
+    // Special independent 'अ' highlighting for Romanized: highlight KeyH, ShiftLeft, and KeyA
+    if (state.lang === 'nepali_romanized' && targetCh === 'अ') {
+      document.querySelector('.keycap[data-code="KeyH"]')?.classList.add('is-target');
+      document.querySelector('.keycap[data-code="ShiftLeft"]')?.classList.add('is-target');
+      document.querySelector('.keycap[data-code="KeyA"]')?.classList.add('is-target');
       return;
     }
 
