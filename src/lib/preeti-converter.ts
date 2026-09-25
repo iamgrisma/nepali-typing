@@ -73,6 +73,16 @@ const PREETI_CHAR_MAP: [string, string][] = [
   ["ः", "M"], ["ो", "f]"], ["ौ", "f}"]
 ];
 
+const END_HALANT_CONSONANTS: [string, string][] = [
+  ['क', 's'], ['ख', 'v'], ['ग', 'u'], ['घ', '3'],
+  ['च', 'r'], ['छ', '5'], ['ज', 'h'], ['झ', '´'],
+  ['ञ', '`'], ['ट', '6'], ['ठ', '7'], ['ड', '8'], ['ढ', '9'], ['ण', '0f'],
+  ['त', 't'], ['थ', 'y'], ['द', 'b'], ['ध', 'w'], ['न', 'g'],
+  ['प', 'k'], ['फ', 'km'], ['ब', 'a'], ['भ', 'e'], ['म', 'd'],
+  ['य', 'o'], ['र', '/'], ['ल', 'n'], ['व', 'j'],
+  ['श', 'z'], ['ष', 'if'], ['स', ';'], ['ह', 'x']
+];
+
 /**
  * Checks if a string contains any Devanagari Unicode characters (U+0900 - U+097F)
  */
@@ -89,12 +99,18 @@ export function unicodeToPreeti(text: string): string {
 
   let s = text;
 
-  // Step 1: Apply contextual rules (raswa ikaar and reph)
+  // Step 1: Word-final halanta handling (consonant + halanta at end of word)
+  for (const [c, p] of END_HALANT_CONSONANTS) {
+    const re = new RegExp(`${c}्(?=$|[^\\u0900-\\u097F])`, 'g');
+    s = s.replace(re, `${p}\\`);
+  }
+
+  // Step 2: Apply contextual rules (raswa ikaar and reph)
   for (const [pattern, replacement] of CONTEXTUAL_RULES) {
     s = s.replace(new RegExp(pattern, 'g'), replacement);
   }
 
-  // Step 2: Apply master character and compound replacement
+  // Step 3: Apply master character and compound replacement
   for (const [u, p] of PREETI_CHAR_MAP) {
     s = s.replaceAll(u, p);
   }
