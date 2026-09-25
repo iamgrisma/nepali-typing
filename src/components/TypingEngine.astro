@@ -34,24 +34,16 @@ const initialWords = [
 
   <!-- Main Typing Workbench Box -->
   <div id="typing-workbench" class="typing-box min-h-[160px] flex flex-col justify-center relative cursor-text" tabindex="0">
-    <!-- Blinking / Sliding Caret -->
-    <div id="typing-caret" class="typing-caret hidden"></div>
-
     <!-- Dynamic Words Stream Container (Rendered on Server initially so it's NEVER empty!) -->
     <div id="words-container" class="words-stream text-xl sm:text-2xl select-none font-medium">
+      <!-- Blinking / Sliding Caret -->
+      <div id="typing-caret" class="typing-caret hidden"></div>
+
       {initialWords.map((word, wIdx) => (
         <span class={`word-node ${wIdx === 0 ? 'is-active-word' : ''}`} data-word-index={wIdx}>
           <span class="char-node">{word}</span>
         </span>
       ))}
-    </div>
-
-    <!-- Click To Focus Overlay -->
-    <div id="focus-overlay" class="absolute inset-0 bg-[var(--bg-surface)]/75 backdrop-blur-[2px] flex items-center justify-center rounded-2xl cursor-pointer z-20 opacity-0 pointer-events-none transition-opacity">
-      <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] shadow-md text-xs font-medium text-[var(--text-secondary)]">
-        <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span>Click here to focus and type</span>
-      </div>
     </div>
   </div>
 
@@ -61,7 +53,7 @@ const initialWords = [
       <input 
         type="text" 
         id="typing-input" 
-        class="w-full bg-[var(--bg-surface)] border-2 border-[var(--border-subtle)] focus:border-[var(--accent-primary)] rounded-xl px-4 py-3 text-base sm:text-lg font-medium text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none shadow-sm transition-all"
+        class="w-full bg-[var(--bg-surface)] border-2 border-[var(--border-subtle)] focus:border-[var(--accent-primary)] rounded-xl px-4 py-3 pr-28 text-base sm:text-lg font-medium text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none shadow-sm transition-all"
         placeholder="यहाँ टाइप गर्नुहोस्... (Start typing here, press Space for next word)"
         autocomplete="off" 
         autocorrect="off" 

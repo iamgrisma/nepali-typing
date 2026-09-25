@@ -42,8 +42,8 @@
 
     <!-- Group 2: Mode & Content Types -->
     <div class="flex items-center gap-2 flex-wrap">
-      <!-- Content Mode (Time / Words / Sentences / Quotes) -->
-      <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam) -->
+      <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
         <button type="button" class="mode-tab-btn active px-2.5 py-1 rounded-lg font-medium text-[var(--accent-blue)] bg-[var(--bg-surface)]" data-mode="time">
           Time
         </button>
@@ -58,6 +58,10 @@
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="special">
           123 & !?
+        </button>
+        <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="exam">
+          <span>🎓</span>
+          <span>Exam Test</span>
         </button>
       </div>
 
@@ -75,6 +79,13 @@
         <button type="button" class="word-count-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-words="25">25</button>
         <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="50">50</button>
         <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="100">100</button>
+      </div>
+
+      <!-- Exam Duration Options (Shown when mode == 'exam') -->
+      <div id="exam-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+        <button type="button" class="exam-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="60">1 Min</button>
+        <button type="button" class="exam-btn active px-2 py-1 rounded-lg font-mono font-bold text-purple-600 bg-[var(--bg-surface)]" data-seconds="300">5 Min (Official)</button>
+        <button type="button" class="exam-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="600">10 Min</button>
       </div>
 
       <!-- Difficulty Level Selection -->
@@ -101,7 +112,7 @@
           <line x1="18" y1="12" x2="18.01" y2="12"></line>
           <line x1="7" y1="16" x2="17" y2="16"></line>
         </svg>
-        <span id="toggle-keyboard-text">Keyboard</span>
+        <span id="toggle-keyboard-text">Hide Keys</span>
       </button>
 
     </div>

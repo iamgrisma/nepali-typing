@@ -6,8 +6,7 @@
 /* Font Face: Preeti (Legacy ASCII) */
 @font-face {
   font-family: 'Font_preeti';
-  src: url('/fonts/preeti.ttf') format('truetype'),
-       url('/pluto/preeti.ttf') format('truetype');
+  src: url('/fonts/preeti.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -16,8 +15,7 @@
 /* Font Face: Kokila (Devanagari Unicode) */
 @font-face {
   font-family: 'Font_kokila';
-  src: url('/fonts/kokila.ttf') format('truetype'),
-       url('/pluto/kokila.ttf') format('truetype');
+  src: url('/fonts/kokila.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -392,7 +390,8 @@ button {
 }
 
 .word-node {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   position: relative;
   margin-right: 0.65rem;
   margin-bottom: 0.35rem;
@@ -411,12 +410,11 @@ button {
 }
 
 .word-node.is-word-error {
-  color: var(--char-error) !important;
   text-decoration: underline wavy var(--char-error);
 }
 
 .char-node {
-  display: inline;
+  display: inline-block;
   position: relative;
   color: var(--char-untouched);
   transition: color 0.08s ease-in-out;
@@ -426,21 +424,31 @@ button {
   color: var(--char-correct);
 }
 
+.char-node.is-partial {
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-primary);
+}
+
 .char-node.is-error {
   color: var(--char-error);
   background-color: var(--char-error-bg);
   border-radius: 3px;
 }
 
+.char-node.is-extra-error {
+  color: var(--char-error);
+  background-color: var(--char-error-bg);
+  opacity: 0.85;
+}
+
 /* Monkeytype Caret Cursor */
 .typing-caret {
   position: absolute;
   width: 2.5px;
-  height: 1.7em;
   background-color: var(--caret-color);
   border-radius: 1px;
   pointer-events: none;
-  transition: left 0.08s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.08s cubic-bezier(0.1, 0.9, 0.2, 1);
+  transition: left 0.06s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.06s cubic-bezier(0.1, 0.9, 0.2, 1);
   animation: caret-pulse 1s ease-in-out infinite;
   z-index: 10;
 }
