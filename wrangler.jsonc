@@ -7,8 +7,15 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "observability": {
+    "enabled": true
+  },
   "vars": {
     "CDN_BASE_URL": "https://fonts-cdn.topnepali.com/font-files",
     "ENVIRONMENT": "production"
   }
+  // To bind your production custom domain on Cloudflare, uncomment below:
+  // "routes": [
+  //   { "pattern": "typing.topnepali.com", "custom_domain": true }
+  // ]
 }

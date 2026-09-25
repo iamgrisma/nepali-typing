@@ -3,6 +3,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   output: 'server',
+  session: false,
   adapter: cloudflare({
     imageService: 'passthrough',
     platformProxy: { enabled: process.env.CF_PROXY === 'true' },
