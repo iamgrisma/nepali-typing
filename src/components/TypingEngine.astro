@@ -1,41 +1,51 @@
 ---
 // TypingEngine Component
-// Displays text stream, active word highlight, caret, real-time input box, and live counters
+// Displays text stream (strictly 2 lines), active word highlight, caret, real-time input box, and live counters
 const initialWords = [
-  'नेपाल', 'प्रकृतिको', 'अनुपम', 'वरदान', 'पाएको', 'एउटा', 'सुन्दर', 'र', 'शान्त', 'देश', 'हो।',
-  'बिहानको', 'एक', 'कप', 'तातो', 'चियाले', 'मन', 'नै', 'प्रफुल्ल', 'बनाउँछ।',
-  'साथीभाइसँग', 'बसेर', 'गफगाफ', 'गर्नुको', 'मज्जा', 'नै', 'बेग्लै', 'हुन्छ।'
+  'नेपाल', 'प्रकृतिको', 'अनुपम', 'वरदान', 'पाएको', 'एउटा', 'सुन्दर', 'र', 'शान्त', 'देश', 'हो',
+  'बिहानको', 'एक', 'कप', 'तातो', 'चियाले', 'मन', 'नै', 'प्रफुल्ल', 'बनाउँछ',
+  'साथीभाइसँग', 'बसेर', 'गफगाफ', 'गर्नुको', 'मज्जा', 'नै', 'बेग्लै', 'हुन्छ'
 ];
 ---
 
-<div class="w-full relative mb-6">
+<div class="w-full relative mb-2">
   
-  <!-- Live Status Floating Header (Timer / Live WPM / Accuracy) -->
-  <div class="flex items-center justify-between px-2 mb-3 text-sm font-mono">
+  <!-- Live Status Floating Header (Timer / Live WPM / Accuracy / Restart) -->
+  <div class="flex items-center justify-between px-2 mb-2 text-sm font-mono">
     <!-- Left: Time / Word Progress -->
     <div class="flex items-center gap-3">
-      <div class="flex items-center gap-1.5 text-[var(--accent-primary)] font-bold text-lg">
+      <div class="flex items-center gap-1.5 text-[var(--accent-primary)] font-bold text-base sm:text-lg">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span id="live-timer-display">60</span>
       </div>
       <div class="text-xs text-[var(--text-muted)]" id="live-progress-display">0 / 25 words</div>
     </div>
 
-    <!-- Right: Live Instantaneous WPM and Accuracy -->
-    <div class="flex items-center gap-4 text-xs font-semibold">
+    <!-- Right: Live Instantaneous WPM, Accuracy & Restart Control -->
+    <div class="flex items-center gap-2 sm:gap-3 text-xs font-semibold">
       <div class="text-[var(--text-muted)]">
-        Live WPM: <span id="live-wpm-display" class="font-bold text-[var(--text-primary)] text-sm">0</span>
+        WPM: <span id="live-wpm-display" class="font-bold text-[var(--text-primary)] text-sm">0</span>
       </div>
       <div class="text-[var(--text-muted)]">
         Acc: <span id="live-acc-display" class="font-bold text-emerald-500 text-sm">100%</span>
       </div>
+      <button 
+        type="button" 
+        id="manual-restart-btn" 
+        class="px-2 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] hover:bg-[var(--border-subtle)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5 text-xs text-[var(--text-muted)]"
+        title="Restart Current Test (Tab or Esc)"
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+        <span class="hidden sm:inline">Restart</span>
+        <kbd class="px-1 py-0.2 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[9px]">Tab</kbd>
+      </button>
     </div>
   </div>
 
-  <!-- Main Typing Workbench Box -->
-  <div id="typing-workbench" class="typing-box min-h-[160px] flex flex-col justify-center relative cursor-text" tabindex="0">
-    <!-- Dynamic Words Stream Container (Rendered on Server initially so it's NEVER empty!) -->
-    <div id="words-container" class="words-stream text-xl sm:text-2xl select-none font-medium">
+  <!-- Main Typing Workbench Box: Strictly 2 lines of text, fits in viewport -->
+  <div id="typing-workbench" class="typing-box h-[84px] min-h-[84px] max-h-[84px] p-2.5 sm:p-3 flex flex-col justify-center relative cursor-text overflow-hidden" tabindex="0">
+    <!-- Dynamic Words Stream Container (Strictly 2 lines) -->
+    <div id="words-container" class="words-stream h-[72px] max-h-[72px] text-xl sm:text-2xl leading-[36px] select-none font-medium overflow-hidden">
       <!-- Blinking / Sliding Caret -->
       <div id="typing-caret" class="typing-caret hidden"></div>
 
@@ -45,47 +55,18 @@ const initialWords = [
         </span>
       ))}
     </div>
-  </div>
 
-  <!-- Real Interactive Typing Input Field (Captures all keystrokes, prevents space scrolling) -->
-  <div class="mt-3">
-    <div class="relative flex items-center">
-      <input 
-        type="text" 
-        id="typing-input" 
-        class="w-full bg-[var(--bg-surface)] border-2 border-[var(--border-subtle)] focus:border-[var(--accent-primary)] rounded-xl px-4 py-3 pr-28 text-base sm:text-lg font-medium text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none shadow-sm transition-all"
-        placeholder="यहाँ टाइप गर्नुहोस्... (Start typing here, press Space for next word)"
-        autocomplete="off" 
-        autocorrect="off" 
-        autocapitalize="off" 
-        spellcheck="false"
-        autofocus
-      />
-      <div class="absolute right-3 flex items-center gap-1.5 text-xs text-[var(--text-muted)] pointer-events-none">
-        <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Space</kbd>
-        <span>next word</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Quick Controls (Restart Button & Short Hint) -->
-  <div class="flex items-center justify-between px-2 mt-3 text-xs text-[var(--text-muted)]">
-    <div class="flex items-center gap-1.5">
-      <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Esc</kbd>
-      <span>or</span>
-      <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-[10px]">Tab</kbd>
-      <span>to restart test</span>
-    </div>
-
-    <button 
-      type="button" 
-      id="manual-restart-btn" 
-      class="p-1.5 rounded-lg hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 text-xs"
-      title="Restart Current Test"
-    >
-      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
-      <span>Restart</span>
-    </button>
+    <!-- Hidden native input to capture all keystrokes directly into workbench -->
+    <input 
+      type="text" 
+      id="typing-input" 
+      class="opacity-0 absolute pointer-events-none w-0 h-0 p-0 border-0 outline-none"
+      autocomplete="off" 
+      autocorrect="off" 
+      autocapitalize="off" 
+      spellcheck="false"
+      autofocus
+    />
   </div>
 
 </div>

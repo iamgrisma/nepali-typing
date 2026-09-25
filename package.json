@@ -8,7 +8,7 @@
     "start": "astro preview --host 0.0.0.0 --port 3000",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler pages deploy dist --project-name=nepali-typing"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",

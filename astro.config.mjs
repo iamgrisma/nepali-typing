@@ -1,13 +1,8 @@
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
 
+// Full static generation for Cloudflare Pages (Zero CPU, instant CDN delivery)
 export default defineConfig({
-  output: 'server',
-  session: false,
-  adapter: cloudflare({
-    imageService: 'passthrough',
-    platformProxy: { enabled: process.env.CF_PROXY === 'true' },
-  }),
+  output: 'static',
   site: 'https://typing.topnepali.com',
   server: {
     host: '0.0.0.0',

@@ -12,16 +12,18 @@ import FaqSection from '../components/FaqSection.astro';
 <Layout>
   <div class="container">
     
-    <!-- Hero / Intro Badge -->
-    <div class="text-center mb-6">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 mb-2">
-        <span>🇳🇵 नेपाली भाषा, साहित्य र प्रविधिको टाइपिङ प्लेटफर्म</span>
+    <!-- Hero / Intro Badge (Compact for full viewport visibility) -->
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-1 border-b border-[var(--border-subtle)]/40">
+      <div class="flex items-center gap-2">
+        <h1 class="text-base sm:text-xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+          नेपाली Typing <span class="text-[var(--accent-primary)]">PRO</span>
+        </h1>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hidden sm:inline-block">
+          नेपाली युनिकोड • प्रिती • English
+        </span>
       </div>
-      <h1 class="text-2xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
-        नेपाली Typing Test <span class="text-[var(--accent-primary)]">PRO</span>
-      </h1>
-      <p class="text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto mt-1">
-        नेपाली युनिकोड (ट्रेडिसनल र रोमनाइज्ड), प्रिती फन्ट र अङ्ग्रेजी किबोर्डमा वास्तविक समयको विश्लेषणसहित टाइपिङ अभ्यास।
+      <p class="text-[11px] text-[var(--text-muted)] hidden md:block">
+        पारम्परिक युनिकोड (MPP), रोमनाइज्ड र प्रिती टाइपिङ प्लेटफर्म
       </p>
     </div>
 

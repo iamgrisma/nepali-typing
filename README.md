@@ -43,7 +43,7 @@ An ultra-modern, high-performance **Nepali Typing Test & Speed Benchmarking Plat
    - In-browser synthesized mechanical switch clicks and mistake alerts via the Web Audio API (zero external audio file downloads required).
 
 6. **Full Offline & CDN Support**:
-   - Self-contained local TTF font bundle (`public/fonts/`) + Cosmic font proxy route (`/pluto/[...path].ts`) connecting to Cloudflare R2 / TopNepali CDN (`https://fonts-cdn.topnepali.com/font-files`).
+   - 100% self-contained local TTF font bundle (`public/fonts/preeti.ttf` & `public/fonts/kokila.ttf`) with preloading and immutable edge cache headers. Zero external font dependencies, zero Worker CPU usage.
 
 7. **Extensive SEO & Educational Content**:
    - Complete guides comparing Preeti vs Unicode Traditional vs Romanized.
@@ -57,21 +57,20 @@ An ultra-modern, high-performance **Nepali Typing Test & Speed Benchmarking Plat
 
 ### 1. Development Server
 ```bash
-# Start local development server on port 3000
-node scripts/astro-cli.js dev --host 0.0.0.0 --port 3000
+npm run dev
 ```
 Then open `http://localhost:3000` in your web browser.
 
 ### 2. Build for Production
 ```bash
-# Build standalone or Cloudflare SSR bundle
-node scripts/astro-cli.js build
+npm run build
 ```
 
-### 3. Deploy to Cloudflare Workers / Pages
+### 3. Deploy to Cloudflare Pages
 ```bash
-# Deploy with Wrangler
-npx wrangler deploy
+npm run deploy
+# Or via Wrangler CLI directly:
+npx wrangler pages deploy dist --project-name=nepali-typing
 ```
 
 ---

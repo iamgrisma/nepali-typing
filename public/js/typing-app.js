@@ -165,20 +165,20 @@
           'landscape', 'brilliance', 'dedication', 'enthusiasm', 'gratitude', 'renaissance', 'symbiosis'
         ],
         sentences: [
-          'Travel teaches us that the world is far richer, kinder, and more astonishing than we ever dared to imagine.',
+          'Travel teaches us that the world is far richer kinder and more astonishing than we ever dared to imagine.',
           'Writing by hand or typing effortlessly on a keyboard allows our deepest thoughts to flow into reality without friction.',
           'Mastering touch typing transforms your keyboard from an obstacle into a direct extension of your thoughts.',
           'Continuous deliberate practice bridges the gap between raw potential and world-class mastery.'
         ],
         quotes: [
           'Not all those who wander are lost. J.R.R. Tolkien.',
-          'We do not see things as they are, we see them as we are. Anais Nin.',
+          'We do not see things as they are we see them as we are. Anais Nin.',
           'The only true wisdom is in knowing you know nothing. Socrates.'
         ],
         special: [
           '10 20 30 40 50 60 70 80 90 100',
           'Kathmandu Pokhara Lalitpur Bhaktapur Chitwan',
-          'Practice makes progress, patience creates mastery.'
+          'Practice makes progress patience creates mastery.'
         ]
       },
       hard: {
@@ -189,17 +189,17 @@
           'phenomenological', 'indefatigable', 'magnanimous', 'perspicacity', 'quintessence'
         ],
         sentences: [
-          'The Himalayan ridgeline stands as an ancient testament to geological epochs, weathering timeless winds with majestic indifference.',
-          'Profound literature does not merely reflect existing reality; it constructs an entirely new emotional sanctuary for the wandering soul.',
-          'Cultivating effortless keystroke rhythm requires harmonizing sensory feedback, cognitive muscle memory, and disciplined breathing.'
+          'The Himalayan ridgeline stands as an ancient testament to geological epochs weathering timeless winds with majestic indifference.',
+          'Profound literature does not merely reflect existing reality it constructs an entirely new emotional sanctuary for the wandering soul.',
+          'Cultivating effortless keystroke rhythm requires harmonizing sensory feedback cognitive muscle memory and disciplined breathing.'
         ],
         quotes: [
-          'Two things awe me most: the starry sky above me and the moral law within me. Immanuel Kant.',
+          'Two things awe me most the starry sky above me and the moral law within me. Immanuel Kant.',
           'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. Ralph Waldo Emerson.'
         ],
         special: [
           '100 200 300 400 500 600 700 800 900 1000',
-          'Unicode standard, Devanagari typography, font shaping, text rendering'
+          'Unicode standard Devanagari typography font shaping text rendering'
         ]
       }
     }
@@ -319,13 +319,13 @@
     // Row 3
     [
       { code: 'CapsLock', key: 'CapsLock', flex: '1.75', special: true, label: 'Caps ⇪' },
-      { code: 'KeyA', key: 'a', eng: ['a', 'A'], uni: ['ब', 'ब्'], rom: ['ा', 'आ'], pre: ['a', 'A', 'ब', 'ब्'], flex: '1' },
+      { code: 'KeyA', key: 'a', eng: ['a', 'A'], uni: ['ब', 'आ'], rom: ['ा', 'आ'], pre: ['a', 'A', 'ब', 'ब्'], flex: '1' },
       { code: 'KeyS', key: 's', eng: ['s', 'S'], uni: ['क', 'क्'], rom: ['स', 'श'], pre: ['s', 'S', 'क', 'क्'], flex: '1' },
       { code: 'KeyD', key: 'd', eng: ['d', 'D'], uni: ['म', 'म्'], rom: ['द', 'ड'], pre: ['d', 'D', 'म', 'म्'], flex: '1' },
       { code: 'KeyF', key: 'f', eng: ['f', 'F'], uni: ['ा', 'ँ'], rom: ['फ', 'ँ'], pre: ['f', 'F', 'ा', 'ँ'], flex: '1' },
       { code: 'KeyG', key: 'g', eng: ['g', 'G'], uni: ['न', 'न्'], rom: ['ग', 'घ'], pre: ['g', 'G', 'न', 'न्'], flex: '1' },
       { code: 'KeyH', key: 'h', eng: ['h', 'H'], uni: ['ज', 'ज्'], rom: ['ह', 'ः'], pre: ['h', 'H', 'ज', 'ज्'], flex: '1' },
-      { code: 'KeyJ', key: 'j', eng: ['j', 'J'], uni: ['व', 'व्'], rom: ['ज', 'झ'], pre: ['j', 'J', 'व', 'व्'], flex: '1' },
+      { code: 'KeyJ', key: 'j', eng: ['j', 'J'], uni: ['व', 'ो'], rom: ['ज', 'झ'], pre: ['j', 'J', 'व', 'व्'], flex: '1' },
       { code: 'KeyK', key: 'k', eng: ['k', 'K'], uni: ['प', 'फ्'], rom: ['क', 'ख'], pre: ['k', 'K', 'प', 'प्'], flex: '1' },
       { code: 'KeyL', key: 'l', eng: ['l', 'L'], uni: ['ि', 'ी'], rom: ['ल', 'ळ'], pre: ['l', 'L', 'ि', 'ी'], flex: '1' },
       { code: 'Semicolon', key: ';', eng: [';', ':'], uni: ['स', 'स्'], rom: [';', ':'], pre: [';', ':', 'स', 'स्'], flex: '1' },
@@ -339,7 +339,7 @@
       { code: 'KeyX', key: 'x', eng: ['x', 'X'], uni: ['ह', 'ह्'], rom: ['क्ष', 'ज्ञ'], pre: ['x', 'X', 'ह', 'ह्'], flex: '1' },
       { code: 'KeyC', key: 'c', eng: ['c', 'C'], uni: ['अ', 'ऋ'], rom: ['च', 'छ'], pre: ['c', 'C', 'अ', 'ऋ'], flex: '1' },
       { code: 'KeyV', key: 'v', eng: ['v', 'V'], uni: ['ख', 'ख्'], rom: ['व', 'ॐ'], pre: ['v', 'V', 'ख', 'ख्'], flex: '1' },
-      { code: 'KeyB', key: 'b', eng: ['b', 'B'], uni: ['द', 'द्य'], rom: ['ब', 'भ'], pre: ['b', 'B', 'द', 'द्य'], flex: '1' },
+      { code: 'KeyB', key: 'b', eng: ['b', 'B'], uni: ['द', 'ौ'], rom: ['ब', 'भ'], pre: ['b', 'B', 'द', 'द्य'], flex: '1' },
       { code: 'KeyN', key: 'n', eng: ['n', 'N'], uni: ['ल', 'ल्'], rom: ['न', 'ण'], pre: ['n', 'N', 'ल', 'ल्'], flex: '1' },
       { code: 'KeyM', key: 'm', eng: ['m', 'M'], uni: ['ः', 'ड्ड'], rom: ['म', 'ङ'], pre: ['m', 'M', 'फ', 'ः'], flex: '1' },
       { code: 'Comma', key: ',', eng: [',', '<'], uni: ['ऽ', 'ङ'], rom: [',', 'ङ'], pre: [',', '<', ',', '?'], flex: '1' },
@@ -664,9 +664,9 @@
       caret.style.top = `${topPos}px`;
       caret.style.height = `${Math.max(22, sRect.height - 4)}px`;
 
-      // Smooth auto-scroll when passing line boundary
-      if (sRect.top - cRect.top > 75) {
-        container.scrollTop += 42;
+      // Smooth auto-scroll when passing line boundary in 2-line container
+      if (sRect.top - cRect.top > 38) {
+        container.scrollTop += 38;
       }
     }
   }
@@ -1096,6 +1096,20 @@
       if (state.isFinished) return;
       if (!state.isRunning && inputField.value.length > 0) startTimer();
 
+      // Normalize combined traditional Devanagari ligatures
+      if (state.lang === 'nepali_unicode') {
+        const val = inputField.value;
+        const normalized = val
+          .replace(/अा/g, 'आ')
+          .replace(/ाे/g, 'ो')
+          .replace(/ाै/g, 'ौ')
+          .replace(/अो/g, 'ओ')
+          .replace(/अौ/g, 'औ');
+        if (normalized !== val) {
+          inputField.value = normalized;
+        }
+      }
+
       renderActiveWordHighlight();
       highlightTargetKey();
       updateCaret();
@@ -1157,8 +1171,8 @@
           if (container) {
             const wRect = nextWordEl.getBoundingClientRect();
             const cRect = container.getBoundingClientRect();
-            if (wRect.top - cRect.top > 75) {
-              container.scrollTop += 42;
+            if (wRect.top - cRect.top > 38) {
+              container.scrollTop += 38;
             }
           }
         }
@@ -1225,6 +1239,17 @@
             const start = inputField.selectionStart ?? inputField.value.length;
             const end = inputField.selectionEnd ?? inputField.value.length;
             inputField.setRangeText(ch, start, end, 'end');
+
+            // Auto-merge traditional ligatures
+            let val = inputField.value;
+            val = val
+              .replace(/अा/g, 'आ')
+              .replace(/ाे/g, 'ो')
+              .replace(/ाै/g, 'ौ')
+              .replace(/अो/g, 'ओ')
+              .replace(/अौ/g, 'औ');
+            inputField.value = val;
+
             inputField.dispatchEvent(new Event('input'));
             return;
           }
