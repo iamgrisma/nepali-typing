@@ -1,12 +1,12 @@
 ---
-// ModeSelector toolbar for picking Language, Mode, Duration, Difficulty, Exam & Adaptive Drills
+// ModeSelector toolbar for picking Language, Mode, Duration, Difficulty, Exam, Adaptive & Free Style
 ---
 
-<div class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-2 sm:p-2.5 shadow-sm mb-2">
-  <div class="flex flex-wrap items-center justify-between gap-2">
+<div class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-2.5 sm:p-3 shadow-sm mb-3">
+  <div class="flex flex-wrap items-center justify-between gap-2.5">
     
     <!-- Group 1: Language / Layout Selection -->
-    <div class="flex items-center gap-1.5 p-1 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto max-w-full">
+    <div id="lang-selector-group" class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto max-w-full">
       <button 
         type="button"
         class="lang-tab-btn active px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm"
@@ -42,7 +42,7 @@
 
     <!-- Group 2: Mode & Content Types -->
     <div class="flex items-center gap-2 flex-wrap">
-      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam / Adaptive) -->
+      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam / Adaptive / Free Style) -->
       <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
         <button type="button" class="mode-tab-btn active px-2.5 py-1 rounded-lg font-medium text-[var(--accent-blue)] bg-[var(--bg-surface)]" data-mode="time">
           Time
@@ -54,7 +54,7 @@
           Sentences
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="quotes">
-          Prose & Literature
+          Prose
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="exam">
           <span>🎓</span>
@@ -63,6 +63,10 @@
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-amber-500 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="adaptive">
           <span>⚡</span>
           <span>Adaptive Drill</span>
+        </button>
+        <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-teal-500 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="freestyle">
+          <span>✍️</span>
+          <span>Free Style</span>
         </button>
       </div>
 
@@ -91,8 +95,13 @@
 
       <!-- Adaptive Mode Indicators (Shown when mode == 'adaptive') -->
       <div id="adaptive-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <span class="text-[11px] text-amber-500 font-medium px-2 py-0.5">Targeting Weak Strokes:</span>
+        <span class="text-[11px] text-amber-500 font-medium px-2 py-0.5">Target Weak Strokes:</span>
         <span id="adaptive-target-tags" class="font-mono font-bold text-amber-500 bg-[var(--bg-surface)] px-2 py-0.5 rounded-lg border border-amber-500/30">Auto-Detecting...</span>
+      </div>
+
+      <!-- Free Style Info Pill (Shown when mode == 'freestyle') -->
+      <div id="freestyle-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+        <span class="text-[11px] text-teal-500 font-medium px-2 py-0.5">Free Thought Practice • Speed Benchmark</span>
       </div>
 
       <!-- Difficulty Level Selection -->

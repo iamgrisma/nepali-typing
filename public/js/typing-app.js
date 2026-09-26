@@ -37,7 +37,7 @@ function getGraphemes(text, lang) {
 // --- 2. APPLICATION STATE ---
 let state = {
   lang: 'nepali_unicode',
-  mode: 'time', // 'time' | 'words' | 'sentences' | 'quotes' | 'exam' | 'adaptive'
+  mode: 'time', // 'time' | 'words' | 'sentences' | 'quotes' | 'exam' | 'adaptive' | 'freestyle'
   examType: 'full', // 'full' | '5m' | '10m'
   duration: 60,
   wordCount: 25,
@@ -59,7 +59,23 @@ let state = {
   timeline: [],
   keystrokeLogs: [],
   lastStrokeTime: 0,
-  targetWeakKeys: []
+  targetWeakKeys: [],
+  
+  // Two-Level Accuracy & Word Correction Tracking
+  cleanWords: 0,
+  correctedWords: 0,
+  incorrectWords: 0,
+  currentWordErrors: 0,
+  currentWordBackspaces: 0,
+  currentWordStartTime: 0,
+  currentWordTotalStrokes: 0,
+  wordsLog: [],
+
+  // Free Style Zen Mode Tracking
+  freestyleText: '',
+  freestyleWords: 0,
+  freestyleChars: 0,
+  freestyleBackspaces: 0
 };
 
 // Web Audio Context for audio feedback
@@ -190,6 +206,22 @@ function setupTest() {
   state.errorKeystrokes = 0;
   state.errorMap = {};
 
+  // Reset Two-Level Accuracy & Word Logging
+  state.cleanWords = 0;
+  state.correctedWords = 0;
+  state.incorrectWords = 0;
+  state.currentWordErrors = 0;
+  state.currentWordBackspaces = 0;
+  state.currentWordStartTime = performance.now();
+  state.currentWordTotalStrokes = 0;
+  state.wordsLog = [];
+
+  // Reset Free Style State
+  state.freestyleText = '';
+  state.freestyleWords = 0;
+  state.freestyleChars = 0;
+  state.freestyleBackspaces = 0;
+
   if (state.mode === 'exam') {
     if (state.examType === 'full') {
       state.duration = 0; // count up
@@ -201,6 +233,9 @@ function setupTest() {
       state.duration = 600;
       state.secsLeft = 600;
     }
+  } else if (state.mode === 'freestyle') {
+    state.duration = 0; // open-ended or timed
+    state.secsLeft = 0;
   } else {
     state.secsLeft = state.duration;
   }
@@ -209,12 +244,18 @@ function setupTest() {
   const progDisp = document.getElementById('live-progress-display');
   const wpmDisp = document.getElementById('live-wpm-display');
   const accDisp = document.getElementById('live-acc-display');
+  const wordAccDisp = document.getElementById('live-word-acc-display');
+  const strokeAccDisp = document.getElementById('live-stroke-acc-display');
   const inputField = document.getElementById('typing-input');
 
-  state.words = getWordsPool();
+  const typingWorkbench = document.getElementById('typing-workbench');
+  const freestyleWorkbench = document.getElementById('freestyle-workbench');
+  const freestyleInput = document.getElementById('freestyle-input');
 
   if (timerDisp) {
     if (state.mode === 'exam' && state.examType === 'full') {
+      timerDisp.textContent = '00:00';
+    } else if (state.mode === 'freestyle') {
       timerDisp.textContent = '00:00';
     } else if (state.mode === 'time' || state.mode === 'exam') {
       timerDisp.textContent = `${state.secsLeft}s`;
@@ -223,9 +264,49 @@ function setupTest() {
     }
   }
 
-  if (progDisp) progDisp.textContent = `0 / ${state.mode === 'words' ? state.wordCount : state.words.length || 25} words`;
+  if (progDisp) {
+    if (state.mode === 'freestyle') {
+      progDisp.textContent = '0 words • 0 chars';
+    } else {
+      progDisp.textContent = `0 / ${state.mode === 'words' ? state.wordCount : state.words.length || 25} words`;
+    }
+  }
+
   if (wpmDisp) wpmDisp.textContent = '0';
   if (accDisp) accDisp.textContent = '100%';
+  if (wordAccDisp) wordAccDisp.textContent = '100%';
+  if (strokeAccDisp) strokeAccDisp.textContent = '100%';
+
+  // Mode Toggle: Free Style Workbench vs Standard Word Stream
+  if (state.mode === 'freestyle') {
+    if (typingWorkbench) typingWorkbench.classList.add('hidden');
+    if (freestyleWorkbench) {
+      freestyleWorkbench.classList.remove('hidden');
+      freestyleWorkbench.classList.add('flex');
+    }
+    if (freestyleInput) {
+      freestyleInput.value = '';
+      freestyleInput.focus();
+    }
+    const fWordEl = document.getElementById('freestyle-word-count');
+    const fCharEl = document.getElementById('freestyle-char-count');
+    const fBurstEl = document.getElementById('freestyle-burst-wpm');
+    if (fWordEl) fWordEl.textContent = '0';
+    if (fCharEl) fCharEl.textContent = '0';
+    if (fBurstEl) fBurstEl.textContent = '0 WPM';
+
+    renderKeyboard();
+    updatePersonalBestsCards();
+    return;
+  } else {
+    if (typingWorkbench) typingWorkbench.classList.remove('hidden');
+    if (freestyleWorkbench) {
+      freestyleWorkbench.classList.add('hidden');
+      freestyleWorkbench.classList.remove('flex');
+    }
+  }
+
+  state.words = getWordsPool();
 
   if (inputField) {
     inputField.value = '';
@@ -538,10 +619,36 @@ function highlightTargetKey() {
 function computeCurrentStats() {
   const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
   const m = elapsed / 60;
+
+  if (state.mode === 'freestyle') {
+    const chars = state.freestyleChars || 0;
+    const words = state.freestyleWords || 0;
+    const rawWpm = Math.round((chars / 5) / m);
+    const wpm = rawWpm;
+    const strokeAcc = state.totalKeystrokes > 0
+      ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
+      : 100;
+    const wordAcc = 100;
+    return { wpm, rawWpm, acc: wordAcc, wordAcc, strokeAcc, elapsed };
+  }
+
   const wpm = Math.max(0, Math.round((state.correctKeystrokes / 5) / m));
   const rawWpm = Math.round((state.totalKeystrokes / 5) / m);
-  const acc = state.totalKeystrokes > 0 ? Math.min(100, Math.round((state.correctKeystrokes / state.totalKeystrokes) * 1000) / 10) : 100;
-  return { wpm, rawWpm, acc, elapsed };
+
+  // Two-Level Accuracy Calculations:
+  // Level 1: Keystroke / Stroke Accuracy (includes mistypes, backspaces and corrections)
+  const strokeAcc = state.totalKeystrokes > 0 
+    ? Math.max(0, Math.min(100, Math.round((state.correctKeystrokes / state.totalKeystrokes) * 1000) / 10)) 
+    : 100;
+
+  // Level 2: Word Accuracy (all successfully submitted words including corrected ones)
+  const totalSubmittedWords = state.cleanWords + state.correctedWords + state.incorrectWords;
+  const correctSubmittedWords = state.cleanWords + state.correctedWords;
+  const wordAcc = totalSubmittedWords > 0 
+    ? Math.max(0, Math.min(100, Math.round((correctSubmittedWords / totalSubmittedWords) * 1000) / 10)) 
+    : 100;
+
+  return { wpm, rawWpm, acc: wordAcc, wordAcc, strokeAcc, elapsed };
 }
 
 function formatMinutesSeconds(sec) {
@@ -565,6 +672,8 @@ function startTimer() {
 
     if (state.mode === 'exam' && state.examType === 'full') {
       // FULL UN SPEECH: count upwards with format MM:SS
+      if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
+    } else if (state.mode === 'freestyle') {
       if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
     } else if (state.mode === 'time' || state.mode === 'exam') {
       state.secsLeft = Math.max(0, state.duration - elapsed);
@@ -595,11 +704,20 @@ function updateLiveStats() {
 
   const wpmDisp = document.getElementById('live-wpm-display');
   const accDisp = document.getElementById('live-acc-display');
+  const wordAccDisp = document.getElementById('live-word-acc-display');
+  const strokeAccDisp = document.getElementById('live-stroke-acc-display');
   const progDisp = document.getElementById('live-progress-display');
 
   if (wpmDisp) wpmDisp.textContent = `${stats.wpm}`;
   if (accDisp) accDisp.textContent = `${Math.round(stats.acc)}%`;
-  if (progDisp) progDisp.textContent = `${state.wordIdx} / ${state.mode === 'words' ? state.wordCount : state.words.length} words`;
+  if (wordAccDisp) wordAccDisp.textContent = `${Math.round(stats.wordAcc)}%`;
+  if (strokeAccDisp) strokeAccDisp.textContent = `${stats.strokeAcc}%`;
+
+  if (state.mode === 'freestyle') {
+    if (progDisp) progDisp.textContent = `${state.freestyleWords} words • ${state.freestyleChars} chars`;
+  } else {
+    if (progDisp) progDisp.textContent = `${state.wordIdx} / ${state.mode === 'words' ? state.wordCount : state.words.length} words`;
+  }
 }
 
 // --- 8. SVG TIMELINE GRAPH GENERATOR ---
@@ -703,9 +821,13 @@ function finishTest() {
 
   // Populate Base Numbers
   const mNet = document.getElementById('modal-net-wpm');
+  const mWordAcc = document.getElementById('modal-word-accuracy');
+  const mStrokeAcc = document.getElementById('modal-stroke-accuracy');
+  const mCorrectedCount = document.getElementById('modal-corrected-words-count');
   const mAcc = document.getElementById('modal-accuracy');
   const mAccDetail = document.getElementById('modal-acc-detail');
   const mRaw = document.getElementById('modal-raw-wpm');
+  const mCpm = document.getElementById('modal-cpm-label');
   const mConsistency = document.getElementById('modal-consistency');
   const mRankPill = document.getElementById('modal-rank-pill');
   const mMeta = document.getElementById('modal-test-metadata');
@@ -731,15 +853,51 @@ function finishTest() {
   const diffDesc = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
 
   if (mNet) mNet.textContent = `${netWpm}`;
-  if (mAcc) mAcc.textContent = `${acc}%`;
+  if (mWordAcc) mWordAcc.textContent = `${stats.wordAcc}%`;
+  if (mStrokeAcc) mStrokeAcc.textContent = `${stats.strokeAcc}%`;
+  if (mCorrectedCount) {
+    mCorrectedCount.textContent = `${state.correctedWords} fixed`;
+    mCorrectedCount.title = `${state.cleanWords} clean words, ${state.correctedWords} corrected with backspace, ${state.incorrectWords} incorrect words`;
+  }
+  if (mAcc) mAcc.textContent = `${stats.wordAcc}%`;
   if (mAccDetail) mAccDetail.textContent = `${state.errorKeystrokes} errors`;
   if (mRaw) mRaw.textContent = `${rawWpm}`;
+  if (mCpm) mCpm.textContent = `${cpm} CPM`;
   if (mConsistency) mConsistency.textContent = `${strokeAnalytics.rhythmStability}%`;
   if (mRankPill) {
     mRankPill.textContent = rank.title;
     mRankPill.style.color = rank.color;
   }
   if (mMeta) mMeta.textContent = `${langNames[state.lang] || state.lang} • ${modeDesc} • ${diffDesc}`;
+
+  // Populate Word-by-Word Typing Log & Correction Audit
+  const wordsLogTbody = document.getElementById('modal-words-log-tbody');
+  if (wordsLogTbody) {
+    if (state.wordsLog.length === 0) {
+      wordsLogTbody.innerHTML = '<tr><td colspan="6" class="py-3 text-center text-muted">No word entries submitted</td></tr>';
+    } else {
+      wordsLogTbody.innerHTML = state.wordsLog.map(w => {
+        let statusBadge = '';
+        if (w.isCorrect && !w.hadCorrections) {
+          statusBadge = '<span class="text-emerald-500 font-semibold">✓ Clean</span>';
+        } else if (w.isCorrect && w.hadCorrections) {
+          statusBadge = `<span class="text-amber-500 font-semibold">⟲ Fixed (${w.errorsCount + w.backspacesCount} err)</span>`;
+        } else {
+          statusBadge = '<span class="text-red-500 font-semibold">✗ Error</span>';
+        }
+        return `
+          <tr class="hover:bg-[var(--bg-surface)] transition-colors">
+            <td class="py-1.5 pr-2 text-muted">${w.index}</td>
+            <td class="py-1.5 pr-3 font-semibold text-[var(--text-primary)]">${w.targetWord}</td>
+            <td class="py-1.5 pr-3 ${w.isCorrect ? 'text-[var(--text-secondary)]' : 'text-red-500'}">${w.typedWord}</td>
+            <td class="py-1.5 pr-3">${statusBadge}</td>
+            <td class="py-1.5 pr-3 text-muted text-[11px]">${w.strokesCount} st (${w.backspacesCount} bk)</td>
+            <td class="py-1.5 text-muted text-[11px]">${w.durationMs}ms</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
 
   // Populate Unimagined Biomechanics Cards
   const elHandBias = document.getElementById('analytics-hand-bias');
@@ -836,6 +994,159 @@ function finishTest() {
   } catch (e) {}
 }
 
+function finishFreestyleTest() {
+  if (state.isFinished) return;
+  clearInterval(state.timer);
+  state.timer = null;
+  state.isRunning = false;
+  state.isFinished = true;
+  playBeep(880, 'triangle', 0.45, 0.15);
+
+  const freestyleInput = document.getElementById('freestyle-input');
+  const val = freestyleInput ? freestyleInput.value : state.freestyleText || '';
+  const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
+  const m = elapsed / 60;
+  const words = val.trim().split(/\s+/).filter(Boolean);
+  const totalChars = val.length;
+
+  const rawWpm = Math.round((totalChars / 5) / m);
+  const netWpm = rawWpm;
+  const strokeAcc = state.totalKeystrokes > 0
+    ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
+    : 100;
+  const wordAcc = 100;
+  const cpm = Math.round(totalChars / m);
+
+  const strokeAnalytics = analyzeTypingRun(state.keystrokeLogs, elapsed, netWpm, rawWpm, strokeAcc);
+  const rank = getSpeedRank('english', netWpm);
+
+  lastFinishedResult = {
+    netWpm,
+    rawWpm,
+    acc: strokeAcc,
+    wordAcc,
+    strokeAcc,
+    cpm,
+    elapsed: Math.round(elapsed),
+    layout: 'english',
+    mode: 'freestyle',
+    examType: '',
+    rank,
+    certPass: { passed: false, minWpm: 25 },
+    strokeAnalytics
+  };
+
+  // Populate Base Numbers
+  const mNet = document.getElementById('modal-net-wpm');
+  const mWordAcc = document.getElementById('modal-word-accuracy');
+  const mStrokeAcc = document.getElementById('modal-stroke-accuracy');
+  const mCorrectedCount = document.getElementById('modal-corrected-words-count');
+  const mAcc = document.getElementById('modal-accuracy');
+  const mRaw = document.getElementById('modal-raw-wpm');
+  const mCpm = document.getElementById('modal-cpm-label');
+  const mConsistency = document.getElementById('modal-consistency');
+  const mRankPill = document.getElementById('modal-rank-pill');
+  const mMeta = document.getElementById('modal-test-metadata');
+
+  if (mNet) mNet.textContent = `${netWpm}`;
+  if (mWordAcc) mWordAcc.textContent = '100%';
+  if (mStrokeAcc) mStrokeAcc.textContent = `${strokeAcc}%`;
+  if (mCorrectedCount) mCorrectedCount.textContent = `${state.freestyleBackspaces} backspaces`;
+  if (mAcc) mAcc.textContent = `${strokeAcc}%`;
+  if (mRaw) mRaw.textContent = `${rawWpm}`;
+  if (mCpm) mCpm.textContent = `${cpm} CPM`;
+  if (mConsistency) mConsistency.textContent = `${strokeAnalytics.rhythmStability}%`;
+  if (mRankPill) {
+    mRankPill.textContent = rank.title;
+    mRankPill.style.color = rank.color;
+  }
+  if (mMeta) mMeta.textContent = `English Free Style • Raw Typing Velocity • ${Math.round(elapsed)}s Elapsed`;
+
+  // Populate Unimagined Biomechanics Cards
+  const elHandBias = document.getElementById('analytics-hand-bias');
+  const elLeftBar = document.getElementById('analytics-left-bar');
+  const elRightBar = document.getElementById('analytics-right-bar');
+  const elLeftErr = document.getElementById('analytics-left-err');
+  const elRightErr = document.getElementById('analytics-right-err');
+  const elRowDist = document.getElementById('analytics-row-dist');
+  const elAvgLatency = document.getElementById('analytics-avg-latency');
+  const elSlowest = document.getElementById('analytics-slowest-keys');
+  const elFastest = document.getElementById('analytics-fastest-keys');
+  const elHesitation = document.getElementById('analytics-hesitation-count');
+  const elBurst = document.getElementById('analytics-peak-burst');
+  const elCleanStreak = document.getElementById('analytics-clean-streak');
+  const elTimeLost = document.getElementById('analytics-time-lost');
+  const elStrokeRatio = document.getElementById('analytics-stroke-ratio');
+
+  if (elHandBias) elHandBias.textContent = `${strokeAnalytics.leftHandRatio}% L / ${strokeAnalytics.rightHandRatio}% R`;
+  if (elLeftBar) elLeftBar.style.width = `${strokeAnalytics.leftHandRatio}%`;
+  if (elRightBar) elRightBar.style.width = `${strokeAnalytics.rightHandRatio}%`;
+  if (elLeftErr) elLeftErr.textContent = `${strokeAnalytics.leftErrorRate}%`;
+  if (elRightErr) elRightErr.textContent = `${strokeAnalytics.rightErrorRate}%`;
+  if (elRowDist) elRowDist.textContent = `H: ${strokeAnalytics.rowPercentages.home}% • T: ${strokeAnalytics.rowPercentages.top}%`;
+  if (elAvgLatency) elAvgLatency.textContent = `${strokeAnalytics.avgLatencyMs} ms avg`;
+  if (elSlowest) {
+    elSlowest.textContent = strokeAnalytics.slowestKeys.length > 0 
+      ? strokeAnalytics.slowestKeys.slice(0, 3).map(k => `${k.char} (${k.avgMs}ms)`).join(', ')
+      : 'None (Smooth)';
+  }
+  if (elFastest) {
+    elFastest.textContent = strokeAnalytics.fastestKeys.length > 0
+      ? strokeAnalytics.fastestKeys.slice(0, 3).map(k => `${k.char}`).join(', ')
+      : 'Standard';
+  }
+  if (elHesitation) elHesitation.textContent = `${strokeAnalytics.hesitations} pauses`;
+  if (elBurst) elBurst.textContent = `${strokeAnalytics.peakBurstWpm} WPM burst`;
+  if (elCleanStreak) elCleanStreak.textContent = `${strokeAnalytics.maxCleanStreak} chars`;
+  if (elTimeLost) elTimeLost.textContent = `${strokeAnalytics.estimatedSecondsLost} sec lost`;
+  if (elStrokeRatio) elStrokeRatio.textContent = `${state.totalKeystrokes - state.freestyleBackspaces} / ${state.freestyleBackspaces}`;
+
+  // Hide cert banner & adaptive callout for free style
+  const certBanner = document.getElementById('modal-cert-banner');
+  if (certBanner) certBanner.classList.add('hidden');
+  const adaptiveCallout = document.getElementById('modal-adaptive-callout');
+  if (adaptiveCallout) adaptiveCallout.classList.add('hidden');
+
+  // Word breakdown log for freestyle: show typed words
+  const wordsLogTbody = document.getElementById('modal-words-log-tbody');
+  if (wordsLogTbody) {
+    if (words.length === 0) {
+      wordsLogTbody.innerHTML = '<tr><td colspan="6" class="py-3 text-center text-muted">No freestyle words typed yet.</td></tr>';
+    } else {
+      wordsLogTbody.innerHTML = words.slice(0, 50).map((w, idx) => `
+        <tr class="hover:bg-[var(--bg-surface)] transition-colors">
+          <td class="py-1.5 pr-2 text-muted">${idx + 1}</td>
+          <td class="py-1.5 pr-3 font-semibold text-[var(--text-primary)]">${w}</td>
+          <td class="py-1.5 pr-3 text-[var(--text-secondary)]">${w}</td>
+          <td class="py-1.5 pr-3"><span class="text-teal-500 font-semibold">✍ Free Style</span></td>
+          <td class="py-1.5 pr-3 text-muted text-[11px]">${w.length} chars</td>
+          <td class="py-1.5 text-muted text-[11px]">Free Pace</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  renderTimelineChart(state.timeline);
+  document.getElementById('stats-modal')?.classList.add('is-open');
+
+  // Save record to LocalStorage
+  try {
+    const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
+    hist.unshift({
+      id: Date.now(),
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      layout: 'english',
+      mode: 'Free Style Typing',
+      wpm: netWpm,
+      rawWpm: rawWpm,
+      acc: strokeAcc,
+      duration: Math.round(elapsed)
+    });
+    localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
+    updatePersonalBestsCards();
+  } catch (e) {}
+}
+
 // --- 10. PERSONAL BESTS & HISTORY UPDATER ---
 function updatePersonalBestsCards() {
   try {
@@ -925,14 +1236,41 @@ function bindInputEvents() {
       if (!curWord) return;
 
       const isCorrect = (typed === curWord);
+      const hadCorrections = (state.currentWordErrors > 0 || state.currentWordBackspaces > 0);
+      const wordDuration = Math.round(now - (state.currentWordStartTime || now));
+
       if (isCorrect) {
         playBeep(480, 'sine', 0.05, 0.08);
         state.correctKeystrokes += curWord.length + 1;
+        if (hadCorrections) {
+          state.correctedWords++;
+        } else {
+          state.cleanWords++;
+        }
       } else {
         playBeep(160, 'sawtooth', 0.1, 0.1);
         state.errorKeystrokes++;
+        state.incorrectWords++;
       }
       state.totalKeystrokes += (typed.length || 1) + 1;
+
+      // Detailed word-by-word audit logging
+      state.wordsLog.push({
+        index: state.wordIdx + 1,
+        targetWord: curWord,
+        typedWord: typed || '—',
+        isCorrect,
+        hadCorrections,
+        errorsCount: state.currentWordErrors,
+        backspacesCount: state.currentWordBackspaces,
+        strokesCount: (typed.length || 0) + state.currentWordBackspaces + 1,
+        durationMs: wordDuration
+      });
+
+      // Reset tracking for next word
+      state.currentWordErrors = 0;
+      state.currentWordBackspaces = 0;
+      state.currentWordStartTime = performance.now();
 
       state.keystrokeLogs.push({
         timestamp: now,
@@ -996,6 +1334,9 @@ function bindInputEvents() {
 
     // BACKSPACE SUPPORT
     if (e.key === 'Backspace') {
+      state.currentWordBackspaces++;
+      state.totalKeystrokes++;
+
       state.keystrokeLogs.push({
         timestamp: now,
         charExpected: 'Backspace',
@@ -1007,6 +1348,22 @@ function bindInputEvents() {
 
       if (inputField.value.length === 0 && state.wordIdx > 0) {
         e.preventDefault();
+
+        // Revert last word record from stats
+        if (state.wordsLog.length > 0) {
+          const lastLogged = state.wordsLog.pop();
+          if (lastLogged.isCorrect) {
+            if (lastLogged.hadCorrections) {
+              state.correctedWords = Math.max(0, state.correctedWords - 1);
+            } else {
+              state.cleanWords = Math.max(0, state.cleanWords - 1);
+            }
+          } else {
+            state.incorrectWords = Math.max(0, state.incorrectWords - 1);
+          }
+          state.currentWordErrors = lastLogged.errorsCount || 0;
+          state.currentWordBackspaces = lastLogged.backspacesCount || 0;
+        }
 
         const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
         if (curWordEl) {
@@ -1060,6 +1417,15 @@ function bindInputEvents() {
           const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
           const isCharCorrect = (ch === expectedChar);
 
+          state.totalKeystrokes++;
+          if (isCharCorrect) {
+            state.correctKeystrokes++;
+          } else {
+            state.errorKeystrokes++;
+            state.currentWordErrors++;
+            state.errorMap[expectedChar || ch] = (state.errorMap[expectedChar || ch] || 0) + 1;
+          }
+
           state.keystrokeLogs.push({
             timestamp: now,
             charExpected: expectedChar,
@@ -1109,6 +1475,15 @@ function bindInputEvents() {
           }
 
           const isCharCorrect = (ch === expectedChar);
+          state.totalKeystrokes++;
+          if (isCharCorrect) {
+            state.correctKeystrokes++;
+          } else {
+            state.errorKeystrokes++;
+            state.currentWordErrors++;
+            state.errorMap[expectedChar || ch] = (state.errorMap[expectedChar || ch] || 0) + 1;
+          }
+
           state.keystrokeLogs.push({
             timestamp: now,
             charExpected: expectedChar,
@@ -1138,6 +1513,15 @@ function bindInputEvents() {
       } else {
         // English or Preeti native input
         const isCharCorrect = (e.key === expectedChar);
+        state.totalKeystrokes++;
+        if (isCharCorrect) {
+          state.correctKeystrokes++;
+        } else {
+          state.errorKeystrokes++;
+          state.currentWordErrors++;
+          state.errorMap[expectedChar || e.key] = (state.errorMap[expectedChar || e.key] || 0) + 1;
+        }
+
         state.keystrokeLogs.push({
           timestamp: now,
           charExpected: expectedChar,
@@ -1151,7 +1535,82 @@ function bindInputEvents() {
     }
   });
 
+  // FREE STYLE CANVAS BINDINGS
+  const freestyleInput = document.getElementById('freestyle-input');
+  const finishFreestyleBtn = document.getElementById('finish-freestyle-btn');
+
+  freestyleInput?.addEventListener('input', () => {
+    if (state.isFinished) return;
+    if (!state.isRunning && freestyleInput.value.length > 0) startTimer();
+
+    const val = freestyleInput.value;
+    state.freestyleText = val;
+    state.freestyleChars = val.length;
+    const words = val.trim().split(/\s+/).filter(Boolean);
+    state.freestyleWords = words.length;
+
+    const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
+    const m = elapsed / 60;
+    const currentWpm = Math.round((val.length / 5) / m);
+
+    const fWordEl = document.getElementById('freestyle-word-count');
+    const fCharEl = document.getElementById('freestyle-char-count');
+    const fBurstEl = document.getElementById('freestyle-burst-wpm');
+
+    if (fWordEl) fWordEl.textContent = `${words.length}`;
+    if (fCharEl) fCharEl.textContent = `${val.length}`;
+    if (fBurstEl) fBurstEl.textContent = `${currentWpm} WPM`;
+
+    updateLiveStats();
+  });
+
+  freestyleInput?.addEventListener('keydown', (e) => {
+    if (state.isFinished) return;
+    if (!state.isRunning) startTimer();
+
+    const now = performance.now();
+    const deltaMs = state.lastStrokeTime > 0 ? Math.max(10, Math.min(3000, Math.round(now - state.lastStrokeTime))) : 150;
+    state.lastStrokeTime = now;
+    state.totalKeystrokes++;
+
+    if (e.key === 'Backspace') {
+      state.freestyleBackspaces++;
+      state.keystrokeLogs.push({
+        timestamp: now,
+        charExpected: 'Backspace',
+        charTyped: 'Backspace',
+        isCorrect: false,
+        code: 'Backspace',
+        latencyMs: deltaMs
+      });
+      return;
+    }
+
+    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      state.correctKeystrokes++;
+      state.keystrokeLogs.push({
+        timestamp: now,
+        charExpected: e.key,
+        charTyped: e.key,
+        isCorrect: true,
+        code: e.code,
+        latencyMs: deltaMs
+      });
+    }
+  });
+
+  finishFreestyleBtn?.addEventListener('click', () => {
+    finishFreestyleTest();
+  });
+
   window.addEventListener('keydown', (e) => {
+    if (state.mode === 'freestyle') {
+      if (document.activeElement !== freestyleInput && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+        freestyleInput?.focus();
+      }
+      return;
+    }
+
     if (document.activeElement !== inputField && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
       inputField?.focus();
     }
@@ -1213,12 +1672,25 @@ function bindToolbarEvents() {
       const examOpts = document.getElementById('exam-options');
       const adaptiveOpts = document.getElementById('adaptive-options');
       const diffOpts = document.getElementById('diff-options');
+      const freestyleOpts = document.getElementById('freestyle-options');
 
       if (timeOpts) timeOpts.classList.toggle('hidden', state.mode !== 'time');
       if (wordsOpts) wordsOpts.classList.toggle('hidden', state.mode !== 'words');
       if (examOpts) examOpts.classList.toggle('hidden', state.mode !== 'exam');
       if (adaptiveOpts) adaptiveOpts.classList.toggle('hidden', state.mode !== 'adaptive');
-      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive');
+      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive' || state.mode === 'freestyle');
+      if (freestyleOpts) freestyleOpts.classList.toggle('hidden', state.mode !== 'freestyle');
+
+      if (state.mode === 'freestyle') {
+        state.lang = 'english';
+        document.querySelectorAll('.lang-tab-btn').forEach(b => {
+          const isTarget = b.dataset.lang === 'english';
+          b.classList.toggle('active', isTarget);
+          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+          b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+          b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
+        });
+      }
 
       setupTest();
     });
@@ -1459,7 +1931,7 @@ function bindToolbarEvents() {
       });
     }
 
-    if (qMode && ['time', 'words', 'sentences', 'quotes', 'exam', 'adaptive'].includes(qMode)) {
+    if (qMode && ['time', 'words', 'sentences', 'quotes', 'exam', 'adaptive', 'freestyle'].includes(qMode)) {
       state.mode = qMode;
       document.querySelectorAll('.mode-tab-btn').forEach(b => {
         const isTarget = b.dataset.mode === qMode;
@@ -1473,12 +1945,25 @@ function bindToolbarEvents() {
       const examOpts = document.getElementById('exam-options');
       const adaptiveOpts = document.getElementById('adaptive-options');
       const diffOpts = document.getElementById('diff-options');
+      const freestyleOpts = document.getElementById('freestyle-options');
 
       if (timeOpts) timeOpts.classList.toggle('hidden', state.mode !== 'time');
       if (wordsOpts) wordsOpts.classList.toggle('hidden', state.mode !== 'words');
       if (examOpts) examOpts.classList.toggle('hidden', state.mode !== 'exam');
       if (adaptiveOpts) adaptiveOpts.classList.toggle('hidden', state.mode !== 'adaptive');
-      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive');
+      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive' || state.mode === 'freestyle');
+      if (freestyleOpts) freestyleOpts.classList.toggle('hidden', state.mode !== 'freestyle');
+
+      if (state.mode === 'freestyle') {
+        state.lang = 'english';
+        document.querySelectorAll('.lang-tab-btn').forEach(b => {
+          const isTarget = b.dataset.lang === 'english';
+          b.classList.toggle('active', isTarget);
+          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+          b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+          b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
+        });
+      }
 
       if (qExam && ['full', '5m', '10m'].includes(qExam)) {
         state.examType = qExam;
