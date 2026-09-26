@@ -1,95 +1,105 @@
-/**
- * TopNepali Typing — Smart Adaptive Drill & Weak Key Correction Algorithm
- * 
- * Features:
- * 1. Persistent error profiling per key & stroke (frequency + hesitation latency)
- * 2. Inverted character index across English and authentic Devanagari dictionaries
- * 3. Density scoring function boosting words with multiple co-occurring target strokes
- * 4. Natural drill sentence and word cluster generator
- */
 
 const PROFILE_STORAGE_KEY = 'topnepali_stroke_profile';
 
 // =========================================================================
-// 1. DICTIONARIES & VOCABULARY FOR TARGETED STROKE GENERATION
+// 1. COMPREHENSIVE VOCABULARY COVERING EVERY KEY (A-Z & DEVANAGARI)
 // =========================================================================
 
 export const ADAPTIVE_ENGLISH_WORDS = [
-  // W & O rich
-  'own', 'owl', 'low', 'blow', 'slow', 'glow', 'flow', 'show', 'grow', 'snow',
-  'crow', 'brow', 'down', 'town', 'gown', 'clown', 'drown', 'frown', 'brown',
-  'bowl', 'howl', 'fowl', 'word', 'work', 'worm', 'worn', 'world', 'worth', 'worse',
-  'wood', 'wool', 'wound', 'power', 'tower', 'flower', 'shower', 'powder', 'vowel',
-  'towel', 'below', 'fellow', 'yellow', 'pillow', 'willow', 'window', 'shadow',
-  'meadow', 'arrow', 'narrow', 'sparrow', 'sorrow', 'borrow', 'follow', 'hollow',
-  'swallow', 'wallow', 'elbow', 'rainbow', 'owner', 'coworker', 'downward', 'outward',
-  'network', 'workflow', 'workshop', 'clockwise', 'backward', 'forward', 'knowledge',
-  
-  // E, R, T, Y rich
-  'every', 'water', 'letter', 'better', 'street', 'winter', 'butter', 'pretty',
-  'treat', 'retry', 'theory', 'thirty', 'energy', 'return', 'system', 'twenty',
-  'yesterday', 'mystery', 'battery', 'lottery', 'pottery', 'territory', 'gravity',
-  
-  // A, S, D, F, G (Home row)
-  'glad', 'glass', 'grass', 'flag', 'flask', 'flash', 'salad', 'staff', 'half',
-  'fall', 'fast', 'dash', 'safe', 'sage', 'fade', 'game', 'gate', 'shade', 'shaft',
-  'agas', 'salsa', 'alfalfa', 'gasoline', 'cascade', 'safeguard', 'flatland',
-  
-  // C, V, B, N, M (Bottom row)
-  'cabin', 'cable', 'bacon', 'combine', 'common', 'carbon', 'banner', 'manner',
-  'number', 'member', 'november', 'canyon', 'vacuum', 'vanilla', 'balance',
-  'minimum', 'maximum', 'vibrate', 'vibrant', 'movement', 'monument', 'november',
-  
-  // Q, Z, X, J, K, P (Rare / trickier keys)
-  'quick', 'quiet', 'quite', 'quote', 'queen', 'quest', 'equal', 'liquid',
-  'plaza', 'puzzle', 'blaze', 'breeze', 'freeze', 'bronze', 'citizen', 'horizon',
-  'exact', 'extra', 'toxic', 'relax', 'expert', 'complex', 'maximum', 'oxygen',
-  'judge', 'jump', 'juice', 'major', 'object', 'project', 'adjust', 'journey',
-  'spark', 'speak', 'impact', 'package', 'pickup', 'jacket', 'blanket', 'pocket',
-
-  // Literature & technology vocabulary
-  'algorithm', 'keyboard', 'computer', 'software', 'hardware', 'developer',
-  'interface', 'bandwidth', 'protocol', 'database', 'connection', 'execution',
-  'responsive', 'framework', 'parameter', 'frequency', 'keystroke', 'rhythm',
-  'accuracy', 'discipline', 'experience', 'confidence', 'milestone', 'perspective'
+  // A
+  'about', 'after', 'again', 'animal', 'answer', 'always', 'appear', 'awake', 'adapt', 'alarm', 'avatar', 'atlas', 'action', 'artist',
+  // B
+  'build', 'balance', 'better', 'become', 'believe', 'between', 'brother', 'object', 'public', 'bronze', 'habit', 'breeze', 'blanket',
+  // C
+  'circle', 'center', 'catch', 'notice', 'chance', 'voice', 'clean', 'space', 'decide', 'practice', 'focus', 'force', 'access', 'cancel',
+  // D
+  'decide', 'demand', 'different', 'middle', 'under', 'stand', 'order', 'direct', 'discover', 'ladder', 'divide', 'shadow', 'meadow',
+  // E
+  'every', 'enter', 'effect', 'energy', 'element', 'level', 'expect', 'secret', 'general', 'eleven', 'remember', 'letter', 'better',
+  // F
+  'first', 'family', 'figure', 'follow', 'force', 'field', 'flower', 'prefer', 'office', 'profit', 'factor', 'flight', 'effort', 'defeat',
+  // G
+  'great', 'group', 'govern', 'ground', 'organize', 'begin', 'degree', 'garden', 'bridge', 'guess', 'guard', 'energy', 'target',
+  // H
+  'house', 'hand', 'hold', 'happen', 'health', 'human', 'whole', 'rhythm', 'physical', 'method', 'history', 'honest', 'height', 'shadow',
+  // I
+  'imagine', 'inspire', 'inside', 'initial', 'limit', 'spirit', 'finish', 'citizen', 'listen', 'visual', 'silent', 'winter', 'liquid',
+  // J
+  'judge', 'journey', 'enjoy', 'project', 'major', 'object', 'inject', 'adjust', 'justice', 'jungle', 'jacket', 'junior', 'injury',
+  // K
+  'strike', 'market', 'make', 'break', 'skill', 'weak', 'know', 'quick', 'risk', 'block', 'shock', 'check', 'pocket', 'jacket', 'blanket',
+  // L
+  'little', 'letter', 'level', 'light', 'local', 'line', 'place', 'world', 'follow', 'simple', 'visual', 'balance', 'clown', 'yellow',
+  // M
+  'memory', 'moment', 'summer', 'commit', 'member', 'system', 'minimum', 'movement', 'measure', 'common', 'hammer', 'camera', 'sample',
+  // N
+  'nation', 'learn', 'remain', 'begin', 'number', 'sound', 'planet', 'person', 'define', 'natural', 'dinner', 'banner', 'manner',
+  // O
+  'order', 'power', 'world', 'point', 'control', 'story', 'moment', 'follow', 'notice', 'option', 'focus', 'smooth', 'shadow', 'meadow',
+  // P
+  'practice', 'people', 'person', 'problem', 'power', 'prepare', 'public', 'purpose', 'report', 'principle', 'prefer', 'pocket', 'paper',
+  // Q
+  'quick', 'quite', 'question', 'quiet', 'queen', 'quality', 'equal', 'liquid', 'request', 'require', 'square', 'sequence', 'unique',
+  // R
+  'return', 'rhythm', 'require', 'error', 'mirror', 'remember', 'order', 'strong', 'direct', 'reason', 'nature', 'record', 'carrier',
+  // S
+  'system', 'sense', 'status', 'season', 'assist', 'successful', 'silent', 'listen', 'state', 'stress', 'surface', 'lesson', 'tissue',
+  // T
+  'letter', 'street', 'total', 'little', 'rhythm', 'target', 'matter', 'settle', 'state', 'trust', 'attempt', 'future', 'thirty', 'twenty',
+  // U
+  'unique', 'usual', 'future', 'useful', 'nature', 'mutual', 'culture', 'pursue', 'visual', 'figure', 'status', 'puzzle', 'vacuum',
+  // V
+  'voice', 'visual', 'vibrant', 'value', 'resolve', 'heavy', 'reveal', 'drive', 'clever', 'provide', 'event', 'review', 'vowel', 'novel',
+  // W
+  'own', 'owl', 'power', 'world', 'write', 'wrong', 'answer', 'follow', 'window', 'between', 'flower', 'allow', 'switch', 'awake', 'glow', 'blow', 'slow', 'workflow',
+  // X
+  'exact', 'extra', 'expert', 'expect', 'complex', 'relax', 'toxic', 'fixed', 'oxygen', 'luxury', 'dynamic', 'index', 'matrix', 'maximum',
+  // Y
+  'rhythm', 'mystery', 'system', 'supply', 'dynamic', 'enjoy', 'symbol', 'policy', 'energy', 'verify', 'crystal', 'yellow', 'pretty',
+  // Z
+  'puzzle', 'bronze', 'horizon', 'breeze', 'frozen', 'hazard', 'citizen', 'zero', 'analyze', 'plaza', 'realize', 'blaze', 'blizzard'
 ];
 
 export const ADAPTIVE_NEPALI_WORDS = [
-  // ध, भ, म, न, ब (Consonants often confused or tricky)
-  'धर्म', 'धन्यवाद', 'प्रधान', 'संविधान', 'अधिकार', 'साधना', 'विधेयक', 'धार',
-  'धनी', 'धर्ती', 'धनुष', 'ध्वनि', 'धैर्य', 'धमिलो', 'धुवाँ', 'धरातल',
-  'भारत', 'भविष्य', 'भावना', 'अभियान', 'प्रभुत्व', 'सभ्यता', 'भवन', 'भरोसा',
-  'भक्ति', 'भाग', 'भाग्य', 'भाषा', 'भारी', 'भुइँ', 'भूगोल', 'भ्रष्टाचार',
-  'सम्बन्ध', 'सम्भव', 'वैभव', 'अनुभव', 'प्रभाव', 'स्वभाव', 'विभाजन', 'अभ्यास',
-  
-  // Halanta & Conjuncts (्, ज्ञ, त्र, क्ष, ङ्क, ङ्ग, द्ध, द्य)
-  'ज्ञान', 'विज्ञ', 'प्रज्ञा', 'जिज्ञासा', 'अज्ञात', 'वैज्ञानिक', 'कृतज्ञ',
-  'मित्र', 'क्षेत्र', 'चरित्र', 'पत्र', 'छात्र', 'यात्रा', 'रात्री', 'चित्र',
-  'शिक्षा', 'लक्षण', 'सुरक्षा', 'अध्यक्ष', 'परीक्षा', 'प्रतिक्षा', 'मोक्ष',
-  'गङ्गा', 'सङ्घर्ष', 'सङ्गीत', 'अङ्क', 'पङ्क्ति', 'शङ्का', 'दङ्गा', 'रङ्ग',
-  'बुद्धि', 'शुद्ध', 'प्रसिद्ध', 'सिद्धि', 'युद्ध', 'समृद्धि', 'विरुद्ध',
-  'विद्या', 'विद्युत्', 'उद्यम', 'पद्य', 'गद्य', 'अद्यतन', 'मध्याह्न',
-  
-  // ष, श, स (Sibilants distinction)
-  'विशेष', 'आकर्षण', 'भूषण', 'दोष', 'वर्ष', 'हर्ष', 'धनुष', 'पुरुष', 'विषय',
-  'शान्ति', 'देश', 'शिक्षा', 'प्रकाश', 'शिखर', 'शब्द', 'शक्ति', 'शासन',
-  'संसार', 'समय', 'समाज', 'साहित्य', 'सुन्दर', 'सपना', 'सत्य', 'सद्भाव',
-  
-  // ख, घ, छ, झ, ठ, ढ (Aspirated consonants)
-  'खोला', 'खुसी', 'खरायो', 'खोज', 'खुकुरी', 'लेखक', 'सुख', 'साख',
-  'घर', 'घाम', 'घण्टी', 'घमण्ड', 'घरेलु', 'घटना', 'बाघ', 'ओघ',
-  'छाया', 'छाना', 'छोरी', 'छोरा', 'छहारी', 'इच्छा', 'स्वच्छ', 'गुच्छा',
-  'झरना', 'झ्याल', 'झण्डा', 'झरी', 'झुण्ड', 'झिमझिम', 'झुल्केघाम',
-  'ठूलो', 'ठिक', 'ठमेल', 'पाठक', 'कण्ठ', 'ओठ', 'काठ', 'इँटा',
-  'ढोका', 'ढुङ्गा', 'ढाका', 'बढुवा', 'असाढ', 'दृढ', 'प्रौढ',
-  
-  // Daily, Culture & Tech Nepali
-  'नेपाल', 'काठमाडौँ', 'पोखरा', 'हिमाल', 'सगरमाथा', 'अन्नपूर्ण', 'गौतम', 'बुद्ध',
-  'कम्प्युटर', 'इन्टरनेट', 'प्रविधि', 'सञ्चार', 'मोवाइल', 'डिजिटल', 'सञ्जाल',
-  'किबोर्ड', 'टाइपिङ', 'गति', 'शुद्धता', 'अक्षर', 'वाक्य', 'किताब', 'कलम'
+  // क, ख, ग, घ, ङ
+  'कलम', 'किताब', 'कमल', 'कठिन', 'कर्तव्य', 'कार्य', 'खोला', 'खुसी', 'खरायो', 'खोज', 'खुकुरी',
+  'गाउँ', 'गीत', 'गफगाफ', 'गौतम', 'घर', 'घाम', 'घण्टी', 'घमण्ड', 'घरेलु', 'गङ्गा', 'दङ्गा', 'रङ्ग',
+  // च, छ, ज, झ, ञ
+  'चिया', 'चरा', 'चार', 'चाडपर्व', 'छाया', 'छाना', 'छोरी', 'छोरा', 'इच्छा', 'स्वच्छ',
+  'जीवन', 'जनता', 'जल', 'जागृति', 'झरना', 'झ्याल', 'झण्डा', 'झरी', 'झुण्ड', 'अञ्चल', 'सञ्चार',
+  // ट, ठ, ड, ढ, ण
+  'टोपी', 'टुप्पो', 'टमटर', 'ठूलो', 'ठिक', 'ठमेल', 'ओठ', 'काठ', 'डर', 'डाँडा', 'डोरी',
+  'ढोका', 'ढुङ्गा', 'ढाका', 'दृढ', 'कण्ठ', 'लक्षण', 'कारण', 'चरण', 'प्रमाण',
+  // त, थ, द, ध, न
+  'तातो', 'तारा', 'तिमी', 'तपस्या', 'थाली', 'थाहा', 'स्थान', 'साथी', 'दिन', 'दाल', 'देश', 'दही',
+  'धर्म', 'धन्यवाद', 'प्रधान', 'संविधान', 'अधिकार', 'साधना', 'धनी', 'धर्ती', 'धनुष', 'ध्वनि', 'धैर्य',
+  'नाम', 'नाच', 'नयाँ', 'नदी', 'नेपाल', 'नेपाली',
+  // प, फ, ब, भ, म
+  'पानी', 'पात', 'फूल', 'पहिरो', 'परीक्षा', 'फोन', 'फलफूल', 'फराकिलो', 'बाबा', 'बाटो', 'बहिनी', 'बुबा',
+  'भारत', 'भविष्य', 'भावना', 'अभियान', 'प्रभुत्व', 'सभ्यता', 'भवन', 'भरोसा', 'भक्ति', 'भाग', 'भाग्य', 'भाषा',
+  'मन', 'माटो', 'माया', 'मिठो', 'मेरो', 'मिहिनेत',
+  // य, र, ल, व, श, ष, स, ह
+  'यहाँ', 'यात्रा', 'योग्य', 'रात', 'रुख', 'रोटी', 'राम्रो', 'लाल', 'लामो', 'लोकतन्त्र', 'विकास', 'वातावरण',
+  'शान्ति', 'शिक्षा', 'प्रकाश', 'शिखर', 'शब्द', 'विशेष', 'आकर्षण', 'भूषण', 'दोष', 'वर्ष', 'सपना', 'संसार', 'समय', 'समाज',
+  'हाँसो', 'हिमाल', 'हिउँ', 'हावा', 'हाम्रो',
+  // Conjuncts & Halanta
+  'ज्ञान', 'विज्ञ', 'प्रज्ञा', 'मित्र', 'क्षेत्र', 'चरित्र', 'पत्र', 'छात्र', 'बुद्धि', 'शुद्ध', 'विद्या', 'विद्युत्'
 ];
 
-// Pre-built Inverted Character Indexes
+export const DIAGNOSTIC_ENGLISH_WORDS = [
+  'flask', 'salad', 'dash', 'glad', 'half', 'safe', 'fast', 'fall',
+  'quite', 'power', 'write', 'tree', 'route', 'young', 'input', 'water',
+  'cabin', 'bacon', 'vibrant', 'member', 'noble', 'clean', 'voice',
+  'quick', 'jumps', 'brown', 'judge', 'pack', 'freeze', 'extra', 'relax'
+];
+
+export const DIAGNOSTIC_NEPALI_WORDS = [
+  'घर', 'पानी', 'माया', 'चिया', 'नेपाल', 'हिमाल', 'रुख', 'फूल',
+  'किताब', 'कलम', 'मिठो', 'दिन', 'रात', 'गाउँ', 'शहर', 'आकाश',
+  'धर्म', 'शान्ति', 'समय', 'समाज', 'ज्ञान', 'शिक्षा', 'मित्र', 'कार्य'
+];
+
+// Pre-built inverted indexes
 const englishIndex = buildInvertedIndex(ADAPTIVE_ENGLISH_WORDS);
 const nepaliIndex = buildInvertedIndex(ADAPTIVE_NEPALI_WORDS);
 
@@ -106,7 +116,7 @@ function buildInvertedIndex(wordList) {
 }
 
 // =========================================================================
-// 2. STROKE ERROR & HESITATION PROFILING
+// 2. STROKE RECORDING & REAL PROFILE ANALYSIS
 // =========================================================================
 
 export function getStrokeProfile() {
@@ -117,13 +127,19 @@ export function getStrokeProfile() {
   }
 }
 
+export function resetStrokeProfile() {
+  try {
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+  } catch (e) { }
+}
+
 export function recordStrokeData(char, isCorrect, latencyMs = 200) {
   if (!char || char === ' ') return;
   const profile = getStrokeProfile();
   const c = char.toLowerCase();
 
   if (!profile[c]) {
-    profile[c] = { hits: 0, errors: 0, totalLatency: 0, latenciesCount: 0 };
+    profile[c] = { hits: 0, errors: 0, totalLatency: 0, latenciesCount: 0, recent: [] };
   }
 
   profile[c].hits++;
@@ -135,164 +151,218 @@ export function recordStrokeData(char, isCorrect, latencyMs = 200) {
     profile[c].latenciesCount++;
   }
 
+  // Rolling window of last 15 attempts (1 = correct, 0 = error)
+  if (!Array.isArray(profile[c].recent)) profile[c].recent = [];
+  profile[c].recent.push(isCorrect ? 1 : 0);
+  if (profile[c].recent.length > 15) {
+    profile[c].recent.shift();
+  }
+
   try {
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-  } catch (e) {}
+  } catch (e) { }
 }
 
 /**
- * Returns user's ranked weakest keys/strokes
+ * Analyzes genuine stroke profile for the selected language.
+ * Returns { hasEnoughData: boolean, totalHits: number, totalErrors: number, keys: Array }
+ * Returns NO fake defaults if the user has no recorded mistakes!
  */
-export function getWeakestKeys(lang = 'english', limit = 4) {
+export function getWeakKeysAnalysis(lang = 'english', limit = 4) {
   const profile = getStrokeProfile();
+  const isEng = (lang === 'english');
   const scored = [];
+  let totalHits = 0;
+  let totalErrors = 0;
 
   for (const [ch, data] of Object.entries(profile)) {
-    const total = data.hits || 1;
+    const code = ch.charCodeAt(0);
+    const isAsciiLetter = (code >= 97 && code <= 122);
+    if (isEng && !isAsciiLetter) continue;
+    if (!isEng && isAsciiLetter) continue;
+
+    const hits = data.hits || 0;
     const errors = data.errors || 0;
-    const errorRate = (errors / total);
-    const avgLatency = data.latenciesCount > 0 ? (data.totalLatency / data.latenciesCount) : 250;
+    totalHits += hits;
+    totalErrors += errors;
 
-    // Weakness formula: heavy error weight + hesitation latency penalty
-    const score = (errors * 4) + (errorRate * 25) + Math.max(0, (avgLatency - 350) / 40);
+    if (hits >= 2 && errors > 0) {
+      const errorRate = errors / hits;
+      const accuracy = Math.round((1 - errorRate) * 100);
+      const avgLatency = data.latenciesCount > 0 ? (data.totalLatency / data.latenciesCount) : 250;
 
-    if (errors > 0 || avgLatency > 400) {
+      // Recent accuracy in rolling window
+      const recent = data.recent || [];
+      const recentCorrect = recent.filter(r => r === 1).length;
+      const recentAccuracy = recent.length > 0 ? Math.round((recentCorrect / recent.length) * 100) : accuracy;
+
+      // Score formula: prioritizing highest error ratio + error count
+      const score = (errorRate * 90) + (errors * 6) + Math.max(0, (avgLatency - 320) / 20);
+
       scored.push({
         char: ch,
         score,
         errors,
-        accuracy: Math.round((1 - errorRate) * 100),
+        hits,
+        errorRate,
+        accuracy,
+        recentAccuracy,
+        recentCount: recent.length,
         avgLatencyMs: Math.round(avgLatency)
       });
     }
   }
 
+  // Sort by score descending (worst error ratio at top)
   scored.sort((a, b) => b.score - a.score);
 
-  if (scored.length > 0) {
-    return scored.slice(0, limit);
-  }
+  const hasEnoughData = (totalHits >= 15 && totalErrors >= 1 && scored.length > 0);
 
-  // Fallback defaults if new user has no errors yet
-  if (lang === 'english') {
-    return [
-      { char: 'w', score: 10, errors: 2, accuracy: 80, avgLatencyMs: 320 },
-      { char: 'o', score: 9, errors: 2, accuracy: 82, avgLatencyMs: 310 },
-      { char: 'r', score: 7, errors: 1, accuracy: 88, avgLatencyMs: 290 },
-      { char: 'p', score: 6, errors: 1, accuracy: 90, avgLatencyMs: 300 }
-    ];
-  } else {
-    return [
-      { char: 'ध', score: 10, errors: 2, accuracy: 78, avgLatencyMs: 350 },
-      { char: '्', score: 9, errors: 2, accuracy: 80, avgLatencyMs: 340 },
-      { char: 'भ', score: 8, errors: 2, accuracy: 82, avgLatencyMs: 320 },
-      { char: 'ष', score: 7, errors: 1, accuracy: 85, avgLatencyMs: 310 }
-    ];
-  }
+  return {
+    hasEnoughData,
+    totalHits,
+    totalErrors,
+    keys: scored.slice(0, limit)
+  };
+}
+
+// Backward-compatibility wrapper
+export function getWeakestKeys(lang = 'english', limit = 3) {
+  const analysis = getWeakKeysAnalysis(lang, limit);
+  return analysis.keys;
 }
 
 // =========================================================================
-// 3. TARGETED WORD & SENTENCE GENERATOR
+// 3. TARGET KEY MASTERY & PROGRESSION LOGIC
 // =========================================================================
 
 /**
- * Generates an adaptive practice set specifically packed with targeted weak keys
+ * Checks if the current target key has reached mastery (>= 90% recent accuracy with >= 6 hits)
+ */
+export function checkTargetKeyMastery(targetKey) {
+  if (!targetKey) return { mastered: false, recentAccuracy: 0, hits: 0 };
+  const profile = getStrokeProfile();
+  const c = targetKey.toLowerCase();
+  const data = profile[c];
+  if (!data) return { mastered: false, recentAccuracy: 0, hits: 0 };
+
+  const recent = data.recent || [];
+  if (recent.length < 6) {
+    return { mastered: false, recentAccuracy: 0, hits: data.hits };
+  }
+
+  const recentCorrect = recent.filter(r => r === 1).length;
+  const recentAccuracy = Math.round((recentCorrect / recent.length) * 100);
+
+  // If recent accuracy is 90% or higher across at least 6 hits, key is mastered!
+  const isMastered = (recentAccuracy >= 90);
+
+  return {
+    mastered: isMastered,
+    recentAccuracy,
+    hits: data.hits,
+    errors: data.errors
+  };
+}
+
+// =========================================================================
+// 4. DYNAMIC WORD GENERATION (NO FAKE WORDS)
+// =========================================================================
+
+export function generateDiagnosticWords(lang = 'english', count = 30) {
+  const pool = (lang === 'english') ? DIAGNOSTIC_ENGLISH_WORDS : DIAGNOSTIC_NEPALI_WORDS;
+  const out = [];
+  while (out.length < count) {
+    const sh = [...pool].sort(() => 0.5 - Math.random());
+    out.push(...sh);
+  }
+  return out.slice(0, count);
+}
+
+/**
+ * Generates drill words specifically targeted at the user's real weak key(s)
  */
 export function generateAdaptiveWords(options = {}) {
   const {
     lang = 'english',
     targetKeys = null,
-    targetCount = 30
+    targetCount = 35
   } = options;
 
-  const isEng = lang === 'english';
+  const isEng = (lang === 'english');
   const wordPool = isEng ? ADAPTIVE_ENGLISH_WORDS : ADAPTIVE_NEPALI_WORDS;
   const index = isEng ? englishIndex : nepaliIndex;
 
-  // Determine target keys
+  // If no target keys supplied, check real analysis
   let keys = targetKeys;
   if (!keys || keys.length === 0) {
-    const weak = getWeakestKeys(lang, 3);
-    keys = weak.map(w => w.char);
+    const analysis = getWeakKeysAnalysis(lang, 2);
+    if (!analysis.hasEnoughData || analysis.keys.length === 0) {
+      // Serve diagnostic baseline set
+      return generateDiagnosticWords(lang, targetCount);
+    }
+    keys = analysis.keys.map(k => k.char);
   }
 
   const normalizedKeys = keys.map(k => k.toLowerCase());
-  const keyWeightMap = {};
-  normalizedKeys.forEach((k, idx) => {
-    keyWeightMap[k] = (normalizedKeys.length - idx) * 3;
-  });
+  const primaryKey = normalizedKeys[0];
+  const secondaryKey = normalizedKeys[1] || null;
 
-  // Score all candidate words
+  // Retrieve words containing primary target key from inverted index
+  const matchingIndices = index[primaryKey] || [];
+  const candidateIndices = new Set(matchingIndices);
+
+  if (secondaryKey && index[secondaryKey]) {
+    index[secondaryKey].forEach(idx => candidateIndices.add(idx));
+  }
+
   const scoredWords = [];
 
-  wordPool.forEach((word) => {
+  candidateIndices.forEach(idx => {
+    const word = wordPool[idx];
+    if (!word) return;
     const lowerWord = word.toLowerCase();
-    let hits = 0;
-    let distinctHits = 0;
-    let weightSum = 0;
 
-    normalizedKeys.forEach(k => {
-      let countInWord = 0;
-      let pos = lowerWord.indexOf(k);
-      while (pos !== -1) {
-        countInWord++;
-        pos = lowerWord.indexOf(k, pos + 1);
+    let primaryHits = 0;
+    let pPos = lowerWord.indexOf(primaryKey);
+    while (pPos !== -1) {
+      primaryHits++;
+      pPos = lowerWord.indexOf(primaryKey, pPos + 1);
+    }
+
+    let secondaryHits = 0;
+    if (secondaryKey) {
+      let sPos = lowerWord.indexOf(secondaryKey);
+      while (sPos !== -1) {
+        secondaryHits++;
+        sPos = lowerWord.indexOf(secondaryKey, sPos + 1);
       }
-      if (countInWord > 0) {
-        distinctHits++;
-        hits += countInWord;
-        weightSum += (keyWeightMap[k] || 1) * countInWord;
-      }
-    });
+    }
 
-    if (hits > 0) {
-      // Co-occurrence multiplier: words having MULTIPLE target keys get exponential boost!
-      const coOccurrenceMultiplier = Math.pow(distinctHits, 1.6);
-      const densityScore = (weightSum * coOccurrenceMultiplier) / Math.sqrt(word.length);
-
-      scoredWords.push({
-        word,
-        score: densityScore,
-        hits,
-        distinctHits
-      });
+    if (primaryHits > 0 || secondaryHits > 0) {
+      // Density score: reward repeated occurrences of primary key + co-occurrence of secondary
+      const baseScore = (primaryHits * 4) + (secondaryHits * 2.5);
+      const density = baseScore / Math.sqrt(word.length);
+      scoredWords.push({ word, score: density, primaryHits, secondaryHits });
     }
   });
 
-  // Sort by target stroke density
   scoredWords.sort((a, b) => b.score - a.score);
 
-  // Weighted reservoir sampling to combine high density with variety
-  const selectedWords = [];
-  const topSlice = scoredWords.slice(0, Math.max(25, scoredWords.length));
-
-  if (topSlice.length === 0) {
-    return wordPool.slice(0, targetCount);
+  if (scoredWords.length === 0) {
+    return generateDiagnosticWords(lang, targetCount);
   }
 
-  while (selectedWords.length < targetCount) {
-    // 75% chance pick from top 30% densest words, 25% chance pick from wider pool
-    const pool = (Math.random() < 0.75) ? topSlice.slice(0, Math.ceil(topSlice.length * 0.4)) : topSlice;
+  // Pick top-density words with variety
+  const topCandidates = scoredWords.slice(0, Math.min(30, scoredWords.length));
+  const result = [];
+
+  while (result.length < targetCount) {
+    // 80% chance pick from top 50% densest candidates, 20% from broader pool
+    const pool = (Math.random() < 0.8) ? topCandidates.slice(0, Math.ceil(topCandidates.length * 0.5)) : topCandidates;
     const picked = pool[Math.floor(Math.random() * pool.length)].word;
-    selectedWords.push(picked);
+    result.push(picked);
   }
 
-  return selectedWords;
-}
-
-/**
- * Generate formatted sentence drill for targeted keys
- */
-export function generateAdaptiveSentences(lang = 'english', targetKeys = null) {
-  const words = generateAdaptiveWords({ lang, targetKeys, targetCount: 40 });
-  const phrases = [];
-
-  for (let i = 0; i < words.length; i += 4) {
-    const chunk = words.slice(i, i + 4);
-    if (chunk.length > 0) {
-      phrases.push(chunk.join(' '));
-    }
-  }
-
-  return phrases.join('. ') + '.';
+  return result;
 }

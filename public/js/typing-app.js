@@ -15,7 +15,15 @@ import { DATA } from './data/typing-words.js';
 import { KEY_ROWS, KEY_CODE_MAP } from './data/keyboards.js';
 import { toPreeti } from './utils/preeti-converter.js';
 import { saveCertificate, checkCertificationPass, getSpeedRank } from './utils/certificate-db.js';
-import { generateAdaptiveWords, getWeakestKeys, recordStrokeData } from './utils/adaptive-engine.js';
+import { 
+  generateAdaptiveWords, 
+  generateDiagnosticWords, 
+  getWeakKeysAnalysis, 
+  getWeakestKeys, 
+  recordStrokeData, 
+  checkTargetKeyMastery, 
+  resetStrokeProfile 
+} from './utils/adaptive-engine.js';
 import { analyzeTypingRun } from './utils/stroke-analytics.js';
 
 // --- 1. SEGMENTER & GRAPHEME UTILITIES ---
@@ -60,6 +68,9 @@ let state = {
   keystrokeLogs: [],
   lastStrokeTime: 0,
   targetWeakKeys: [],
+  adaptivePrimaryTarget: '',
+  adaptiveSecondaryTarget: '',
+  isAdaptiveDiagnostic: false,
   
   paragraphCount: 1,
   
@@ -117,17 +128,45 @@ function getWordsPool() {
 
   // ADAPTIVE DRILL MODE: Targeted high-density weak keys
   if (state.mode === 'adaptive') {
-    const weak = getWeakestKeys(state.lang, 3);
-    state.targetWeakKeys = weak.map(w => w.char);
+    const analysis = getWeakKeysAnalysis(state.lang, 3);
     const targetTags = document.getElementById('adaptive-target-tags');
-    if (targetTags) {
-      targetTags.textContent = state.targetWeakKeys.join(', ').toUpperCase();
+    const metaPill = document.getElementById('adaptive-meta-pill');
+    const accDisp = document.getElementById('adaptive-acc-display');
+    const nextDisp = document.getElementById('adaptive-next-display');
+
+    if (!analysis.hasEnoughData || analysis.keys.length === 0) {
+      state.isAdaptiveDiagnostic = true;
+      state.targetWeakKeys = [];
+      state.adaptivePrimaryTarget = '';
+      if (targetTags) {
+        targetTags.innerHTML = '<span class="text-amber-400 font-medium">Diagnostic Baseline (Type to map weak keys)</span>';
+      }
+      if (metaPill) metaPill.classList.add('hidden');
+      list = generateDiagnosticWords(state.lang, 35);
+    } else {
+      state.isAdaptiveDiagnostic = false;
+      const primary = analysis.keys[0];
+      const secondary = analysis.keys[1] || null;
+      state.adaptivePrimaryTarget = primary.char;
+      state.adaptiveSecondaryTarget = secondary ? secondary.char : '';
+      state.targetWeakKeys = [primary.char, ...(secondary ? [secondary.char] : [])];
+
+      if (targetTags) {
+        targetTags.innerHTML = `Target: <b class="text-amber-400 font-mono text-xs uppercase px-1.5 py-0.5 rounded bg-amber-500/20">${primary.char}</b> (Current: ${primary.accuracy}% ➔ Goal: 90%)`;
+      }
+      if (metaPill) {
+        metaPill.classList.remove('hidden');
+        if (accDisp) accDisp.textContent = `${primary.accuracy}%`;
+        if (nextDisp) nextDisp.textContent = secondary ? secondary.char.toUpperCase() : 'None';
+      }
+
+      list = generateAdaptiveWords({
+        lang: state.lang,
+        targetKeys: state.targetWeakKeys,
+        targetCount: 35
+      });
     }
-    list = generateAdaptiveWords({
-      lang: state.lang,
-      targetKeys: state.targetWeakKeys,
-      targetCount: 45
-    });
+
     if (state.lang === 'nepali_preeti') {
       list = list.map(w => toPreeti(w));
     }
@@ -433,6 +472,99 @@ function adjust2LineScroll() {
       behavior: 'smooth'
     });
   }
+}
+
+let isMasteryTransitioning = false;
+function triggerAdaptiveMastery(masteredKey, achievedAcc) {
+  if (isMasteryTransitioning) return;
+  isMasteryTransitioning = true;
+
+  const targetTags = document.getElementById('adaptive-target-tags');
+  if (targetTags) {
+    targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🎉 Key '${masteredKey.toUpperCase()}' Mastered (${achievedAcc}%)!</span>`;
+  }
+
+  // Flash the target keycap green if visible
+  const keyObj = Object.values(KEY_CODE_MAP).find(k => {
+    if (state.lang === 'english') {
+      return (k.eng && k.eng[0].toLowerCase() === masteredKey.toLowerCase());
+    }
+    return (k.uni && k.uni[0] === masteredKey) || (k.rom && k.rom[0] === masteredKey);
+  });
+  if (keyObj && keyObj.code) {
+    const kc = document.querySelector(`.keycap[data-code="${keyObj.code}"]`);
+    if (kc) {
+      kc.classList.add('is-mastered-flash');
+      setTimeout(() => kc.classList.remove('is-mastered-flash'), 1800);
+    }
+  }
+
+  // After a brief celebratory moment, advance to the next weakest key
+  setTimeout(() => {
+    isMasteryTransitioning = false;
+    if (state.mode !== 'adaptive') return;
+
+    const analysis = getWeakKeysAnalysis(state.lang, 4);
+    // Find next key with highest error ratio that is not the just-mastered key
+    const remaining = analysis.keys.filter(k => k.char.toLowerCase() !== masteredKey.toLowerCase());
+
+    if (remaining.length > 0) {
+      const nextWeak = remaining[0];
+      const secondWeak = remaining[1] || null;
+      state.adaptivePrimaryTarget = nextWeak.char;
+      state.adaptiveSecondaryTarget = secondWeak ? secondWeak.char : '';
+      state.targetWeakKeys = [nextWeak.char, ...(secondWeak ? [secondWeak.char] : [])];
+
+      if (targetTags) {
+        targetTags.innerHTML = `Target: <b class="text-amber-400 font-mono text-xs uppercase px-1.5 py-0.5 rounded bg-amber-500/20">${nextWeak.char}</b> (Current: ${nextWeak.accuracy}% ➔ Goal: 90%)`;
+      }
+      const accDisp = document.getElementById('adaptive-acc-display');
+      const nextDisp = document.getElementById('adaptive-next-display');
+      if (accDisp) accDisp.textContent = `${nextWeak.accuracy}%`;
+      if (nextDisp) nextDisp.textContent = secondWeak ? secondWeak.char.toUpperCase() : 'None';
+
+      // Generate new drill words targeting the new weak key
+      const newWords = generateAdaptiveWords({
+        lang: state.lang,
+        targetKeys: state.targetWeakKeys,
+        targetCount: 35
+      });
+      state.words = newWords;
+      state.wordIdx = 0;
+      state.typedWords = [];
+
+      // Re-populate words container
+      const container = document.getElementById('words-container');
+      const inputField = document.getElementById('typing-input');
+      if (inputField) inputField.value = '';
+
+      if (container) {
+        container.innerHTML = '';
+        const caretDiv = document.createElement('div');
+        caretDiv.id = 'typing-caret';
+        caretDiv.className = 'typing-caret';
+        container.appendChild(caretDiv);
+
+        state.words.forEach((w, wI) => {
+          const wSpan = document.createElement('span');
+          wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
+          wSpan.dataset.wordIndex = `${wI}`;
+          const clusters = getGraphemes(w, state.lang);
+          wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
+          container.appendChild(wSpan);
+        });
+        container.scrollTop = 0;
+      }
+      highlightTargetKey();
+      updateCaret();
+    } else {
+      if (targetTags) {
+        targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🏆 All weak keys mastered (>90%)! Great work!</span>`;
+      }
+      const metaPill = document.getElementById('adaptive-meta-pill');
+      if (metaPill) metaPill.classList.add('hidden');
+    }
+  }, 1200);
 }
 
 function updateCaret() {
@@ -1000,12 +1132,19 @@ function finishTest() {
   // Populate Adaptive Recommendation Callout
   const adaptiveCallout = document.getElementById('modal-adaptive-callout');
   const adaptiveKeysLbl = document.getElementById('modal-adaptive-keys-label');
-  const topMissed = Object.entries(state.errorMap).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
-  const weakKeys = topMissed.length > 0 ? topMissed : (strokeAnalytics.slowestKeys.slice(0, 2).map(k => k.char));
+  const topMissed = Object.entries(state.errorMap)
+    .filter(([k, count]) => count > 0 && k.trim().length > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([k]) => k);
 
-  if (adaptiveCallout && weakKeys.length > 0) {
-    adaptiveCallout.classList.remove('hidden');
-    if (adaptiveKeysLbl) adaptiveKeysLbl.textContent = `[${weakKeys.join(', ').toUpperCase()}]`;
+  if (adaptiveCallout) {
+    if (topMissed.length > 0) {
+      adaptiveCallout.classList.remove('hidden');
+      if (adaptiveKeysLbl) adaptiveKeysLbl.textContent = `[${topMissed.map(k => k.toUpperCase()).join(', ')}]`;
+    } else {
+      adaptiveCallout.classList.add('hidden');
+    }
   }
 
   renderTimelineChart(state.timeline);
@@ -1327,12 +1466,37 @@ function bindInputEvents() {
       state.wordIdx++;
       inputField.value = '';
 
+      // Live adaptive mastery check
+      if (state.mode === 'adaptive' && !state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
+        const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget);
+        if (mastery.mastered) {
+          triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
+          return;
+        } else {
+          const accDisp = document.getElementById('adaptive-acc-display');
+          if (accDisp && mastery.recentAccuracy !== undefined) {
+            accDisp.textContent = `${mastery.recentAccuracy}%`;
+          }
+        }
+      }
+
       // Test completion checks
       if (state.mode === 'words' && state.wordIdx >= state.wordCount) {
         finishTest();
         return;
       }
-      if ((state.mode === 'sentences' || state.mode === 'quotes' || state.mode === 'adaptive') && state.wordIdx >= state.words.length) {
+      if ((state.mode === 'sentences' || state.mode === 'quotes') && state.wordIdx >= state.words.length) {
+        finishTest();
+        return;
+      }
+      if (state.mode === 'adaptive' && state.wordIdx >= state.words.length) {
+        if (!state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
+          const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget);
+          if (mastery.mastered) {
+            triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
+            return;
+          }
+        }
         finishTest();
         return;
       }
@@ -1923,6 +2087,14 @@ function bindToolbarEvents() {
     if (freestyleOpts) freestyleOpts.classList.add('hidden');
 
     setupTest();
+  });
+
+  // Reset Adaptive History Button
+  document.getElementById('adaptive-reset-btn')?.addEventListener('click', () => {
+    if (confirm('Reset your recorded stroke error history to start a clean diagnostic baseline?')) {
+      resetStrokeProfile();
+      setupTest();
+    }
   });
 
   // Sound toggle

@@ -107,9 +107,21 @@
       </div>
 
       <!-- Adaptive Mode Indicators (Shown when mode == 'adaptive') -->
-      <div id="adaptive-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <span class="text-[11px] text-amber-500 font-medium px-2 py-0.5">Target Weak Strokes:</span>
-        <span id="adaptive-target-tags" class="font-mono font-bold text-amber-500 bg-[var(--bg-surface)] px-2 py-0.5 rounded-lg border border-amber-500/30">Auto-Detecting...</span>
+      <div id="adaptive-options" class="hidden flex items-center gap-1.5 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--bg-surface)] border border-amber-500/30 text-amber-500 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span id="adaptive-target-tags">Auto-Detecting Weak Keys...</span>
+        </div>
+        <div id="adaptive-meta-pill" class="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--bg-surface)] text-[11px] font-mono text-[var(--text-muted)] border border-[var(--border-subtle)]">
+          <span>Acc:</span>
+          <span id="adaptive-acc-display" class="font-bold text-amber-500">-</span>
+          <span class="text-[var(--border-strong)]">|</span>
+          <span>Next:</span>
+          <span id="adaptive-next-display" class="font-bold text-[var(--text-primary)]">-</span>
+        </div>
+        <button type="button" id="adaptive-reset-btn" class="px-2 py-1 text-[10px] text-[var(--text-muted)] hover:text-red-400 hover:bg-[var(--bg-surface)] rounded-md transition-colors cursor-pointer" title="Reset stroke error history to rediagnose from scratch">
+          Reset History
+        </button>
       </div>
 
       <!-- Free Style Info Pill (Shown when mode == 'freestyle') -->
