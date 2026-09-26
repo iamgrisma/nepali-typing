@@ -6,8 +6,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "nepali_typing_db",
-      "database_id": "local-d1-db"
+      "database_name": "typing",
+      "database_id": "15d1f26f-2431-4eb5-b83f-4cb95312353c"
     }
   ]
 }
