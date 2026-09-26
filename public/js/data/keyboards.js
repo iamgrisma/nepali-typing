@@ -73,9 +73,19 @@ export const KEY_ROWS = [
     { code: 'Slash', key: '/', eng: ['/', '?'], uni: ['र', 'रु'], rom: ['्', '?'], pre: ['/', '?', 'र', 'रु'], flex: '1' },
     { code: 'ShiftRight', key: 'Shift', flex: '2.75', special: true, label: 'Shift ⇧' }
   ],
-  // Row 5
+  // Row 5: Proportional Space Bar (spanning C-V-B-N-M) with realistic hardware modifier shells
   [
-    { code: 'Space', key: ' ', eng: [' ', ' '], uni: [' ', ' '], rom: [' ', ' '], pre: [' ', ' '], flex: '8', special: true, label: 'Space Bar' }
+    { code: 'ControlLeft', key: 'Control', flex: '1.25', special: true, shell: true, label: 'Ctrl' },
+    { code: 'Fn', key: 'Fn', flex: '0.9', special: true, shell: true, label: 'Fn' },
+    { code: 'MetaLeft', key: 'Meta', flex: '1.1', special: true, shell: true, label: 'Win ⊞' },
+    { code: 'AltLeft', key: 'Alt', flex: '1.25', special: true, shell: true, label: 'Alt' },
+    { code: 'Space', key: ' ', eng: [' ', ' '], uni: [' ', ' '], rom: [' ', ' '], pre: [' ', ' '], flex: '5.5', special: true, label: 'Space' },
+    { code: 'AltRight', key: 'AltGraph', flex: '1.2', special: true, shell: true, label: 'Alt' },
+    { code: 'ControlRight', key: 'Control', flex: '1.2', special: true, shell: true, label: 'Ctrl' },
+    { code: 'ArrowLeft', key: 'ArrowLeft', flex: '0.65', special: true, shell: true, label: '◀' },
+    { code: 'ArrowUp', key: 'ArrowUp', flex: '0.65', special: true, shell: true, label: '▲' },
+    { code: 'ArrowDown', key: 'ArrowDown', flex: '0.65', special: true, shell: true, label: '▼' },
+    { code: 'ArrowRight', key: 'ArrowRight', flex: '0.65', special: true, shell: true, label: '▶' }
   ]
 ];
 

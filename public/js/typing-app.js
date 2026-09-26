@@ -61,6 +61,8 @@ let state = {
   lastStrokeTime: 0,
   targetWeakKeys: [],
   
+  paragraphCount: 1,
+  
   // Two-Level Accuracy & Word Correction Tracking
   cleanWords: 0,
   correctedWords: 0,
@@ -145,12 +147,28 @@ function getWordsPool() {
     }
     list = list.slice(0, targetCount);
   } else if (state.mode === 'sentences') {
-    const shSentences = [...diffObj.sentences].sort(() => 0.5 - Math.random());
-    const text = shSentences.join(' ');
+    const pCount = state.paragraphCount || 1;
+    const pool = diffObj.sentences;
+    let chosen = [];
+    if (pCount >= 999) {
+      chosen = pool;
+    } else {
+      const sh = [...pool].sort(() => 0.5 - Math.random());
+      chosen = sh.slice(0, Math.min(pCount, sh.length));
+    }
+    const text = chosen.join(' ');
     list = text.split(/\s+/).filter(Boolean);
   } else if (state.mode === 'quotes') {
-    const shQuotes = [...diffObj.quotes].sort(() => 0.5 - Math.random());
-    const text = shQuotes.join(' ');
+    const pCount = state.paragraphCount || 1;
+    const pool = diffObj.quotes;
+    let chosen = [];
+    if (pCount >= 999) {
+      chosen = pool;
+    } else {
+      const sh = [...pool].sort(() => 0.5 - Math.random());
+      chosen = sh.slice(0, Math.min(pCount, sh.length));
+    }
+    const text = chosen.join(' ');
     list = text.split(/\s+/).filter(Boolean);
   } else {
     list = diffObj.words;
@@ -402,6 +420,21 @@ function renderActiveWordHighlight() {
   curWordEl.classList.toggle('is-word-error', hasError);
 }
 
+function adjust2LineScroll() {
+  const container = document.getElementById('words-container');
+  if (!container) return;
+  const curWordEl = container.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
+  if (!curWordEl) return;
+
+  const wordTop = curWordEl.offsetTop;
+  if (Math.abs(container.scrollTop - wordTop) > 2) {
+    container.scrollTo({
+      top: wordTop,
+      behavior: 'smooth'
+    });
+  }
+}
+
 function updateCaret() {
   const caret = document.getElementById('typing-caret');
   const container = document.getElementById('words-container');
@@ -444,10 +477,6 @@ function updateCaret() {
     caret.style.left = `${leftPos}px`;
     caret.style.top = `${topPos}px`;
     caret.style.height = `${Math.max(22, sRect.height - 4)}px`;
-
-    if (sRect.top - cRect.top > 38) {
-      container.scrollTop += 38;
-    }
   }
 }
 
@@ -469,7 +498,7 @@ function renderKeyboard() {
       let mainLbl = '';
       let fontFam = 'var(--font-sans)';
 
-      if (!k.special) {
+      if (!k.special && !k.shell) {
         if (state.lang === 'english') {
           topLbl = k.eng[1] !== k.eng[0].toUpperCase() ? k.eng[1] : '';
           mainLbl = state.isShift ? k.eng[1] : k.eng[0];
@@ -490,9 +519,14 @@ function renderKeyboard() {
 
       if (canReuse) {
         const keyDiv = existingKeycaps[kI];
-        if (k.special) {
+        if (k.shell) {
+          keyDiv.className = 'keycap special-key shell-key';
+          keyDiv.textContent = k.label || k.key;
+        } else if (k.special) {
+          keyDiv.className = 'keycap special-key';
           keyDiv.textContent = k.label || k.key;
         } else {
+          keyDiv.className = 'keycap';
           const topSpan = keyDiv.querySelector('.keycap-shift-label');
           const mainSpan = keyDiv.querySelector('.keycap-main-label');
           if (topSpan) topSpan.textContent = topLbl;
@@ -503,11 +537,12 @@ function renderKeyboard() {
         }
       } else {
         const keyDiv = document.createElement('div');
-        keyDiv.className = `keycap ${k.special ? 'special-key' : ''}`;
+        const extraCls = k.shell ? 'special-key shell-key' : (k.special ? 'special-key' : '');
+        keyDiv.className = `keycap ${extraCls}`.trim();
         keyDiv.dataset.code = k.code;
         keyDiv.style.flex = `${k.flex} 1 0%`;
 
-        if (k.special) {
+        if (k.shell || k.special) {
           keyDiv.textContent = k.label || k.key;
         } else {
           const topSpan = document.createElement('span');
@@ -1315,16 +1350,9 @@ function bindInputEvents() {
       const nextWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
       if (nextWordEl) {
         nextWordEl.classList.add('is-active-word');
-        const container = document.getElementById('words-container');
-        if (container) {
-          const wRect = nextWordEl.getBoundingClientRect();
-          const cRect = container.getBoundingClientRect();
-          if (wRect.top - cRect.top > 38) {
-            container.scrollTop += 38;
-          }
-        }
       }
 
+      adjust2LineScroll();
       renderActiveWordHighlight();
       highlightTargetKey();
       updateCaret();
@@ -1379,6 +1407,7 @@ function bindInputEvents() {
 
         inputField.value = state.typedWords[state.wordIdx] || '';
 
+        adjust2LineScroll();
         renderActiveWordHighlight();
         highlightTargetKey();
         updateCaret();
@@ -1669,6 +1698,7 @@ function bindToolbarEvents() {
 
       const timeOpts = document.getElementById('time-options');
       const wordsOpts = document.getElementById('words-options');
+      const parasOpts = document.getElementById('paragraphs-options');
       const examOpts = document.getElementById('exam-options');
       const adaptiveOpts = document.getElementById('adaptive-options');
       const diffOpts = document.getElementById('diff-options');
@@ -1676,6 +1706,7 @@ function bindToolbarEvents() {
 
       if (timeOpts) timeOpts.classList.toggle('hidden', state.mode !== 'time');
       if (wordsOpts) wordsOpts.classList.toggle('hidden', state.mode !== 'words');
+      if (parasOpts) parasOpts.classList.toggle('hidden', state.mode !== 'sentences' && state.mode !== 'quotes');
       if (examOpts) examOpts.classList.toggle('hidden', state.mode !== 'exam');
       if (adaptiveOpts) adaptiveOpts.classList.toggle('hidden', state.mode !== 'adaptive');
       if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive' || state.mode === 'freestyle');
@@ -1697,12 +1728,14 @@ function bindToolbarEvents() {
   });
 
   // Time Duration Buttons
-  document.querySelectorAll('.time-btn').forEach(btn => {
+  document.querySelectorAll('.time-btn[data-seconds]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.time-btn').forEach(b => {
         b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
         b.classList.add('text-[var(--text-muted)]');
       });
+      const customTimeBtn = document.getElementById('time-custom-btn');
+      if (customTimeBtn) customTimeBtn.textContent = 'Custom';
       btn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
       btn.classList.remove('text-[var(--text-muted)]');
       state.duration = parseInt(btn.dataset.seconds, 10);
@@ -1710,16 +1743,78 @@ function bindToolbarEvents() {
     });
   });
 
+  // Custom Time Button
+  document.getElementById('time-custom-btn')?.addEventListener('click', () => {
+    const input = prompt('Enter custom time limit in seconds (5 - 3600):', '45');
+    if (!input) return;
+    const sec = parseInt(input.trim(), 10);
+    if (isNaN(sec) || sec < 5 || sec > 3600) {
+      alert('Please enter a valid duration between 5 and 3600 seconds.');
+      return;
+    }
+    document.querySelectorAll('.time-btn').forEach(b => {
+      b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      b.classList.add('text-[var(--text-muted)]');
+    });
+    const customBtn = document.getElementById('time-custom-btn');
+    if (customBtn) {
+      customBtn.textContent = `${sec}s`;
+      customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      customBtn.classList.remove('text-[var(--text-muted)]');
+    }
+    state.duration = sec;
+    setupTest();
+  });
+
   // Word Count Buttons
-  document.querySelectorAll('.word-count-btn').forEach(btn => {
+  document.querySelectorAll('.word-count-btn[data-words]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.word-count-btn').forEach(b => {
         b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
         b.classList.add('text-[var(--text-muted)]');
       });
+      const customWordBtn = document.getElementById('word-custom-btn');
+      if (customWordBtn) customWordBtn.textContent = 'Custom';
       btn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
       btn.classList.remove('text-[var(--text-muted)]');
       state.wordCount = parseInt(btn.dataset.words, 10);
+      setupTest();
+    });
+  });
+
+  // Custom Word Count Button
+  document.getElementById('word-custom-btn')?.addEventListener('click', () => {
+    const input = prompt('Enter custom word count (5 - 2000):', '75');
+    if (!input) return;
+    const cnt = parseInt(input.trim(), 10);
+    if (isNaN(cnt) || cnt < 5 || cnt > 2000) {
+      alert('Please enter a valid word count between 5 and 2000.');
+      return;
+    }
+    document.querySelectorAll('.word-count-btn').forEach(b => {
+      b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      b.classList.add('text-[var(--text-muted)]');
+    });
+    const customBtn = document.getElementById('word-custom-btn');
+    if (customBtn) {
+      customBtn.textContent = `${cnt}w`;
+      customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      customBtn.classList.remove('text-[var(--text-muted)]');
+    }
+    state.wordCount = cnt;
+    setupTest();
+  });
+
+  // Paragraph Count Buttons
+  document.querySelectorAll('.para-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.para-btn').forEach(b => {
+        b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+        b.classList.add('text-[var(--text-muted)]');
+      });
+      btn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      btn.classList.remove('text-[var(--text-muted)]');
+      state.paragraphCount = parseInt(btn.dataset.paras, 10) || 1;
       setupTest();
     });
   });
@@ -1813,15 +1908,19 @@ function bindToolbarEvents() {
 
     const timeOpts = document.getElementById('time-options');
     const wordsOpts = document.getElementById('words-options');
+    const parasOpts = document.getElementById('paragraphs-options');
     const examOpts = document.getElementById('exam-options');
     const adaptiveOpts = document.getElementById('adaptive-options');
     const diffOpts = document.getElementById('diff-options');
+    const freestyleOpts = document.getElementById('freestyle-options');
 
     if (timeOpts) timeOpts.classList.add('hidden');
     if (wordsOpts) wordsOpts.classList.add('hidden');
+    if (parasOpts) parasOpts.classList.add('hidden');
     if (examOpts) examOpts.classList.add('hidden');
     if (adaptiveOpts) adaptiveOpts.classList.remove('hidden');
     if (diffOpts) diffOpts.classList.add('hidden');
+    if (freestyleOpts) freestyleOpts.classList.add('hidden');
 
     setupTest();
   });

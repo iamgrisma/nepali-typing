@@ -76,6 +76,8 @@
         <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="30">30s</button>
         <button type="button" class="time-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-seconds="60">60s</button>
         <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="120">120s</button>
+        <button type="button" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="300">300s</button>
+        <button type="button" id="time-custom-btn" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
       </div>
 
       <!-- Word Count Options (Shown when mode == 'words') -->
@@ -84,6 +86,17 @@
         <button type="button" class="word-count-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-words="25">25</button>
         <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="50">50</button>
         <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="100">100</button>
+        <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="200">200</button>
+        <button type="button" id="word-custom-btn" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
+      </div>
+
+      <!-- Paragraphs Options (Shown when mode == 'sentences' or 'quotes') -->
+      <div id="paragraphs-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+        <button type="button" class="para-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-paras="1">1 Para</button>
+        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="2">2 Paras</button>
+        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="3">3 Paras</button>
+        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="5">5 Paras</button>
+        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="999">Full</button>
       </div>
 
       <!-- Exam Duration Options (Shown when mode == 'exam') -->

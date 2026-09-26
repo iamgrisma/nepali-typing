@@ -517,6 +517,10 @@ input, textarea {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-sm);
   outline: none;
+  height: 92px;
+  min-height: 92px;
+  max-height: 92px;
+  overflow: hidden;
 }
 
 .typing-box:hover, .typing-box:focus-within, .typing-box.is-active {
@@ -529,8 +533,12 @@ input, textarea {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  gap: 0.35rem 0.65rem;
-  transition: scroll-top 0.15s ease-out;
+  gap: 0 0.65rem;
+  line-height: 38px;
+  height: 76px;
+  min-height: 76px;
+  max-height: 76px;
+  overflow: hidden;
 }
 
 .word-node {
@@ -540,6 +548,9 @@ input, textarea {
   border-radius: 4px;
   color: var(--char-untouched);
   transition: color 0.1s ease;
+  height: 38px;
+  line-height: 38px;
+  box-sizing: border-box;
 }
 
 .word-node.is-active-word {
@@ -661,18 +672,35 @@ input, textarea {
   font-weight: 500;
 }
 
+.keycap.shell-key {
+  background-color: var(--bg-key-special);
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 500;
+  cursor: default;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
 .keycap.is-target {
-  background-color: #fef08a !important;
-  color: #78350f !important;
-  border-color: #eab308 !important;
+  border-color: var(--accent-primary) !important;
+  background-color: rgba(220, 38, 38, 0.12) !important;
+  color: var(--accent-primary) !important;
   transform: translateY(-1px);
-  box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25) !important;
+  animation: target-pulse 1.2s infinite ease-in-out;
 }
 
 [data-theme="dark"] .keycap.is-target {
-  background-color: #854d0e !important;
-  color: #fef08a !important;
-  border-color: #ca8a04 !important;
+  background-color: rgba(248, 113, 113, 0.18) !important;
+  color: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3) !important;
+}
+
+@keyframes target-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35); }
+  50% { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
 }
 
 .keycap.is-pressed {
