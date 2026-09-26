@@ -1352,6 +1352,66 @@ function updatePersonalBestsCards() {
   } catch (e) {}
 }
 
+// --- 10. WINDOWS-STYLE LEFT ALT + SHIFT LAYOUT SWITCHER ---
+const LAYOUT_CYCLE = ['nepali_unicode', 'nepali_romanized', 'nepali_preeti', 'english'];
+const LAYOUT_NAMES = {
+  nepali_unicode: 'Nepali Traditional',
+  nepali_romanized: 'Nepali Romanized',
+  nepali_preeti: 'Preeti (ASCII)',
+  english: 'English QWERTY'
+};
+
+let leftShiftDown = false;
+let leftAltDown = false;
+let layoutSwitchTriggered = false;
+
+function showLayoutSwitchToast(layoutName) {
+  let toast = document.getElementById('layout-switch-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'layout-switch-toast';
+    toast.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-neutral-900/95 text-white dark:bg-neutral-100 dark:text-neutral-900 border border-[var(--border-subtle)] shadow-2xl flex items-center gap-2.5 text-sm font-semibold pointer-events-none transition-all duration-200 transform scale-95 opacity-0 backdrop-blur-md';
+    document.body.appendChild(toast);
+  }
+
+  toast.innerHTML = `
+    <span class="text-base">⌨️</span>
+    <span>Layout: <b>${layoutName}</b></span>
+    <span class="text-[10px] opacity-75 font-mono px-1.5 py-0.5 rounded bg-white/20 dark:bg-neutral-900/10">Left Alt+Shift</span>
+  `;
+
+  requestAnimationFrame(() => {
+    toast.classList.remove('opacity-0', 'scale-95');
+    toast.classList.add('opacity-100', 'scale-100');
+  });
+
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('opacity-100', 'scale-100');
+    toast.classList.add('opacity-0', 'scale-95');
+  }, 1400);
+}
+
+function cycleNextLayout() {
+  const curIdx = LAYOUT_CYCLE.indexOf(state.lang);
+  const nextIdx = (curIdx + 1) % LAYOUT_CYCLE.length;
+  const nextLang = LAYOUT_CYCLE[nextIdx];
+
+  state.lang = nextLang;
+
+  document.querySelectorAll('.lang-tab-btn').forEach(b => {
+    const isTarget = (b.dataset.lang === nextLang);
+    b.classList.toggle('active', isTarget);
+    b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+    b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+    b.classList.toggle('shadow-sm', isTarget);
+    b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
+  });
+
+  showLayoutSwitchToast(LAYOUT_NAMES[nextLang]);
+  setupTest();
+}
+
 // --- 11. INPUT & KEY EVENT HANDLING ---
 function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
@@ -1796,6 +1856,31 @@ function bindInputEvents() {
     finishFreestyleTest();
   });
 
+  // Windows-style Left Alt + Left Shift layout switch capture listener
+  window.addEventListener('keydown', (e) => {
+    const isAlt = (e.code === 'AltLeft' || e.key === 'Alt');
+    const isShift = (e.code === 'ShiftLeft' || e.key === 'Shift');
+    const isRightMod = (e.code === 'AltRight' || e.code === 'ShiftRight' || e.code === 'AltGraph');
+
+    if (isShift && !isRightMod) leftShiftDown = true;
+    if (isAlt && !isRightMod) leftAltDown = true;
+
+    if (!isRightMod && (
+      (leftShiftDown && leftAltDown) ||
+      (isShift && (e.altKey || leftAltDown)) ||
+      (isAlt && (e.shiftKey || leftShiftDown)) ||
+      (e.altKey && e.shiftKey && (isAlt || isShift))
+    )) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!layoutSwitchTriggered) {
+        layoutSwitchTriggered = true;
+        cycleNextLayout();
+      }
+      return;
+    }
+  }, true);
+
   window.addEventListener('keydown', (e) => {
     if (state.mode === 'freestyle') {
       if (document.activeElement !== freestyleInput && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
@@ -1822,6 +1907,14 @@ function bindInputEvents() {
   });
 
   window.addEventListener('keyup', (e) => {
+    const isAlt = (e.code === 'AltLeft' || e.key === 'Alt');
+    const isShift = (e.code === 'ShiftLeft' || e.key === 'Shift');
+    if (isShift) leftShiftDown = false;
+    if (isAlt) leftAltDown = false;
+    if (isShift || isAlt) {
+      layoutSwitchTriggered = false;
+    }
+
     if (e.key === 'Shift') {
       if (state.isShift) {
         state.isShift = false;
@@ -1830,7 +1923,7 @@ function bindInputEvents() {
     }
     const kc = document.querySelector(`.keycap[data-code="${e.code}"]`);
     if (kc) kc.classList.remove('is-pressed');
-  });
+  }, true);
 }
 
 // --- 12. TOOLBAR, MODAL & BUTTON LISTENERS ---
