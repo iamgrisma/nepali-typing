@@ -237,9 +237,21 @@ export function getWeakestKeys(lang = 'english', limit = 3) {
 // =========================================================================
 
 /**
- * Checks if the current target key has reached mastery (>= 90% recent accuracy with >= 6 hits)
+ * Dynamically computes an ambitious yet attainable target goal based on current accuracy.
+ * Ensures the target goal is ALWAYS strictly higher than the current accuracy.
  */
-export function checkTargetKeyMastery(targetKey) {
+export function calculateTargetGoal(currentAccuracy) {
+  const acc = Math.round(Number(currentAccuracy) || 0);
+  if (acc < 75) return 85;
+  if (acc < 88) return 90;
+  if (acc < 95) return 95;
+  return 100;
+}
+
+/**
+ * Checks if the current target key has reached mastery (recent accuracy >= targetGoal with >= 5 hits)
+ */
+export function checkTargetKeyMastery(targetKey, targetGoal = 90) {
   if (!targetKey) return { mastered: false, recentAccuracy: 0, hits: 0 };
   const profile = getStrokeProfile();
   const c = targetKey.toLowerCase();
@@ -247,15 +259,15 @@ export function checkTargetKeyMastery(targetKey) {
   if (!data) return { mastered: false, recentAccuracy: 0, hits: 0 };
 
   const recent = data.recent || [];
-  if (recent.length < 6) {
+  if (recent.length < 5) {
     return { mastered: false, recentAccuracy: 0, hits: data.hits };
   }
 
   const recentCorrect = recent.filter(r => r === 1).length;
   const recentAccuracy = Math.round((recentCorrect / recent.length) * 100);
 
-  // If recent accuracy is 90% or higher across at least 6 hits, key is mastered!
-  const isMastered = (recentAccuracy >= 90);
+  // If recent accuracy meets or exceeds the target goal, key is mastered!
+  const isMastered = (recentAccuracy >= targetGoal);
 
   return {
     mastered: isMastered,

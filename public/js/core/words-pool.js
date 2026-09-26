@@ -9,7 +9,8 @@ import { toPreeti } from '../utils/preeti-converter.js';
 import { 
   getWeakKeysAnalysis, 
   generateAdaptiveWords, 
-  generateDiagnosticWords 
+  generateDiagnosticWords,
+  calculateTargetGoal 
 } from '../utils/adaptive-engine.js';
 
 // Intl.Segmenter instances for authentic Devanagari ligature splitting
@@ -67,12 +68,20 @@ export function getWordsPool() {
       state.adaptiveSecondaryTarget = secondary ? secondary.char : '';
       state.targetWeakKeys = [primary.char, ...(secondary ? [secondary.char] : [])];
 
+      const goal = calculateTargetGoal(primary.accuracy);
+      state.adaptiveTargetGoal = goal;
+
+      const badgeLabel = primary.accuracy >= 95 ? 'Perfection' : (primary.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
+      const badgeColor = primary.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (primary.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
+
       if (targetTags) {
-        targetTags.innerHTML = `Target: <b class="text-amber-400 font-mono text-xs uppercase px-1.5 py-0.5 rounded bg-amber-500/20">${primary.char}</b> (Current: ${primary.accuracy}% ➔ Goal: 90%)`;
+        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${primary.char}</b> (Current: ${primary.accuracy}% ➔ Goal: ${goal}%)`;
       }
       if (metaPill) {
         metaPill.classList.remove('hidden');
         if (accDisp) accDisp.textContent = `${primary.accuracy}%`;
+        const goalDisp = document.getElementById('adaptive-goal-display');
+        if (goalDisp) goalDisp.textContent = `${goal}%`;
         if (nextDisp) nextDisp.textContent = secondary ? secondary.char.toUpperCase() : 'None';
       }
 

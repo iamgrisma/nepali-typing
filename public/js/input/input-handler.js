@@ -137,7 +137,7 @@ export function bindInputEvents() {
 
       // Live adaptive mastery check
       if (state.mode === 'adaptive' && !state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
-        const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget);
+        const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget, state.adaptiveTargetGoal || 90);
         if (mastery.mastered) {
           triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
           return;
@@ -160,7 +160,7 @@ export function bindInputEvents() {
       }
       if (state.mode === 'adaptive' && state.wordIdx >= state.words.length) {
         if (!state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
-          const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget);
+          const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget, state.adaptiveTargetGoal || 90);
           if (mastery.mastered) {
             triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
             return;

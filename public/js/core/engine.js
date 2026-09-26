@@ -5,7 +5,7 @@
 import { state, playBeep } from './state.js';
 import { getWordsPool, getGraphemes, refillWords } from './words-pool.js';
 import { KEY_CODE_MAP } from '../data/keyboards.js';
-import { getWeakKeysAnalysis, generateAdaptiveWords } from '../utils/adaptive-engine.js';
+import { getWeakKeysAnalysis, generateAdaptiveWords, calculateTargetGoal } from '../utils/adaptive-engine.js';
 import { analyzeTypingRun } from '../utils/stroke-analytics.js';
 import { getSpeedRank, checkCertificationPass } from '../utils/certificate-db.js';
 import { renderKeyboard, highlightTargetKey } from '../ui/keyboard-view.js';
@@ -226,12 +226,20 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
       state.adaptiveSecondaryTarget = secondWeak ? secondWeak.char : '';
       state.targetWeakKeys = [nextWeak.char, ...(secondWeak ? [secondWeak.char] : [])];
 
+      const goal = calculateTargetGoal(nextWeak.accuracy);
+      state.adaptiveTargetGoal = goal;
+
+      const badgeLabel = nextWeak.accuracy >= 95 ? 'Perfection' : (nextWeak.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
+      const badgeColor = nextWeak.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (nextWeak.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
+
       if (targetTags) {
-        targetTags.innerHTML = `Target: <b class="text-amber-400 font-mono text-xs uppercase px-1.5 py-0.5 rounded bg-amber-500/20">${nextWeak.char}</b> (Current: ${nextWeak.accuracy}% ➔ Goal: 90%)`;
+        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${nextWeak.char}</b> (Current: ${nextWeak.accuracy}% ➔ Goal: ${goal}%)`;
       }
       const accDisp = document.getElementById('adaptive-acc-display');
+      const goalDisp = document.getElementById('adaptive-goal-display');
       const nextDisp = document.getElementById('adaptive-next-display');
       if (accDisp) accDisp.textContent = `${nextWeak.accuracy}%`;
+      if (goalDisp) goalDisp.textContent = `${goal}%`;
       if (nextDisp) nextDisp.textContent = secondWeak ? secondWeak.char.toUpperCase() : 'None';
 
       // Generate new drill words targeting the new weak key

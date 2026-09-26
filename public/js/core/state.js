@@ -29,6 +29,7 @@ export const state = {
   targetWeakKeys: [],
   adaptivePrimaryTarget: '',
   adaptiveSecondaryTarget: '',
+  adaptiveTargetGoal: 90,
   isAdaptiveDiagnostic: false,
   paragraphCount: 1,
 
