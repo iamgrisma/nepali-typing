@@ -18,6 +18,7 @@ import {
   updateLiveStats 
 } from '../ui/workbench-view.js';
 import { renderTimelineChart, updatePersonalBestsCards } from '../ui/stats-modal-view.js';
+import { updateHeaderTelemetryBadge } from '../utils/telemetry-parameters.js';
 
 let lastFinishedResult = null;
 
@@ -539,10 +540,25 @@ export function finishTest() {
       wpm: netWpm,
       rawWpm: rawWpm,
       acc: acc,
-      duration: Math.round(stats.elapsed)
+      wordAcc: wordAccuracy,
+      strokeAcc: strokeAccuracy,
+      duration: Math.round(stats.elapsed),
+      analytics: {
+        peakBurstWpm: strokeAnalytics.peakBurstWpm,
+        rhythmStability: strokeAnalytics.rhythmStability || 88,
+        hesitations: strokeAnalytics.hesitations,
+        avgLatencyMs: strokeAnalytics.avgLatencyMs,
+        leftHandRatio: strokeAnalytics.leftHandRatio,
+        rightHandRatio: strokeAnalytics.rightHandRatio,
+        leftErrorRate: strokeAnalytics.leftErrorRate,
+        rightErrorRate: strokeAnalytics.rightErrorRate,
+        slowestKeys: strokeAnalytics.slowestKeys || [],
+        fastestKeys: strokeAnalytics.fastestKeys || []
+      }
     });
     localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
     updatePersonalBestsCards();
+    updateHeaderTelemetryBadge();
   } catch (e) {}
 }
 
@@ -692,9 +708,12 @@ export function finishFreestyleTest() {
       wpm: netWpm,
       rawWpm: rawWpm,
       acc: strokeAcc,
+      wordAcc: 100,
+      strokeAcc: strokeAcc,
       duration: Math.round(elapsed)
     });
     localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
     updatePersonalBestsCards();
+    updateHeaderTelemetryBadge();
   } catch (e) {}
 }

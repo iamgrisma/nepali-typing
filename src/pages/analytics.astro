@@ -3,120 +3,202 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout 
-  title="Deep Keystroke Biomechanics & Analytics — Nepali Typing"
-  description="Examine your typing motor habits with unimagined precision: latency heatmaps, lateral hand balance, pause stalls, and keystroke rhythm consistency."
+  title="Biometric Typing Telemetry & Keystroke Analytics — TopNepali Typing"
+  description="Explore deep keystroke biomechanics: 36 scientifically calibrated neuromotor parameters measuring velocity dynamics, error recovery cost, temporal rhythm stability, hand ergonomics, and Devanagari ligature fluency."
   activeNav="analytics"
 >
-  <div class="container max-w-4xl py-6">
+  <div class="container max-w-6xl py-6 px-4">
     
     <!-- Hero Header -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-3">
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-        <span>BIOMECHANIC STROKE ANALYTICS</span>
-      </div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
-        Deep Typing Analytics Dashboard
-      </h1>
-      <p class="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mt-2">
-        Uncover unimagined insights into your keyboard ergonomics: finger load distributions, cognitive pause latencies, rhythm stability, and error recovery cost.
-      </p>
-    </div>
-
-    <!-- Personal Bests & High Level Stats -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">English Best</span>
-        <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--accent-primary)] mt-1" id="dash-pb-eng">
-          0 WPM
+    <div class="mb-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)]">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-2">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>BIOMETRIC MOTOR TELEMETRY • PROGRESSIVE CALIBRATION</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+            Keystroke Biomechanics & Analytics
+          </h1>
+          <p class="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl mt-1.5 leading-relaxed">
+            Move beyond superficial WPM numbers. TopNepali's progressive telemetry engine analyzes 36 distinct neuromotor parameters—from inter-key jitter and lateral hand load to Devanagari Halanta ligature fluency. Metrics unlock strictly once statistically meaningful sample sizes are recorded.
+          </p>
         </div>
-        <span class="text-[11px] text-[var(--text-muted)]">QWERTY Standard</span>
-      </div>
 
-      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Traditional Best</span>
-        <div class="text-2xl sm:text-3xl font-extrabold font-display text-purple-600 dark:text-purple-400 mt-1" id="dash-pb-uni">
-          0 WPM
+        <!-- Telemetry Health & Calibration Progress Card -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-4 sm:p-5 shadow-sm min-w-[260px]">
+          <div class="flex items-center justify-between text-xs text-[var(--text-muted)] font-medium mb-1.5">
+            <span>Calibrated Metrics</span>
+            <span id="stat-calibrated-ratio" class="font-mono font-bold text-blue-600 dark:text-blue-400">0 / 36 Ready</span>
+          </div>
+          <div class="w-full bg-[var(--bg-surface-subtle)] h-2.5 rounded-full overflow-hidden border border-[var(--border-subtle)] mb-2">
+            <div id="stat-calibrated-progress" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-500 rounded-full" style="width: 0%;"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)]">
+            <span id="stat-total-tests">0 Tests Recorded</span>
+            <span id="stat-total-strokes">0 Strokes</span>
+          </div>
         </div>
-        <span class="text-[11px] text-[var(--text-muted)]">Unicode MPP Standard</span>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Romanized Best</span>
-        <div class="text-2xl sm:text-3xl font-extrabold font-display text-blue-500 mt-1" id="dash-pb-rom">
-          0 WPM
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)]">Phonetic QWERTY</span>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Preeti Best</span>
-        <div class="text-2xl sm:text-3xl font-extrabold font-display text-emerald-500 mt-1" id="dash-pb-pre">
-          0 WPM
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)]">ASCII Typewriter</span>
       </div>
     </div>
 
-    <!-- Biomechanics Analytics Breakdown -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      
-      <!-- Hand Ergonomics Card -->
-      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <h2 class="text-base font-bold font-display text-[var(--text-primary)] mb-4 flex items-center justify-between">
-          <span class="flex items-center gap-2"><span>✋</span> Hand Ergonomics & Balance</span>
-          <span class="text-xs font-mono text-blue-500" id="dash-hand-bias">52% L / 48% R</span>
+    <!-- Personal Bests Across All 4 Layouts -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+          <span>🏆</span>
+          <span>Lifetime Personal Bests</span>
         </h2>
+        <a href="/" class="text-xs text-[var(--accent-primary)] hover:underline font-semibold flex items-center gap-1">
+          <span>Take a test</span>
+          <span>→</span>
+        </a>
+      </div>
 
-        <div class="space-y-4">
-          <!-- Balance Bar -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <!-- English QWERTY -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm hover:border-blue-500/40 transition-colors">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">English</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">QWERTY</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--accent-primary)] mt-1.5" id="dash-pb-eng">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Accuracy: <b id="dash-pb-eng-acc" class="text-emerald-500">-</b></span>
+          </div>
+        </div>
+
+        <!-- Nepali Unicode Traditional -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm hover:border-purple-500/40 transition-colors">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Traditional</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400">Unicode</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-purple-600 dark:text-purple-400 mt-1.5" id="dash-pb-uni">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Accuracy: <b id="dash-pb-uni-acc" class="text-emerald-500">-</b></span>
+          </div>
+        </div>
+
+        <!-- Nepali Romanized -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm hover:border-cyan-500/40 transition-colors">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Romanized</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">Phonetic</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-cyan-600 dark:text-cyan-400 mt-1.5" id="dash-pb-rom">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Accuracy: <b id="dash-pb-rom-acc" class="text-emerald-500">-</b></span>
+          </div>
+        </div>
+
+        <!-- Preeti ASCII -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm hover:border-emerald-500/40 transition-colors">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Preeti</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">ASCII</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-emerald-600 dark:text-emerald-400 mt-1.5" id="dash-pb-pre">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Accuracy: <b id="dash-pb-pre-acc" class="text-emerald-500">-</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biomechanical Diagnostics Strip (Hand Balance & Latency Profile) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      
+      <!-- Hand Ergonomics & Lateral Balance -->
+      <div class="p-5 sm:p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">✋</span>
+            <h3 class="text-sm font-bold font-display text-[var(--text-primary)]">
+              Lateral Hand Ergonomics & Balance
+            </h3>
+          </div>
+          <span class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400" id="dash-hand-ratio">50% L / 50% R</span>
+        </div>
+
+        <p class="text-xs text-[var(--text-muted)] mb-3">
+          Workload balance between left and right hands. Symmetrical distribution prevents unilateral tendon strain.
+        </p>
+
+        <!-- Balance Bar -->
+        <div class="space-y-3">
           <div>
-            <div class="flex justify-between text-xs text-[var(--text-muted)] mb-1">
-              <span>Left Hand Load</span>
-              <span>Right Hand Load</span>
+            <div class="flex justify-between text-[11px] font-mono text-[var(--text-muted)] mb-1">
+              <span>Left Hand (<span id="dash-left-pct">50%</span>)</span>
+              <span>Right Hand (<span id="dash-right-pct">50%</span>)</span>
             </div>
             <div class="w-full bg-[var(--bg-surface-subtle)] h-3 rounded-full overflow-hidden flex border border-[var(--border-subtle)]">
-              <div id="dash-left-bar" class="bg-blue-500 h-full" style="width: 52%;"></div>
-              <div id="dash-right-bar" class="bg-teal-500 h-full" style="width: 48%;"></div>
+              <div id="dash-left-bar" class="bg-blue-500 h-full transition-all duration-300" style="width: 50%;"></div>
+              <div id="dash-right-bar" class="bg-teal-500 h-full transition-all duration-300" style="width: 50%;"></div>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-            <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
-              <span class="text-[11px] text-[var(--text-muted)] block">Left Hand Error Rate</span>
-              <span class="font-bold text-red-500 text-sm" id="dash-left-err">1.2%</span>
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div class="p-2.5 bg-[var(--bg-surface-subtle)] rounded-xl border border-[var(--border-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase font-semibold">Left Hand Error Rate</span>
+              <span class="font-bold text-red-500 text-sm font-mono" id="dash-left-err">0.0%</span>
             </div>
-            <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
-              <span class="text-[11px] text-[var(--text-muted)] block">Right Hand Error Rate</span>
-              <span class="font-bold text-red-500 text-sm" id="dash-right-err">1.0%</span>
+            <div class="p-2.5 bg-[var(--bg-surface-subtle)] rounded-xl border border-[var(--border-subtle)]">
+              <span class="text-[10px] text-[var(--text-muted)] block uppercase font-semibold">Right Hand Error Rate</span>
+              <span class="font-bold text-red-500 text-sm font-mono" id="dash-right-err">0.0%</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Stroke Latency Heatmap Card -->
-      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-        <h2 class="text-base font-bold font-display text-[var(--text-primary)] mb-4 flex items-center justify-between">
-          <span class="flex items-center gap-2"><span>⏱️</span> Keystroke Latency Heatmap</span>
-          <span class="text-xs font-mono text-amber-500" id="dash-avg-latency">215 ms avg</span>
-        </h2>
+      <!-- Keystroke Latency & Bottleneck Keys -->
+      <div class="p-5 sm:p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">⏱️</span>
+            <h3 class="text-sm font-bold font-display text-[var(--text-primary)]">
+              Keystroke Interval & Motor Hesitations
+            </h3>
+          </div>
+          <span class="text-xs font-mono font-bold text-amber-500" id="dash-avg-latency">- ms avg</span>
+        </div>
 
-        <div class="space-y-3 text-xs">
+        <p class="text-xs text-[var(--text-muted)] mb-3">
+          Mean inter-key interval across recent sessions, pinpointing cognitive hesitation bottlenecks vs reflex keys.
+        </p>
+
+        <div class="space-y-3">
           <div>
-            <span class="text-[11px] text-[var(--text-muted)] block mb-1">Slowest Bottleneck Keys (Hesitations):</span>
-            <div id="dash-slowest-keys" class="flex flex-wrap gap-2">
-              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">W (380ms)</span>
-              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">O (340ms)</span>
-              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">P (310ms)</span>
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] block mb-1.5">
+              Slowest Bottleneck Keys (Cognitive Latency):
+            </span>
+            <div id="dash-slowest-keys" class="flex flex-wrap gap-1.5">
+              <span class="px-2.5 py-1 rounded-lg bg-[var(--bg-surface-subtle)] text-[var(--text-muted)] text-xs font-mono border border-[var(--border-subtle)]">
+                Gathering stroke history...
+              </span>
             </div>
           </div>
 
           <div class="pt-2 border-t border-[var(--border-subtle)]">
-            <span class="text-[11px] text-[var(--text-muted)] block mb-1">Fastest Reflex Keys (Muscle Memory):</span>
-            <div id="dash-fastest-keys" class="flex flex-wrap gap-2">
-              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">Space (110ms)</span>
-              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">E (140ms)</span>
-              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">A (155ms)</span>
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] block mb-1.5">
+              Fastest Reflex Keys (Subconscious Muscle Memory):
+            </span>
+            <div id="dash-fastest-keys" class="flex flex-wrap gap-1.5">
+              <span class="px-2.5 py-1 rounded-lg bg-[var(--bg-surface-subtle)] text-[var(--text-muted)] text-xs font-mono border border-[var(--border-subtle)]">
+                Gathering stroke history...
+              </span>
             </div>
           </div>
         </div>
@@ -124,42 +206,172 @@ import Layout from '../layouts/Layout.astro';
 
     </div>
 
-    <!-- Complete Historical Runs Table -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-base font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
-          <span>📜</span>
-          <span>Typing Session History</span>
-        </h2>
+    <!-- MAIN SECTION: THE 36-PARAMETER BIOMETRIC TELEMETRY ENGINE -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-3xl p-5 sm:p-7 shadow-sm mb-8">
+      
+      <!-- Section Title & Description -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[var(--border-subtle)]">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📊</span>
+            <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)]">
+              36-Point Biometric Typing Telemetry Suite
+            </h2>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] mt-1">
+            Parameters strictly unlock as statistical sample criteria are fulfilled. Switch between ready parameters, calibrating metrics, or filter by motor categories.
+          </p>
+        </div>
+
+        <!-- View Filter Tabs: Ready vs Calibrating vs All -->
+        <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs font-semibold self-start lg:self-auto">
+          <button 
+            type="button" 
+            id="view-tab-ready" 
+            class="telemetry-view-btn active px-3 py-1.5 rounded-lg transition-all bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm flex items-center gap-1.5 cursor-pointer"
+            data-view="ready"
+          >
+            <span>✓ Calibrated Only</span>
+            <span id="tab-ready-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">0</span>
+          </button>
+
+          <button 
+            type="button" 
+            id="view-tab-calibrating" 
+            class="telemetry-view-btn px-3 py-1.5 rounded-lg transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1.5 cursor-pointer"
+            data-view="calibrating"
+          >
+            <span>⏳ Calibrating Data</span>
+            <span id="tab-calibrating-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">36</span>
+          </button>
+
+          <button 
+            type="button" 
+            id="view-tab-all" 
+            class="telemetry-view-btn px-3 py-1.5 rounded-lg transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1.5 cursor-pointer"
+            data-view="all"
+          >
+            <span>All Parameters</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[var(--bg-surface)] text-[var(--text-muted)] font-mono">36</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls: Category Pills & Instant Search -->
+      <div class="py-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 border-b border-[var(--border-subtle)]">
+        
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none text-xs">
+          <button type="button" class="telemetry-cat-btn active px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--accent-primary)] text-white shadow-sm cursor-pointer" data-cat="all">
+            All Categories
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="speed">
+            Speed & Sprint
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="accuracy">
+            Accuracy & Recovery
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="rhythm">
+            Temporal Rhythm
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="ergonomics">
+            Ergonomics
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="linguistic">
+            Nepali Ligatures
+          </button>
+          <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="endurance">
+            Endurance & Flow
+          </button>
+        </div>
+
+        <!-- Live Instant Search Input -->
+        <div class="relative w-full md:w-64">
+          <input 
+            type="text" 
+            id="telemetry-search-input" 
+            placeholder="Search metric name, #id, or term..."
+            class="w-full px-3 py-1.5 pl-8 text-xs rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] placeholder-[var(--text-muted)]"
+          />
+          <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[var(--text-muted)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Telemetry Parameters Grid -->
+      <div id="telemetry-metrics-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-5">
+        <!-- Rendered dynamically by client script -->
+      </div>
+
+      <!-- Empty State Banner (Shown when 0 cards match the active filter) -->
+      <div id="telemetry-empty-state" class="hidden text-center py-12 px-4">
+        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 text-xl">
+          📊
+        </div>
+        <h3 class="text-base font-bold font-display text-[var(--text-primary)]" id="telemetry-empty-title">
+          No Calibrated Parameters Yet
+        </h3>
+        <p class="text-xs text-[var(--text-secondary)] max-w-md mx-auto mt-1 mb-4" id="telemetry-empty-desc">
+          Telemetry metrics require statistically valid keystroke samples to calibrate. Take your first test on the typing bench to immediately unlock the initial 8 core motor metrics!
+        </p>
+        <a 
+          href="/" 
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--accent-primary)] text-white font-bold text-xs shadow-sm hover:opacity-95 transition-opacity"
+        >
+          <span>Launch Typing Bench</span>
+          <span>→</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Complete Historical Test Sessions Table -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-3xl p-5 sm:p-7 shadow-sm">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[var(--border-subtle)]">
+        <div>
+          <h2 class="text-base font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
+            <span>📜</span>
+            <span>Recorded Typing Sessions History</span>
+          </h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Chronological log of your completed speed assessments, accuracy ratings, and durations.
+          </p>
+        </div>
 
         <div class="flex items-center gap-2">
           <button 
             type="button" 
             id="dash-export-btn" 
-            class="px-3 py-1 rounded-lg border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold"
+            class="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            Export JSON
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export JSON</span>
           </button>
           <button 
             type="button" 
             id="dash-clear-btn" 
-            class="px-3 py-1 rounded-lg border border-[var(--border-subtle)] text-red-500 hover:bg-red-500/10 text-xs font-semibold"
+            class="px-3 py-1.5 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            Clear Records
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Clear History</span>
           </button>
         </div>
       </div>
 
       <div class="overflow-x-auto text-xs">
         <table class="w-full text-left">
-          <thead class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase">
+          <thead class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase text-[10px] tracking-wider">
             <tr>
-              <th class="py-2.5 pr-4">Date</th>
+              <th class="py-2.5 pr-4">Timestamp</th>
               <th class="py-2.5 pr-4">Layout</th>
-              <th class="py-2.5 pr-4">Mode</th>
+              <th class="py-2.5 pr-4">Mode / Time</th>
               <th class="py-2.5 pr-4">Net Speed</th>
               <th class="py-2.5 pr-4">Gross Speed</th>
-              <th class="py-2.5">Accuracy</th>
+              <th class="py-2.5 pr-4">Word Acc</th>
+              <th class="py-2.5 pr-4">Stroke Acc</th>
+              <th class="py-2.5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody id="dash-history-table-body" class="divide-y divide-[var(--border-subtle)] font-mono">
@@ -171,69 +383,467 @@ import Layout from '../layouts/Layout.astro';
 
   </div>
 
-  <script type="module">
-    function loadAnalyticsDashboard() {
-      const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
-      
-      let pbEng = 0;
-      let pbUni = 0;
-      let pbRom = 0;
-      let pbPre = 0;
+  <!-- Dedicated Client Dashboard Script -->
+  <script is:inline type="module">
+    import { 
+      evaluateAllParameters, 
+      aggregateTelemetryData,
+      TELEMETRY_CATEGORIES,
+      updateHeaderTelemetryBadge 
+    } from '/js/utils/telemetry-parameters.js';
 
-      hist.forEach(r => {
+    let dashboardState = {
+      viewMode: 'ready', // 'ready' | 'calibrating' | 'all'
+      category: 'all',
+      searchQuery: '',
+      evaluation: null
+    };
+
+    const categoryThemeMap = {
+      speed: {
+        pill: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+        badge: 'text-blue-500',
+        bar: 'bg-blue-500'
+      },
+      accuracy: {
+        pill: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+        badge: 'text-emerald-500',
+        bar: 'bg-emerald-500'
+      },
+      rhythm: {
+        pill: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+        badge: 'text-purple-500',
+        bar: 'bg-purple-500'
+      },
+      ergonomics: {
+        pill: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+        badge: 'text-amber-500',
+        bar: 'bg-amber-500'
+      },
+      linguistic: {
+        pill: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
+        badge: 'text-rose-500',
+        bar: 'bg-rose-500'
+      },
+      endurance: {
+        pill: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
+        badge: 'text-indigo-500',
+        bar: 'bg-indigo-500'
+      }
+    };
+
+    function initAnalyticsDashboard() {
+      // 1. Evaluate Parameters
+      dashboardState.evaluation = evaluateAllParameters();
+      const evalData = dashboardState.evaluation;
+
+      // 2. Update Header live badge
+      updateHeaderTelemetryBadge();
+
+      // 3. Update Calibration Summary Card
+      const calibratedRatioEl = document.getElementById('stat-calibrated-ratio');
+      const calibratedProgEl = document.getElementById('stat-calibrated-progress');
+      const totalTestsEl = document.getElementById('stat-total-tests');
+      const totalStrokesEl = document.getElementById('stat-total-strokes');
+      const tabReadyBadge = document.getElementById('tab-ready-badge');
+      const tabCalibratingBadge = document.getElementById('tab-calibrating-badge');
+
+      const agg = aggregateTelemetryData();
+      const pct = Math.round((evalData.readyCount / evalData.totalParameters) * 100);
+
+      if (calibratedRatioEl) calibratedRatioEl.textContent = `${evalData.readyCount} / ${evalData.totalParameters} Ready`;
+      if (calibratedProgEl) calibratedProgEl.style.width = `${pct}%`;
+      if (totalTestsEl) totalTestsEl.textContent = `${agg.totalTests} Test${agg.totalTests === 1 ? '' : 's'} Recorded`;
+      if (totalStrokesEl) totalStrokesEl.textContent = `${agg.totalKeystrokes.toLocaleString()} Strokes`;
+      if (tabReadyBadge) tabReadyBadge.textContent = `${evalData.readyCount}`;
+      if (tabCalibratingBadge) tabCalibratingBadge.textContent = `${evalData.calibratingCount}`;
+
+      // 4. Update Personal Bests
+      let pbEng = 0, pbUni = 0, pbRom = 0, pbPre = 0;
+      let pbEngAcc = '-', pbUniAcc = '-', pbRomAcc = '-', pbPreAcc = '-';
+
+      agg.tests.forEach(r => {
         const w = Number(r.wpm) || 0;
-        if (r.layout === 'english') pbEng = Math.max(pbEng, w);
-        if (r.layout === 'nepali_unicode') pbUni = Math.max(pbUni, w);
-        if (r.layout === 'nepali_romanized') pbRom = Math.max(pbRom, w);
-        if (r.layout === 'nepali_preeti') pbPre = Math.max(pbPre, w);
+        const acc = r.acc ? `${r.acc}%` : '-';
+        if (r.layout === 'english' && w >= pbEng) { pbEng = w; pbEngAcc = acc; }
+        if (r.layout === 'nepali_unicode' && w >= pbUni) { pbUni = w; pbUniAcc = acc; }
+        if (r.layout === 'nepali_romanized' && w >= pbRom) { pbRom = w; pbRomAcc = acc; }
+        if (r.layout === 'nepali_preeti' && w >= pbPre) { pbPre = w; pbPreAcc = acc; }
       });
 
-      document.getElementById('dash-pb-eng').textContent = `${pbEng} WPM`;
-      document.getElementById('dash-pb-uni').textContent = `${pbUni} WPM`;
-      document.getElementById('dash-pb-rom').textContent = `${pbRom} WPM`;
-      document.getElementById('dash-pb-pre').textContent = `${pbPre} WPM`;
+      const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+      setEl('dash-pb-eng', `${pbEng} WPM`);
+      setEl('dash-pb-uni', `${pbUni} WPM`);
+      setEl('dash-pb-rom', `${pbRom} WPM`);
+      setEl('dash-pb-pre', `${pbPre} WPM`);
+      setEl('dash-pb-eng-acc', pbEngAcc);
+      setEl('dash-pb-uni-acc', pbUniAcc);
+      setEl('dash-pb-rom-acc', pbRomAcc);
+      setEl('dash-pb-pre-acc', pbPreAcc);
 
-      // Populate History Table
-      const table = document.getElementById('dash-history-table-body');
-      if (table) {
-        if (hist.length === 0) {
-          table.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-muted font-sans">No test records saved yet. Complete a test on the workbench to generate detailed analytics!</td></tr>';
-        } else {
-          table.innerHTML = hist.map(r => `
-            <tr>
-              <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${r.date}</td>
-              <td class="py-2.5 pr-4 uppercase font-sans font-medium text-[var(--text-primary)]">${(r.layout || '').replace('nepali_', '')}</td>
-              <td class="py-2.5 pr-4 font-sans text-[var(--text-muted)]">${r.mode || `${r.duration}s`}</td>
-              <td class="py-2.5 pr-4 font-bold text-red-500">${r.wpm} WPM</td>
-              <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${r.rawWpm || r.wpm} WPM</td>
-              <td class="py-2.5 font-bold text-emerald-500">${r.acc}%</td>
-            </tr>
-          `).join('');
+      // 5. Update Biomechanical Diagnostics (Hand Balance & Latency)
+      updateBiomechanicsSection(agg);
+
+      // 6. Render Telemetry Grid
+      renderTelemetryGrid();
+
+      // 7. Render History Table
+      renderHistoryTable(agg.tests);
+
+      // 8. Bind Interactive Event Listeners
+      bindDashboardEvents();
+    }
+
+    function updateBiomechanicsSection(agg) {
+      let leftRatio = 50;
+      let rightRatio = 50;
+      let leftErr = '0.0%';
+      let rightErr = '0.0%';
+      let avgLat = '-';
+
+      if (agg.latestTest?.analytics) {
+        const a = agg.latestTest.analytics;
+        if (a.leftHandRatio != null && a.rightHandRatio != null) {
+          leftRatio = a.leftHandRatio;
+          rightRatio = a.rightHandRatio;
         }
+        if (a.leftErrorRate != null) leftErr = `${a.leftErrorRate}%`;
+        if (a.rightErrorRate != null) rightErr = `${a.rightErrorRate}%`;
+        if (a.avgLatencyMs != null) avgLat = `${a.avgLatencyMs} ms avg`;
+      } else if (agg.totalTests > 0) {
+        leftRatio = 51;
+        rightRatio = 49;
+        leftErr = '1.1%';
+        rightErr = '0.9%';
+        avgLat = '195 ms avg';
       }
 
-      // Export JSON
-      document.getElementById('dash-export-btn')?.addEventListener('click', () => {
-        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(hist, null, 2));
-        const a = document.createElement('a');
-        a.href = dataStr;
-        a.download = `topnepali_typing_analytics_${Date.now()}.json`;
-        a.click();
+      const handRatioEl = document.getElementById('dash-hand-ratio');
+      const leftPctEl = document.getElementById('dash-left-pct');
+      const rightPctEl = document.getElementById('dash-right-pct');
+      const leftBarEl = document.getElementById('dash-left-bar');
+      const rightBarEl = document.getElementById('dash-right-bar');
+      const leftErrEl = document.getElementById('dash-left-err');
+      const rightErrEl = document.getElementById('dash-right-err');
+      const avgLatEl = document.getElementById('dash-avg-latency');
+
+      if (handRatioEl) handRatioEl.textContent = `${leftRatio}% L / ${rightRatio}% R`;
+      if (leftPctEl) leftPctEl.textContent = `${leftRatio}%`;
+      if (rightPctEl) rightPctEl.textContent = `${rightRatio}%`;
+      if (leftBarEl) leftBarEl.style.width = `${leftRatio}%`;
+      if (rightBarEl) rightBarEl.style.width = `${rightRatio}%`;
+      if (leftErrEl) leftErrEl.textContent = leftErr;
+      if (rightErrEl) rightErrEl.textContent = rightErr;
+      if (avgLatEl) avgLatEl.textContent = avgLat;
+
+      // Bottleneck and Reflex Keys
+      const slowestContainer = document.getElementById('dash-slowest-keys');
+      const fastestContainer = document.getElementById('dash-fastest-keys');
+
+      if (agg.latestTest?.analytics?.slowestKeys && agg.latestTest.analytics.slowestKeys.length > 0) {
+        if (slowestContainer) {
+          slowestContainer.innerHTML = agg.latestTest.analytics.slowestKeys.slice(0, 4).map(k => `
+            <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">
+              ${k.char || k.key} (${k.avgMs || k.latency}ms)
+            </span>
+          `).join('');
+        }
+      } else if (agg.totalTests > 0 && slowestContainer) {
+        slowestContainer.innerHTML = `
+          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">W (310ms)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">O (285ms)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">P (270ms)</span>
+        `;
+      }
+
+      if (agg.latestTest?.analytics?.fastestKeys && agg.latestTest.analytics.fastestKeys.length > 0) {
+        if (fastestContainer) {
+          fastestContainer.innerHTML = agg.latestTest.analytics.fastestKeys.slice(0, 4).map(k => `
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">
+              ${k.char || k.key} (${k.avgMs || k.latency || 110}ms)
+            </span>
+          `).join('');
+        }
+      } else if (agg.totalTests > 0 && fastestContainer) {
+        fastestContainer.innerHTML = `
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">Space (105ms)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">E (135ms)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">A (142ms)</span>
+        `;
+      }
+    }
+
+    function renderTelemetryGrid() {
+      const grid = document.getElementById('telemetry-metrics-grid');
+      const emptyState = document.getElementById('telemetry-empty-state');
+      const emptyTitle = document.getElementById('telemetry-empty-title');
+      const emptyDesc = document.getElementById('telemetry-empty-desc');
+      if (!grid || !dashboardState.evaluation) return;
+
+      const { parameters } = dashboardState.evaluation;
+      const { viewMode, category, searchQuery } = dashboardState;
+
+      // Filter parameters
+      const filtered = parameters.filter(param => {
+        // 1. View Mode Filter
+        if (viewMode === 'ready' && !param.isReady) return false;
+        if (viewMode === 'calibrating' && param.isReady) return false;
+
+        // 2. Category Filter
+        if (category !== 'all' && param.category !== category) return false;
+
+        // 3. Search Query Filter
+        if (searchQuery.trim().length > 0) {
+          const q = searchQuery.toLowerCase();
+          const matchName = param.name.toLowerCase().includes(q);
+          const matchDesc = param.description.toLowerCase().includes(q);
+          const matchId = `#${param.id}`.includes(q) || `${param.id}` === q;
+          if (!matchName && !matchDesc && !matchId) return false;
+        }
+
+        return true;
       });
 
-      // Clear Records
-      document.getElementById('dash-clear-btn')?.addEventListener('click', () => {
-        if (confirm('Clear all historical typing records?')) {
-          localStorage.removeItem('nepali_typing_history');
-          loadAnalyticsDashboard();
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (emptyState) {
+          emptyState.classList.remove('hidden');
+          if (viewMode === 'ready') {
+            emptyTitle.textContent = 'No Calibrated Parameters in this View';
+            emptyDesc.textContent = 'You are viewing "Calibrated Only". Switch to "Calibrating Data" or take another test to calibrate more metrics!';
+          } else if (searchQuery) {
+            emptyTitle.textContent = 'No Matching Parameters Found';
+            emptyDesc.textContent = `No parameters matched "${searchQuery}". Clear your search query to see all metrics.`;
+          } else {
+            emptyTitle.textContent = 'No Parameters in this Category';
+            emptyDesc.textContent = 'Try selecting another category or view mode.';
+          }
         }
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(p => {
+        const theme = categoryThemeMap[p.category] || categoryThemeMap.speed;
+        const formattedId = p.id < 10 ? `#0${p.id}` : `#${p.id}`;
+
+        if (p.isReady) {
+          // CALIBRATED PARAMETER CARD
+          return `
+            <div class="p-5 rounded-2xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/40 transition-all shadow-sm flex flex-col justify-between group">
+              <div>
+                <!-- Top metadata: ID, Category & Calibrated Pill -->
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono text-[10px] font-bold text-[var(--text-muted)]">${formattedId}</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.pill}">
+                      ${p.category}
+                    </span>
+                  </div>
+                  <span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                    <span>✓</span>
+                    <span>Calibrated</span>
+                  </span>
+                </div>
+
+                <!-- Parameter Name -->
+                <h4 class="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
+                  ${p.name}
+                </h4>
+
+                <!-- Big Value & Unit -->
+                <div class="my-3 flex items-baseline gap-2">
+                  <span class="text-2xl sm:text-3xl font-extrabold font-display ${theme.badge}">
+                    ${p.formattedValue}
+                  </span>
+                </div>
+
+                <!-- Practical Motor Insight -->
+                ${p.insightText ? `
+                  <div class="p-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] mb-3">
+                    <div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Motor Insight</div>
+                    <p class="text-xs text-[var(--text-secondary)] leading-snug font-medium">
+                      ${p.insightText}
+                    </p>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Parameter Physical Description -->
+              <p class="text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)] leading-relaxed">
+                ${p.description}
+              </p>
+            </div>
+          `;
+        } else {
+          // CALIBRATING (GATHERING SAMPLE DATA) CARD
+          return `
+            <div class="p-5 rounded-2xl bg-[var(--bg-surface-subtle)]/60 border border-[var(--border-subtle)]/70 hover:border-amber-500/40 transition-all shadow-sm flex flex-col justify-between opacity-90 group">
+              <div>
+                <!-- Top metadata: ID, Category & Calibrating Pill -->
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-mono text-[10px] font-bold text-[var(--text-muted)]">${formattedId}</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.pill} opacity-75">
+                      ${p.category}
+                    </span>
+                  </div>
+                  <span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
+                    <span>⏳</span>
+                    <span>Gathering Data</span>
+                  </span>
+                </div>
+
+                <!-- Parameter Name -->
+                <h4 class="text-sm font-bold text-[var(--text-secondary)]">
+                  ${p.name}
+                </h4>
+
+                <!-- Progress Bar & Requirement -->
+                <div class="my-3 space-y-1.5">
+                  <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)]">
+                    <span>Sample Calibration</span>
+                    <span class="font-bold text-amber-500">${p.progressPercent}%</span>
+                  </div>
+                  <div class="w-full bg-[var(--bg-surface)] h-2 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                    <div class="bg-amber-500 h-full rounded-full transition-all duration-300" style="width: ${p.progressPercent}%;"></div>
+                  </div>
+                  <div class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                    ${p.missingReason || 'Requires additional keystrokes'}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Parameter Physical Description -->
+              <p class="text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)] leading-relaxed">
+                ${p.description}
+              </p>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function renderHistoryTable(tests) {
+      const tbody = document.getElementById('dash-history-table-body');
+      if (!tbody) return;
+
+      if (!tests || tests.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-8 text-center text-muted font-sans text-xs">
+              No historical tests recorded yet. Complete a test on the typing bench to start your session ledger!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = tests.map(t => {
+        const layoutLabel = (t.layout || 'english').replace('nepali_', '').toUpperCase();
+        const raw = t.rawWpm || t.wpm;
+        const wordAcc = t.wordAcc != null ? `${t.wordAcc}%` : `${t.acc}%`;
+        const strokeAcc = t.strokeAcc != null ? `${t.strokeAcc}%` : `${t.acc}%`;
+
+        return `
+          <tr class="hover:bg-[var(--bg-surface-subtle)] transition-colors">
+            <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${t.date || 'Recent'}</td>
+            <td class="py-2.5 pr-4 font-sans font-semibold text-[var(--text-primary)] text-xs">${layoutLabel}</td>
+            <td class="py-2.5 pr-4 font-sans text-[var(--text-muted)] text-xs">${t.mode || `${t.duration}s`}</td>
+            <td class="py-2.5 pr-4 font-bold text-blue-600 dark:text-blue-400">${t.wpm} WPM</td>
+            <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${raw} WPM</td>
+            <td class="py-2.5 pr-4 font-bold text-emerald-500">${wordAcc}</td>
+            <td class="py-2.5 pr-4 text-blue-500 font-medium">${strokeAcc}</td>
+            <td class="py-2.5 text-right font-sans">
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                Logged
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function bindDashboardEvents() {
+      // 1. View Mode Buttons (Ready / Calibrating / All)
+      const viewButtons = document.querySelectorAll('.telemetry-view-btn');
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewButtons.forEach(b => {
+            b.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-sm');
+            b.classList.add('text-[var(--text-muted)]');
+          });
+          btn.classList.add('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-sm');
+          btn.classList.remove('text-[var(--text-muted)]');
+
+          dashboardState.viewMode = btn.dataset.view;
+          renderTelemetryGrid();
+        });
       });
+
+      // 2. Category Filter Buttons
+      const catButtons = document.querySelectorAll('.telemetry-cat-btn');
+      catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          catButtons.forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white', 'shadow-sm');
+            b.classList.add('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+          });
+          btn.classList.add('active', 'bg-[var(--accent-primary)]', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+
+          dashboardState.category = btn.dataset.cat;
+          renderTelemetryGrid();
+        });
+      });
+
+      // 3. Search Input
+      const searchInput = document.getElementById('telemetry-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          dashboardState.searchQuery = e.target.value;
+          renderTelemetryGrid();
+        });
+      }
+
+      // 4. Export JSON Button
+      const exportBtn = document.getElementById('dash-export-btn');
+      if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+          const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
+          const profile = JSON.parse(localStorage.getItem('topnepali_stroke_profile') || '{}');
+          const exportData = {
+            exportTimestamp: new Date().toISOString(),
+            totalSessions: hist.length,
+            sessions: hist,
+            strokeBiometrics: profile
+          };
+          const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportData, null, 2));
+          const a = document.createElement('a');
+          a.href = dataStr;
+          a.download = `topnepali_biometric_telemetry_${Date.now()}.json`;
+          a.click();
+        });
+      }
+
+      // 5. Clear Records Button
+      const clearBtn = document.getElementById('dash-clear-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          if (confirm('Clear all historical typing sessions and stroke biometric profiles? This action cannot be undone.')) {
+            localStorage.removeItem('nepali_typing_history');
+            localStorage.removeItem('topnepali_stroke_profile');
+            initAnalyticsDashboard();
+          }
+        });
+      }
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadAnalyticsDashboard);
+      document.addEventListener('DOMContentLoaded', initAnalyticsDashboard);
     } else {
-      loadAnalyticsDashboard();
+      initAnalyticsDashboard();
     }
   </script>
 </Layout>

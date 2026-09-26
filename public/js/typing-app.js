@@ -17,11 +17,13 @@
 import { setupTest } from './core/engine.js';
 import { bindInputEvents } from './input/input-handler.js';
 import { bindToolbarEvents } from './input/toolbar-handler.js';
+import { updateHeaderTelemetryBadge } from './utils/telemetry-parameters.js';
 
 function initApp() {
   bindInputEvents();
   bindToolbarEvents();
   setupTest();
+  updateHeaderTelemetryBadge();
 }
 
 if (document.readyState === 'loading') {
