@@ -2,5 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nepali-typing",
   "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-09-10"
+  "compatibility_date": "2026-09-10",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nepali_typing_db",
+      "database_id": "local-d1-db"
+    }
+  ]
 }

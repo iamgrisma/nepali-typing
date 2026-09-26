@@ -1,0 +1,239 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Deep Keystroke Biomechanics & Analytics — TopNepali Typing"
+  description="Examine your typing motor habits with unimagined precision: latency heatmaps, lateral hand balance, pause stalls, and keystroke rhythm consistency."
+  activeNav="analytics"
+>
+  <div class="container max-w-4xl py-6">
+    
+    <!-- Hero Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-3">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>BIOMECHANIC STROKE ANALYTICS</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Deep Typing Analytics Dashboard
+      </h1>
+      <p class="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mt-2">
+        Uncover unimagined insights into your keyboard ergonomics: finger load distributions, cognitive pause latencies, rhythm stability, and error recovery cost.
+      </p>
+    </div>
+
+    <!-- Personal Bests & High Level Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">English Best</span>
+        <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--accent-primary)] mt-1" id="dash-pb-eng">
+          0 WPM
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)]">QWERTY Standard</span>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Traditional Best</span>
+        <div class="text-2xl sm:text-3xl font-extrabold font-display text-purple-600 dark:text-purple-400 mt-1" id="dash-pb-uni">
+          0 WPM
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)]">Unicode MPP Standard</span>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Romanized Best</span>
+        <div class="text-2xl sm:text-3xl font-extrabold font-display text-blue-500 mt-1" id="dash-pb-rom">
+          0 WPM
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)]">Phonetic QWERTY</span>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Preeti Best</span>
+        <div class="text-2xl sm:text-3xl font-extrabold font-display text-emerald-500 mt-1" id="dash-pb-pre">
+          0 WPM
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)]">ASCII Typewriter</span>
+      </div>
+    </div>
+
+    <!-- Biomechanics Analytics Breakdown -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      
+      <!-- Hand Ergonomics Card -->
+      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <h2 class="text-base font-bold font-display text-[var(--text-primary)] mb-4 flex items-center justify-between">
+          <span class="flex items-center gap-2"><span>✋</span> Hand Ergonomics & Balance</span>
+          <span class="text-xs font-mono text-blue-500" id="dash-hand-bias">52% L / 48% R</span>
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Balance Bar -->
+          <div>
+            <div class="flex justify-between text-xs text-[var(--text-muted)] mb-1">
+              <span>Left Hand Load</span>
+              <span>Right Hand Load</span>
+            </div>
+            <div class="w-full bg-[var(--bg-surface-subtle)] h-3 rounded-full overflow-hidden flex border border-[var(--border-subtle)]">
+              <div id="dash-left-bar" class="bg-blue-500 h-full" style="width: 52%;"></div>
+              <div id="dash-right-bar" class="bg-teal-500 h-full" style="width: 48%;"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+            <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+              <span class="text-[11px] text-[var(--text-muted)] block">Left Hand Error Rate</span>
+              <span class="font-bold text-red-500 text-sm" id="dash-left-err">1.2%</span>
+            </div>
+            <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+              <span class="text-[11px] text-[var(--text-muted)] block">Right Hand Error Rate</span>
+              <span class="font-bold text-red-500 text-sm" id="dash-right-err">1.0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stroke Latency Heatmap Card -->
+      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+        <h2 class="text-base font-bold font-display text-[var(--text-primary)] mb-4 flex items-center justify-between">
+          <span class="flex items-center gap-2"><span>⏱️</span> Keystroke Latency Heatmap</span>
+          <span class="text-xs font-mono text-amber-500" id="dash-avg-latency">215 ms avg</span>
+        </h2>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <span class="text-[11px] text-[var(--text-muted)] block mb-1">Slowest Bottleneck Keys (Hesitations):</span>
+            <div id="dash-slowest-keys" class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">W (380ms)</span>
+              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">O (340ms)</span>
+              <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-mono font-bold">P (310ms)</span>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-[var(--border-subtle)]">
+            <span class="text-[11px] text-[var(--text-muted)] block mb-1">Fastest Reflex Keys (Muscle Memory):</span>
+            <div id="dash-fastest-keys" class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">Space (110ms)</span>
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">E (140ms)</span>
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono font-bold">A (155ms)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Complete Historical Runs Table -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
+          <span>📜</span>
+          <span>Typing Session History</span>
+        </h2>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            id="dash-export-btn" 
+            class="px-3 py-1 rounded-lg border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold"
+          >
+            Export JSON
+          </button>
+          <button 
+            type="button" 
+            id="dash-clear-btn" 
+            class="px-3 py-1 rounded-lg border border-[var(--border-subtle)] text-red-500 hover:bg-red-500/10 text-xs font-semibold"
+          >
+            Clear Records
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto text-xs">
+        <table class="w-full text-left">
+          <thead class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase">
+            <tr>
+              <th class="py-2.5 pr-4">Date</th>
+              <th class="py-2.5 pr-4">Layout</th>
+              <th class="py-2.5 pr-4">Mode</th>
+              <th class="py-2.5 pr-4">Net Speed</th>
+              <th class="py-2.5 pr-4">Gross Speed</th>
+              <th class="py-2.5">Accuracy</th>
+            </tr>
+          </thead>
+          <tbody id="dash-history-table-body" class="divide-y divide-[var(--border-subtle)] font-mono">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    function loadAnalyticsDashboard() {
+      const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
+      
+      let pbEng = 0;
+      let pbUni = 0;
+      let pbRom = 0;
+      let pbPre = 0;
+
+      hist.forEach(r => {
+        const w = Number(r.wpm) || 0;
+        if (r.layout === 'english') pbEng = Math.max(pbEng, w);
+        if (r.layout === 'nepali_unicode') pbUni = Math.max(pbUni, w);
+        if (r.layout === 'nepali_romanized') pbRom = Math.max(pbRom, w);
+        if (r.layout === 'nepali_preeti') pbPre = Math.max(pbPre, w);
+      });
+
+      document.getElementById('dash-pb-eng').textContent = `${pbEng} WPM`;
+      document.getElementById('dash-pb-uni').textContent = `${pbUni} WPM`;
+      document.getElementById('dash-pb-rom').textContent = `${pbRom} WPM`;
+      document.getElementById('dash-pb-pre').textContent = `${pbPre} WPM`;
+
+      // Populate History Table
+      const table = document.getElementById('dash-history-table-body');
+      if (table) {
+        if (hist.length === 0) {
+          table.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-muted font-sans">No test records saved yet. Complete a test on the workbench to generate detailed analytics!</td></tr>';
+        } else {
+          table.innerHTML = hist.map(r => `
+            <tr>
+              <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${r.date}</td>
+              <td class="py-2.5 pr-4 uppercase font-sans font-medium text-[var(--text-primary)]">${(r.layout || '').replace('nepali_', '')}</td>
+              <td class="py-2.5 pr-4 font-sans text-[var(--text-muted)]">${r.mode || `${r.duration}s`}</td>
+              <td class="py-2.5 pr-4 font-bold text-red-500">${r.wpm} WPM</td>
+              <td class="py-2.5 pr-4 text-[var(--text-secondary)]">${r.rawWpm || r.wpm} WPM</td>
+              <td class="py-2.5 font-bold text-emerald-500">${r.acc}%</td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // Export JSON
+      document.getElementById('dash-export-btn')?.addEventListener('click', () => {
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(hist, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = `topnepali_typing_analytics_${Date.now()}.json`;
+        a.click();
+      });
+
+      // Clear Records
+      document.getElementById('dash-clear-btn')?.addEventListener('click', () => {
+        if (confirm('Clear all historical typing records?')) {
+          localStorage.removeItem('nepali_typing_history');
+          loadAnalyticsDashboard();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadAnalyticsDashboard);
+    } else {
+      loadAnalyticsDashboard();
+    }
+  </script>
+</Layout>

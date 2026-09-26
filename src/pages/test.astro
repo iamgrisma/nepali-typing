@@ -1,0 +1,225 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Official Typing Certification Exam — TopNepali Typing"
+  description="Take the official timed typing certification test based on Mayor Balen Shah's historic UN General Assembly speech. Qualify with >20 WPM (Nepali) or >25 WPM (English) to earn a verifiable digital certificate."
+  activeNav="certification"
+>
+  <div class="container max-w-4xl py-6">
+    
+    <!-- Hero Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-3">
+        <span>🎓</span>
+        <span>OFFICIAL CERTIFICATION EXAMINATION</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Typing Speed & Accuracy Certification
+      </h1>
+      <p class="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mt-2">
+        Benchmark your speed against national and international standards. Earn a tamper-evident digital certificate with permanent verification on Cloudflare D1.
+      </p>
+    </div>
+
+    <!-- Examination Protocol Card -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
+      <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4 flex items-center gap-2">
+        <span>📋</span>
+        <span>Examination Protocol & Passage Information</span>
+      </h2>
+
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+        The official examination passage is Mayor <strong>Balendra (Balen) Shah's</strong> historic address delivered to the <strong>United Nations General Assembly (UNGA)</strong> on Himalayan climate resilience, mountain ecology, and global climate justice. It tests a complete, authentic lexicon—including diplomatic vocabulary, geographical regions, numerical values, and natural sentence cadence.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <span class="font-bold text-[var(--text-primary)] block mb-1">🇳🇵 Nepali Layout Benchmark</span>
+          <p class="text-[var(--text-muted)]">
+            Net Speed must strictly exceed <strong>20 Words Per Minute</strong> (&ge; 21 WPM) with at least <strong>85.0% accuracy</strong> across Nepali Unicode Traditional (MPP), Romanized, or Preeti ASCII.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <span class="font-bold text-[var(--text-primary)] block mb-1">🌐 English QWERTY Benchmark</span>
+          <p class="text-[var(--text-muted)]">
+            Net Speed must strictly exceed <strong>25 Words Per Minute</strong> (&ge; 26 WPM) with at least <strong>85.0% accuracy</strong> across English US QWERTY standard.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Candidate Registration & Exam Launcher -->
+    <div class="bg-[var(--bg-surface)] border border-purple-500/30 rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
+      <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-5 flex items-center gap-2">
+        <span>✍️</span>
+        <span>Candidate Information & Exam Setup</span>
+      </h2>
+
+      <div class="space-y-5">
+        <!-- Candidate Full Name -->
+        <div>
+          <label for="exam-candidate-name" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+            Candidate Full Name (Appears on Certificate)
+          </label>
+          <input 
+            type="text" 
+            id="exam-candidate-name" 
+            placeholder="e.g. Aarav Sharma" 
+            class="w-full px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-primary)] font-medium text-sm focus:outline-none focus:border-purple-500"
+          />
+        </div>
+
+        <!-- Layout Selection -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+            Keyboard Layout & Language
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" class="exam-select-lang active p-3 rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-xs text-center transition-colors" data-lang="nepali_unicode">
+              Nepali Traditional
+            </button>
+            <button type="button" class="exam-select-lang p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-center transition-colors hover:text-[var(--text-primary)]" data-lang="nepali_romanized">
+              Nepali Romanized
+            </button>
+            <button type="button" class="exam-select-lang p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-center transition-colors hover:text-[var(--text-primary)]" data-lang="nepali_preeti">
+              Preeti (ASCII)
+            </button>
+            <button type="button" class="exam-select-lang p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-center transition-colors hover:text-[var(--text-primary)]" data-lang="english">
+              English QWERTY
+            </button>
+          </div>
+        </div>
+
+        <!-- Test Duration Options -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+            Examination Format
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button type="button" class="exam-select-type active p-3.5 rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-xs text-left transition-colors" data-type="full">
+              <span class="block text-sm">Full UN Speech</span>
+              <span class="text-[11px] font-normal opacity-80">Complete typing of Balen's full delivered speech</span>
+            </button>
+            <button type="button" class="exam-select-type p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-left transition-colors hover:text-[var(--text-primary)]" data-type="5m">
+              <span class="block text-sm">5 Minutes</span>
+              <span class="text-[11px] font-normal opacity-80">Official Standard Certification Benchmark</span>
+            </button>
+            <button type="button" class="exam-select-type p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-left transition-colors hover:text-[var(--text-primary)]" data-type="10m">
+              <span class="block text-sm">10 Minutes</span>
+              <span class="text-[11px] font-normal opacity-80">Professional Endurance Examination</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Start Exam Button -->
+        <div class="pt-3">
+          <button 
+            type="button" 
+            id="start-exam-now-btn" 
+            class="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+          >
+            <span>Start Official Examination</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Speed Rank Benchmarks Table -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+      <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-4 flex items-center gap-2">
+        <span>🏆</span>
+        <span>Proficiency Tiers & Rank Honors</span>
+      </h3>
+
+      <div class="overflow-x-auto text-xs">
+        <table class="w-full text-left">
+          <thead class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase">
+            <tr>
+              <th class="py-2.5 pr-4">Honorific Rank</th>
+              <th class="py-2.5 pr-4">Nepali Speed Requirement</th>
+              <th class="py-2.5 pr-4">English Speed Requirement</th>
+              <th class="py-2.5">Badge Tier</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--border-subtle)]">
+            <tr>
+              <td class="py-2.5 font-bold text-purple-600 dark:text-purple-400">💎 Speed Demon (Grandmaster)</td>
+              <td class="py-2.5 font-mono">60+ Net WPM</td>
+              <td class="py-2.5 font-mono">90+ Net WPM</td>
+              <td class="py-2.5"><span class="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-500 font-bold">Diamond</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-cyan-500">⚡ Master Typist (Platinum)</td>
+              <td class="py-2.5 font-mono">50 - 59 Net WPM</td>
+              <td class="py-2.5 font-mono">70 - 89 Net WPM</td>
+              <td class="py-2.5"><span class="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 font-bold">Platinum</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-amber-500">🥇 Advanced Typist (Gold)</td>
+              <td class="py-2.5 font-mono">40 - 49 Net WPM</td>
+              <td class="py-2.5 font-mono">55 - 69 Net WPM</td>
+              <td class="py-2.5"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 font-bold">Gold</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-slate-400">🥈 Professional Typist (Silver)</td>
+              <td class="py-2.5 font-mono">30 - 39 Net WPM</td>
+              <td class="py-2.5 font-mono">40 - 54 Net WPM</td>
+              <td class="py-2.5"><span class="px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 font-bold">Silver</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-amber-700 dark:text-amber-500">🥉 Certified Typist (Bronze)</td>
+              <td class="py-2.5 font-mono">21 - 29 Net WPM</td>
+              <td class="py-2.5 font-mono">26 - 39 Net WPM</td>
+              <td class="py-2.5"><span class="px-2 py-0.5 rounded-full bg-amber-700/10 text-amber-700 font-bold">Bronze</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    // Examination Setup Script
+    let selectedLang = 'nepali_unicode';
+    let selectedType = 'full';
+
+    document.querySelectorAll('.exam-select-lang').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.exam-select-lang').forEach(b => {
+          b.className = 'exam-select-lang p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-center transition-colors hover:text-[var(--text-primary)]';
+        });
+        btn.className = 'exam-select-lang active p-3 rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-xs text-center transition-colors';
+        selectedLang = btn.dataset.lang;
+      });
+    });
+
+    document.querySelectorAll('.exam-select-type').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.exam-select-type').forEach(b => {
+          b.className = 'exam-select-type p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] font-medium text-xs text-left transition-colors hover:text-[var(--text-primary)]';
+        });
+        btn.className = 'exam-select-type active p-3.5 rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-xs text-left transition-colors';
+        selectedType = btn.dataset.type;
+      });
+    });
+
+    const nameInput = document.getElementById('exam-candidate-name');
+    if (nameInput) {
+      nameInput.value = localStorage.getItem('topnepali_candidate_name') || '';
+    }
+
+    document.getElementById('start-exam-now-btn')?.addEventListener('click', () => {
+      const name = nameInput ? nameInput.value.trim() : '';
+      if (name) {
+        localStorage.setItem('topnepali_candidate_name', name);
+      }
+      // Redirect to main workbench loaded in exam mode
+      window.location.href = `/?mode=exam&exam=${selectedType}&lang=${selectedLang}`;
+    });
+  </script>
+</Layout>

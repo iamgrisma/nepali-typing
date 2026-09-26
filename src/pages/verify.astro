@@ -1,0 +1,173 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Public Certificate Verification Portal — TopNepali Typing"
+  description="Verify the validity, candidate details, speed rating, and examination credentials of any official TopNepali Typing Certificate."
+  activeNav="verify"
+>
+  <div class="container max-w-3xl py-8">
+    
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>PUBLIC VERIFICATION REGISTRY</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">
+        Verify Certificate Authenticity
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] max-w-xl mx-auto mt-2">
+        Enter the unique Certificate ID printed on the credential or scanned from the QR code to query the permanent Cloudflare D1 verification registry.
+      </p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm mb-8">
+      <form id="verify-form" class="flex flex-col sm:flex-row gap-3">
+        <input 
+          type="text" 
+          id="cert-id-input" 
+          placeholder="Enter Certificate ID (e.g. TN-2026-X8K9M2)" 
+          class="flex-1 px-4 py-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-primary)] font-mono text-sm uppercase focus:outline-none focus:border-emerald-500"
+          required
+        />
+        <button 
+          type="submit" 
+          class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Verify Record</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Verification Result Box -->
+    <div id="verify-result-container" class="hidden">
+      <!-- Success Card -->
+      <div id="verify-success-card" class="hidden bg-[var(--bg-surface)] border-2 border-emerald-500/40 rounded-2xl p-6 sm:p-8 shadow-md">
+        <div class="flex items-center gap-3 pb-4 border-b border-[var(--border-subtle)] mb-5">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">
+            ✓
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold font-display text-[var(--text-primary)]">
+              Official Verified Credential
+            </h2>
+            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              Verified in TopNepali Registry Records
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mb-6">
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Candidate Name</span>
+            <span class="font-bold text-sm text-[var(--text-primary)]" id="res-candidate-name">-</span>
+          </div>
+
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Certificate ID</span>
+            <span class="font-mono font-bold text-sm text-purple-600 dark:text-purple-400" id="res-cert-id">-</span>
+          </div>
+
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Keyboard Layout</span>
+            <span class="font-semibold text-[var(--text-primary)]" id="res-layout">-</span>
+          </div>
+
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Honors Performance Tier</span>
+            <span class="font-bold text-amber-500" id="res-rank">-</span>
+          </div>
+
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Net Typing Speed</span>
+            <span class="font-mono font-extrabold text-base text-[var(--accent-primary)]" id="res-speed">-</span>
+          </div>
+
+          <div class="p-3 bg-[var(--bg-surface-subtle)] rounded-xl">
+            <span class="text-[11px] text-[var(--text-muted)] block">Typographical Accuracy</span>
+            <span class="font-mono font-extrabold text-base text-emerald-500" id="res-accuracy">-</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border-subtle)]">
+          <span class="text-xs text-[var(--text-muted)]" id="res-issued-date">Issued: -</span>
+          <a 
+            id="res-view-cert-btn" 
+            href="#" 
+            class="btn btn-primary text-xs flex items-center gap-1.5"
+          >
+            <span>View Full Official Certificate</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Not Found Card -->
+      <div id="verify-error-card" class="hidden bg-[var(--bg-surface)] border border-red-500/30 rounded-2xl p-6 text-center">
+        <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center text-xl font-bold mx-auto mb-3">
+          ✕
+        </div>
+        <h3 class="font-bold text-sm text-[var(--text-primary)] mb-1">
+          No Certificate Record Found
+        </h3>
+        <p class="text-xs text-[var(--text-muted)] max-w-md mx-auto mb-4">
+          The requested identifier could not be matched. Please ensure you entered the exact Certificate ID (e.g. TN-2026-X8K9M2) without extra spaces.
+        </p>
+        <a href="/test" class="btn btn-secondary text-xs inline-flex">
+          Take Certification Exam
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    import { lookupCertificate } from '../lib/certificate-db';
+
+    const form = document.getElementById('verify-form');
+    const input = document.getElementById('cert-id-input');
+    const container = document.getElementById('verify-result-container');
+    const successCard = document.getElementById('verify-success-card');
+    const errorCard = document.getElementById('verify-error-card');
+
+    async function handleVerify(id) {
+      if (!id) return;
+      container?.classList.remove('hidden');
+      successCard?.classList.add('hidden');
+      errorCard?.classList.add('hidden');
+
+      const cert = await lookupCertificate(id);
+
+      if (cert) {
+        document.getElementById('res-candidate-name').textContent = cert.candidateName;
+        document.getElementById('res-cert-id').textContent = cert.id;
+        document.getElementById('res-layout').textContent = cert.layoutLabel || cert.layout;
+        document.getElementById('res-rank').textContent = cert.rankTitle || 'Certified Typist';
+        document.getElementById('res-speed').textContent = `${cert.netWpm} WPM (${cert.rawWpm || cert.netWpm} Raw)`;
+        document.getElementById('res-accuracy').textContent = `${cert.accuracy}%`;
+        document.getElementById('res-issued-date').textContent = `Issued: ${cert.issuedAt}`;
+        document.getElementById('res-view-cert-btn').href = `/certificate/view?id=${encodeURIComponent(cert.id)}`;
+
+        successCard?.classList.remove('hidden');
+      } else {
+        errorCard?.classList.remove('hidden');
+      }
+    }
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleVerify(input.value.trim());
+    });
+
+    // Auto-verify if ?id= is in URL
+    const params = new URLSearchParams(window.location.search);
+    const qId = params.get('id');
+    if (qId) {
+      if (input) input.value = qId;
+      handleVerify(qId);
+    }
+  </script>
+</Layout>

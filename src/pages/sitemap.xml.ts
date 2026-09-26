@@ -10,6 +10,30 @@ export const GET: APIRoute = async () => {
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://typing.topnepali.com/test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/verify</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/drills</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/analytics</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>`;
 
   return new Response(sitemap, {

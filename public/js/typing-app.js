@@ -1,15 +1,22 @@
 /**
- * Nepali Typing PRO — Complete Client Application Engine
- * Modular Architecture:
- * - Data: /data/speeches.js, /data/typing-words.js, /data/keyboards.js
- * - Utils: /utils/preeti-converter.js
- * - Segmenter: Intl.Segmenter-based grapheme cluster handling
+ * TopNepali Typing PRO — Enterprise Client Application Engine
+ * 
+ * Features:
+ * - Full UN General Assembly Speech typing test (Balen Shah's speech)
+ * - 5-min & 10-min official certification benchmarks
+ * - Dual-layer Certificate DB (Local & Cloudflare D1 sync)
+ * - AI-Driven Adaptive Weak-Key Drill Algorithm with inverted indexing
+ * - "Unimagined" Stroke Biomechanics: latency heatmap, hand bias, pause stalls, backspace loss
+ * - Intl.Segmenter-based grapheme cluster handling for authentic Devanagari ligatures
  */
 
 import { EXAM_SPEECH_NEPALI, EXAM_SPEECH_ENGLISH } from './data/speeches.js';
 import { DATA } from './data/typing-words.js';
 import { KEY_ROWS, KEY_CODE_MAP } from './data/keyboards.js';
 import { toPreeti } from './utils/preeti-converter.js';
+import { saveCertificate, checkCertificationPass, getSpeedRank } from './utils/certificate-db.js';
+import { generateAdaptiveWords, getWeakestKeys, recordStrokeData } from './utils/adaptive-engine.js';
+import { analyzeTypingRun } from './utils/stroke-analytics.js';
 
 // --- 1. SEGMENTER & GRAPHEME UTILITIES ---
 const neSegmenter = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('ne', { granularity: 'grapheme' }) : null;
@@ -27,10 +34,11 @@ function getGraphemes(text, lang) {
   return text.split('');
 }
 
-// --- 6. APPLICATION STATE ---
+// --- 2. APPLICATION STATE ---
 let state = {
   lang: 'nepali_unicode',
-  mode: 'time',
+  mode: 'time', // 'time' | 'words' | 'sentences' | 'quotes' | 'exam' | 'adaptive'
+  examType: 'full', // 'full' | '5m' | '10m'
   duration: 60,
   wordCount: 25,
   difficulty: 'medium',
@@ -48,10 +56,13 @@ let state = {
   correctKeystrokes: 0,
   errorKeystrokes: 0,
   errorMap: {},
-  timeline: []
+  timeline: [],
+  keystrokeLogs: [],
+  lastStrokeTime: 0,
+  targetWeakKeys: []
 };
 
-// Web Audio Context for keystroke and completion sounds
+// Web Audio Context for audio feedback
 let audioCtx = null;
 function playBeep(freq, type, dur, gainVal) {
   if (!state.sound) return;
@@ -71,14 +82,34 @@ function playBeep(freq, type, dur, gainVal) {
   } catch (e) {}
 }
 
-// --- 7. WORDS POOL & CONTENT SELECTION ---
+// --- 3. WORDS POOL & CONTENT SELECTION ---
 function getWordsPool() {
   let list = [];
 
+  // EXAM MODE: Balen Shah's historic address to the UN General Assembly
   if (state.mode === 'exam') {
     const isEng = state.lang === 'english';
     const text = isEng ? EXAM_SPEECH_ENGLISH : EXAM_SPEECH_NEPALI;
     list = text.split(/\s+/).filter(Boolean);
+    if (state.lang === 'nepali_preeti') {
+      list = list.map(w => toPreeti(w));
+    }
+    return list;
+  }
+
+  // ADAPTIVE DRILL MODE: Targeted high-density weak keys
+  if (state.mode === 'adaptive') {
+    const weak = getWeakestKeys(state.lang, 3);
+    state.targetWeakKeys = weak.map(w => w.char);
+    const targetTags = document.getElementById('adaptive-target-tags');
+    if (targetTags) {
+      targetTags.textContent = state.targetWeakKeys.join(', ').toUpperCase();
+    }
+    list = generateAdaptiveWords({
+      lang: state.lang,
+      targetKeys: state.targetWeakKeys,
+      targetCount: 45
+    });
     if (state.lang === 'nepali_preeti') {
       list = list.map(w => toPreeti(w));
     }
@@ -105,9 +136,6 @@ function getWordsPool() {
     const shQuotes = [...diffObj.quotes].sort(() => 0.5 - Math.random());
     const text = shQuotes.join(' ');
     list = text.split(/\s+/).filter(Boolean);
-  } else if (state.mode === 'special') {
-    const text = diffObj.special.join(' ');
-    list = text.split(/\s+/).filter(Boolean);
   } else {
     list = diffObj.words;
   }
@@ -120,7 +148,7 @@ function getWordsPool() {
 }
 
 function refillWords() {
-  if (state.mode === 'exam') return; // Exam mode uses entire sequential speech text
+  if (state.mode === 'exam') return; // Sequential speech text
 
   const isEng = state.lang === 'english';
   const langObj = isEng ? DATA.english : DATA.nepali;
@@ -146,7 +174,7 @@ function refillWords() {
   }
 }
 
-// --- 8. TEST SETUP & RESET ---
+// --- 4. TEST SETUP & RESET ---
 function setupTest() {
   clearInterval(state.timer);
   state.timer = null;
@@ -155,11 +183,27 @@ function setupTest() {
   state.wordIdx = 0;
   state.typedWords = [];
   state.timeline = [];
+  state.keystrokeLogs = [];
+  state.lastStrokeTime = 0;
   state.totalKeystrokes = 0;
   state.correctKeystrokes = 0;
   state.errorKeystrokes = 0;
   state.errorMap = {};
-  state.secsLeft = state.duration;
+
+  if (state.mode === 'exam') {
+    if (state.examType === 'full') {
+      state.duration = 0; // count up
+      state.secsLeft = 0;
+    } else if (state.examType === '5m') {
+      state.duration = 300;
+      state.secsLeft = 300;
+    } else if (state.examType === '10m') {
+      state.duration = 600;
+      state.secsLeft = 600;
+    }
+  } else {
+    state.secsLeft = state.duration;
+  }
 
   const timerDisp = document.getElementById('live-timer-display');
   const progDisp = document.getElementById('live-progress-display');
@@ -167,7 +211,18 @@ function setupTest() {
   const accDisp = document.getElementById('live-acc-display');
   const inputField = document.getElementById('typing-input');
 
-  if (timerDisp) timerDisp.textContent = (state.mode === 'time' || state.mode === 'exam') ? `${state.secsLeft}` : '0s';
+  state.words = getWordsPool();
+
+  if (timerDisp) {
+    if (state.mode === 'exam' && state.examType === 'full') {
+      timerDisp.textContent = '00:00';
+    } else if (state.mode === 'time' || state.mode === 'exam') {
+      timerDisp.textContent = `${state.secsLeft}s`;
+    } else {
+      timerDisp.textContent = '0s';
+    }
+  }
+
   if (progDisp) progDisp.textContent = `0 / ${state.mode === 'words' ? state.wordCount : state.words.length || 25} words`;
   if (wpmDisp) wpmDisp.textContent = '0';
   if (accDisp) accDisp.textContent = '100%';
@@ -177,8 +232,6 @@ function setupTest() {
     inputField.removeAttribute('placeholder');
     inputField.focus();
   }
-
-  state.words = getWordsPool();
 
   const container = document.getElementById('words-container');
   if (container) {
@@ -191,7 +244,6 @@ function setupTest() {
       container.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
     }
 
-    // Pre-insert caret inside words-container for 100% stable coordinate space
     const caretDiv = document.createElement('div');
     caretDiv.id = 'typing-caret';
     caretDiv.className = 'typing-caret';
@@ -214,7 +266,7 @@ function setupTest() {
   updatePersonalBestsCards();
 }
 
-// --- 9. ACTIVE WORD HIGHLIGHT & ACCURATE CARET ---
+// --- 5. ACTIVE WORD HIGHLIGHT & CARET ---
 function renderActiveWordHighlight() {
   const curWord = state.words[state.wordIdx];
   const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
@@ -225,7 +277,6 @@ function renderActiveWordHighlight() {
   const clusters = getGraphemes(curWord, state.lang);
   const charSpans = curWordEl.querySelectorAll('.char-node:not(.is-extra-error)');
 
-  // Remove any previously appended extra error spans
   curWordEl.querySelectorAll('.is-extra-error').forEach(el => el.remove());
 
   let typedOffset = 0;
@@ -239,31 +290,25 @@ function renderActiveWordHighlight() {
     span.className = 'char-node';
 
     if (typedOffset >= typed.length) {
-      // Untouched
       continue;
     }
 
     const remainingTyped = typed.slice(typedOffset);
 
     if (remainingTyped.startsWith(cl)) {
-      // Fully correct grapheme cluster
       span.classList.add('is-correct');
       typedOffset += cl.length;
     } else if (cl.startsWith(remainingTyped)) {
-      // In-progress cluster (e.g. typed base consonant before matra)
       span.classList.add('is-partial');
       typedOffset += remainingTyped.length;
     } else {
-      // Mismatched error cluster
       span.classList.add('is-error');
       hasError = true;
       typedOffset += Math.min(cl.length, remainingTyped.length);
-      const expected = cl;
-      state.errorMap[expected] = (state.errorMap[expected] || 0) + 1;
+      state.errorMap[cl] = (state.errorMap[cl] || 0) + 1;
     }
   }
 
-  // If user typed beyond the word length, render extra characters
   if (typed.length > typedOffset) {
     hasError = true;
     const extra = typed.slice(typedOffset);
@@ -319,14 +364,13 @@ function updateCaret() {
     caret.style.top = `${topPos}px`;
     caret.style.height = `${Math.max(22, sRect.height - 4)}px`;
 
-    // Smooth auto-scroll when passing line boundary in 2-line container
     if (sRect.top - cRect.top > 38) {
       container.scrollTop += 38;
     }
   }
 }
 
-// --- 10. KEYBOARD VISUALIZER ENGINE ---
+// --- 6. KEYBOARD VISUALIZER ENGINE ---
 function renderKeyboard() {
   KEY_ROWS.forEach((row, rI) => {
     const rowEl = document.querySelector(`.kb-row[data-row="${rI + 1}"]`);
@@ -407,8 +451,8 @@ function renderKeyboard() {
   const pillEl = document.getElementById('kb-layout-pill');
   const titles = {
     english: 'English QWERTY Layout',
-    nepali_unicode: 'नेपाली युनिकोड (Traditional) Keyboard Layout',
-    nepali_romanized: 'नेपाली युनिकोड (Romanized) Phonetic Layout',
+    nepali_unicode: 'Nepali Unicode (Traditional MPP) Layout',
+    nepali_romanized: 'Nepali Unicode (Romanized Phonetic) Layout',
     nepali_preeti: 'Preeti (ASCII Typewriter) Layout'
   };
   const pills = {
@@ -420,7 +464,6 @@ function renderKeyboard() {
   if (titleEl) titleEl.textContent = titles[state.lang] || '';
   if (pillEl) pillEl.textContent = pills[state.lang] || '';
 
-  // Crucial: keep target key highlighted and synced across Shift and layout states
   highlightTargetKey();
 }
 
@@ -446,90 +489,15 @@ function highlightTargetKey() {
       targetDisp.textContent = '् (halanta \\)';
     } else if (state.lang === 'nepali_unicode' && targetCh === 'आ') {
       targetDisp.textContent = 'आ (Shift + A or अ + ा)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'ऐ') {
-      targetDisp.textContent = 'ऐ (Shift + E)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'ऊ') {
-      targetDisp.textContent = 'ऊ (Shift + U)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'झ') {
-      targetDisp.textContent = 'झ (Shift + H)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'ॐ') {
-      targetDisp.textContent = 'ॐ (Shift + V)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'फ') {
-      targetDisp.textContent = 'फ (Shift + K)';
     } else if (state.lang === 'nepali_romanized' && targetCh === '्') {
       targetDisp.textContent = '् (q or /)';
-    } else if (state.lang === 'nepali_romanized' && targetCh === 'अ') {
-      targetDisp.textContent = 'अ (Shift + H or a)';
-    } else if (state.lang === 'nepali_preeti') {
-      let desc = targetCh;
-      for (const row of KEY_ROWS) {
-        for (const k of row) {
-          if (k.special || !k.pre) continue;
-          if (k.pre[0] === targetCh) {
-            desc = `${k.pre[2]} (${targetCh})`;
-            break;
-          } else if (k.pre[1] === targetCh) {
-            desc = `${k.pre[3]} (${targetCh}) [Shift + ${k.key.toUpperCase()}]`;
-            break;
-          }
-        }
-        if (desc !== targetCh) break;
-      }
-      targetDisp.textContent = desc;
     } else {
       targetDisp.textContent = targetCh;
-    }
-
-    // In Traditional layout, show informative hints for multi-char ligatures
-    if (state.lang === 'nepali_unicode') {
-      const remaining = curWord.slice(typed.length);
-      const tradLigatures = [
-        ['क्ष', 'क्ष (Shift + I or क+्+ष)'],
-        ['ज्ञ', 'ज्ञ (Shift + 1 or ज+्+ञ)'],
-        ['त्र', 'त्र (q or त+्+र)'],
-        ['श्र', 'श्र (Shift + . or श+्+र)'],
-        ['रु', 'रु (Shift + / or र+ु)'],
-        ['द्ध', 'द्ध (Shift + 4 or द+्+ध)'],
-        ['द्द', 'द्द (Shift + G or द+्+द)'],
-        ['त्त', 'त्त (Shift + Q or त+्+त)'],
-        ['ट्ट', 'ट्ट (Shift + T or ट+्+ट)'],
-        ['ठ्ठ', 'ठ्ठ (Shift + Y or ठ+्+ठ)'],
-        ['ड्ढ', 'ड्ढ (Shift + W or ड+्+ढ)'],
-        ['ड्ड', 'ड्ड (Shift + M or ड+्+ड)'],
-        ['ट्ठ', 'ट्ठ (Shift + ; or ट+्+ठ)'],
-        ['ङ्ग', 'ङ्ग (Shift + D or ङ+्+ग)'],
-        ['ङ्क', 'ङ्क (Shift + S or ङ+्+क)'],
-        ['क्क', 'क्क (Shift + Z or क+्+क)'],
-        ['ह्य', 'ह्य (Shift + X or ह+्+य)'],
-        ['द्य', 'द्य (Shift + N or द+्+य)'],
-        ['द्ब', 'द्ब (Shift + R or द+्+ब)']
-      ];
-      for (const [lig, desc] of tradLigatures) {
-        if (remaining.startsWith(lig)) {
-          targetDisp.textContent = desc;
-          break;
-        }
-      }
     }
   }
 
   if (targetCh === ' ') {
     document.querySelector('.keycap[data-code="Space"]')?.classList.add('is-target');
-    return;
-  }
-
-  // Special halanta highlighting for Romanized: highlight both Slash and KeyQ
-  if (state.lang === 'nepali_romanized' && targetCh === '्') {
-    document.querySelector('.keycap[data-code="Slash"]')?.classList.add('is-target');
-    document.querySelector('.keycap[data-code="KeyQ"]')?.classList.add('is-target');
-    return;
-  }
-
-  // Special independent 'अ' highlighting for Romanized: highlight KeyH, ShiftLeft, and KeyA
-  if (state.lang === 'nepali_romanized' && targetCh === 'अ') {
-    document.querySelector('.keycap[data-code="KeyH"]')?.classList.add('is-target');
-    document.querySelector('.keycap[data-code="ShiftLeft"]')?.classList.add('is-target');
-    document.querySelector('.keycap[data-code="KeyA"]')?.classList.add('is-target');
     return;
   }
 
@@ -558,13 +526,6 @@ function highlightTargetKey() {
     if (targetCode) break;
   }
 
-  // Special fallbacks for independent characters in Romanized:
-  // e.g. 'अ' is Shift+H (KeyH shifted)
-  if (!targetCode && state.lang === 'nepali_romanized' && targetCh === 'अ') {
-    targetCode = 'KeyH';
-    needsShift = true;
-  }
-
   if (targetCode) {
     document.querySelector(`.keycap[data-code="${targetCode}"]`)?.classList.add('is-target');
     if (needsShift) {
@@ -573,7 +534,7 @@ function highlightTargetKey() {
   }
 }
 
-// --- 11. REAL-TIME STATS & WALL-CLOCK TIMER ---
+// --- 7. REAL-TIME STATS & WALL-CLOCK TIMER ---
 function computeCurrentStats() {
   const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
   const m = elapsed / 60;
@@ -583,32 +544,41 @@ function computeCurrentStats() {
   return { wpm, rawWpm, acc, elapsed };
 }
 
+function formatMinutesSeconds(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
 function startTimer() {
   if (state.isRunning) return;
   state.isRunning = true;
   state.startTime = performance.now();
   state.timeline = [];
+  state.keystrokeLogs = [];
+  state.lastStrokeTime = performance.now();
 
   state.timer = setInterval(() => {
     const now = performance.now();
     const elapsed = Math.floor((now - state.startTime) / 1000);
+    const tDisp = document.getElementById('live-timer-display');
 
-    if (state.mode === 'time' || state.mode === 'exam') {
+    if (state.mode === 'exam' && state.examType === 'full') {
+      // FULL UN SPEECH: count upwards with format MM:SS
+      if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
+    } else if (state.mode === 'time' || state.mode === 'exam') {
       state.secsLeft = Math.max(0, state.duration - elapsed);
-      const tDisp = document.getElementById('live-timer-display');
-      if (tDisp) tDisp.textContent = `${state.secsLeft}`;
+      if (tDisp) tDisp.textContent = `${state.secsLeft}s`;
       if (state.secsLeft <= 0) {
         finishTest();
         return;
       }
     } else {
-      const tDisp = document.getElementById('live-timer-display');
       if (tDisp) tDisp.textContent = `${elapsed}s`;
     }
 
     updateLiveStats();
 
-    // Record second snapshot for timeline chart
     const cur = computeCurrentStats();
     state.timeline.push({
       second: elapsed,
@@ -632,7 +602,7 @@ function updateLiveStats() {
   if (progDisp) progDisp.textContent = `${state.wordIdx} / ${state.mode === 'words' ? state.wordCount : state.words.length} words`;
 }
 
-// --- 12. SVG TIMELINE GRAPH GENERATOR ---
+// --- 8. SVG TIMELINE GRAPH GENERATOR ---
 function renderTimelineChart(timeline) {
   const svg = document.getElementById('timeline-chart-svg');
   if (!svg) return;
@@ -666,7 +636,6 @@ function renderTimelineChart(timeline) {
     </defs>
   `;
 
-  // Horizontal Grid Lines & Scale
   const gridSteps = [0, 0.5, 1];
   gridSteps.forEach(ratio => {
     const yVal = padT + innerH * (1 - ratio);
@@ -680,14 +649,9 @@ function renderTimelineChart(timeline) {
 
   const areaPoints = `${getX(0)},${padT + innerH} ` + netPoints + ` ${getX(timeline.length - 1)},${padT + innerH}`;
   svgHtml += `<polygon points="${areaPoints}" fill="url(#wpmGradient)" />`;
-
-  // Raw WPM line (Blue)
   svgHtml += `<polyline points="${rawPoints}" fill="none" stroke="#60a5fa" stroke-width="1.75" stroke-linecap="round" opacity="0.8" />`;
-
-  // Net WPM line (Accent Red)
   svgHtml += `<polyline points="${netPoints}" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" />`;
 
-  // Errors (Red dots)
   timeline.forEach((p, i) => {
     if (p.errors > 0) {
       svgHtml += `<circle cx="${getX(i)}" cy="${getY(p.wpm)}" r="3.5" fill="#ef4444" stroke="#ffffff" stroke-width="1" />`;
@@ -697,7 +661,9 @@ function renderTimelineChart(timeline) {
   svg.innerHTML = svgHtml;
 }
 
-// --- 13. FINISH TEST & DETAILED REPORT ---
+// --- 9. FINISH TEST & DEEP ANALYTICS REPORT ---
+let lastFinishedResult = null;
+
 function finishTest() {
   if (state.isFinished) return;
   clearInterval(state.timer);
@@ -712,66 +678,50 @@ function finishTest() {
   const acc = stats.acc;
   const cpm = Math.round(state.correctKeystrokes / (stats.elapsed / 60));
 
-  // Calculate Consistency % (Monkeytype standard CV)
-  let consistency = 95;
-  if (state.timeline.length > 2) {
-    const wpms = state.timeline.map(p => p.wpm);
-    const mean = wpms.reduce((a, b) => a + b, 0) / wpms.length;
-    if (mean > 0) {
-      const variance = wpms.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / wpms.length;
-      const stdDev = Math.sqrt(variance);
-      const cv = (stdDev / mean) * 100;
-      consistency = Math.max(0, Math.min(100, Math.round(100 - cv)));
-    }
-  }
+  // Run Unimagined Stroke Biomechanics Analytics
+  const strokeAnalytics = analyzeTypingRun(state.keystrokeLogs, stats.elapsed, netWpm, rawWpm, acc);
 
-  // Typist Proficiency Ranking
-  let rank = '🌱 Intermediate';
-  let feedback = 'नियमित अभ्यासले किबोर्डमा गति र आत्मविश्वास बढ्दै जान्छ।';
-  if (netWpm >= 50 && acc >= 95) {
-    rank = '🚀 Speed Demon';
-    feedback = 'अविश्वसनीय गति! तपाईं प्रो स्तरको टाइपिस्ट हुनुहुन्छ।';
-  } else if (netWpm >= 40 && acc >= 90) {
-    rank = '⚡ Master Typist';
-    feedback = 'उत्कृष्ट गति र शुद्धता! व्यावसायिक स्तरको लेखन क्षमता।';
-  } else if (netWpm >= 30 && acc >= 88) {
-    rank = '🎯 Proficient';
-    feedback = 'धेरै राम्रो गति! दैनिक काम, परीक्षा र साहित्य लेखनका लागि उपयुक्त।';
-  } else if (netWpm < 20) {
-    rank = '🐣 Learner';
-    feedback = 'हतार नगरी शुद्धतामा ध्यान दिनुहोस्, गति आफैँ बढ्दै जानेछ।';
-  }
+  // Speed Rank Classification
+  const rank = getSpeedRank(state.lang, netWpm);
 
-  // Most frequent missed keys
-  const missedSorted = Object.entries(state.errorMap).sort((a, b) => b[1] - a[1]);
-  const topMissed = missedSorted.slice(0, 3).map(([k, c]) => `${k} (${c})`).join(', ') || 'None';
+  // Check Official Certification Qualification
+  const certPass = checkCertificationPass(state.lang, netWpm, acc);
 
-  // Populate Detailed Stats Modal
+  lastFinishedResult = {
+    netWpm,
+    rawWpm,
+    acc,
+    cpm,
+    elapsed: Math.round(stats.elapsed),
+    layout: state.lang,
+    mode: state.mode,
+    examType: state.examType,
+    rank,
+    certPass,
+    strokeAnalytics
+  };
+
+  // Populate Base Numbers
   const mNet = document.getElementById('modal-net-wpm');
   const mAcc = document.getElementById('modal-accuracy');
   const mAccDetail = document.getElementById('modal-acc-detail');
   const mRaw = document.getElementById('modal-raw-wpm');
   const mConsistency = document.getElementById('modal-consistency');
-  const mCpm = document.getElementById('modal-cpm');
   const mRankPill = document.getElementById('modal-rank-pill');
-  const mRankLbl = document.getElementById('modal-rank-label');
-  const mRankFeed = document.getElementById('modal-rank-feedback');
-  const mCorrect = document.getElementById('modal-strokes-correct');
-  const mError = document.getElementById('modal-strokes-error');
-  const mMissed = document.getElementById('modal-missed-keys');
-  const mErrorRate = document.getElementById('modal-error-rate');
   const mMeta = document.getElementById('modal-test-metadata');
 
   const langNames = {
-    nepali_unicode: 'नेपाली Traditional',
-    nepali_romanized: 'नेपाली Romanized',
-    nepali_preeti: 'Preeti (ASCII)',
-    english: 'English QWERTY'
+    nepali_unicode: 'Nepali Traditional (MPP)',
+    nepali_romanized: 'Nepali Romanized (Phonetic)',
+    nepali_preeti: 'Preeti (ASCII Typewriter)',
+    english: 'English US QWERTY'
   };
 
   let modeDesc = '';
   if (state.mode === 'exam') {
-    modeDesc = `🎓 Exam (${Math.round(state.duration / 60)} Min)`;
+    modeDesc = state.examType === 'full' ? '🎓 Full UN Speech Exam' : `🎓 ${Math.round(state.duration / 60)} Min Official Exam`;
+  } else if (state.mode === 'adaptive') {
+    modeDesc = '⚡ Smart Adaptive Drill';
   } else if (state.mode === 'time') {
     modeDesc = `${state.duration} Seconds`;
   } else {
@@ -784,16 +734,86 @@ function finishTest() {
   if (mAcc) mAcc.textContent = `${acc}%`;
   if (mAccDetail) mAccDetail.textContent = `${state.errorKeystrokes} errors`;
   if (mRaw) mRaw.textContent = `${rawWpm}`;
-  if (mConsistency) mConsistency.textContent = `${consistency}%`;
-  if (mCpm) mCpm.textContent = `${cpm} CPM`;
-  if (mRankPill) mRankPill.textContent = rank;
-  if (mRankLbl) mRankLbl.textContent = rank;
-  if (mRankFeed) mRankFeed.textContent = feedback;
-  if (mCorrect) mCorrect.textContent = `${state.correctKeystrokes}`;
-  if (mError) mError.textContent = `${state.errorKeystrokes}`;
-  if (mMissed) mMissed.textContent = topMissed;
-  if (mErrorRate) mErrorRate.textContent = `${(100 - acc).toFixed(1)}%`;
+  if (mConsistency) mConsistency.textContent = `${strokeAnalytics.rhythmStability}%`;
+  if (mRankPill) {
+    mRankPill.textContent = rank.title;
+    mRankPill.style.color = rank.color;
+  }
   if (mMeta) mMeta.textContent = `${langNames[state.lang] || state.lang} • ${modeDesc} • ${diffDesc}`;
+
+  // Populate Unimagined Biomechanics Cards
+  const elHandBias = document.getElementById('analytics-hand-bias');
+  const elLeftBar = document.getElementById('analytics-left-bar');
+  const elRightBar = document.getElementById('analytics-right-bar');
+  const elLeftErr = document.getElementById('analytics-left-err');
+  const elRightErr = document.getElementById('analytics-right-err');
+  const elRowDist = document.getElementById('analytics-row-dist');
+  const elAvgLatency = document.getElementById('analytics-avg-latency');
+  const elSlowest = document.getElementById('analytics-slowest-keys');
+  const elFastest = document.getElementById('analytics-fastest-keys');
+  const elHesitation = document.getElementById('analytics-hesitation-count');
+  const elBurst = document.getElementById('analytics-peak-burst');
+  const elCleanStreak = document.getElementById('analytics-clean-streak');
+  const elTimeLost = document.getElementById('analytics-time-lost');
+  const elStrokeRatio = document.getElementById('analytics-stroke-ratio');
+
+  if (elHandBias) elHandBias.textContent = `${strokeAnalytics.leftHandRatio}% L / ${strokeAnalytics.rightHandRatio}% R`;
+  if (elLeftBar) elLeftBar.style.width = `${strokeAnalytics.leftHandRatio}%`;
+  if (elRightBar) elRightBar.style.width = `${strokeAnalytics.rightHandRatio}%`;
+  if (elLeftErr) elLeftErr.textContent = `${strokeAnalytics.leftErrorRate}%`;
+  if (elRightErr) elRightErr.textContent = `${strokeAnalytics.rightErrorRate}%`;
+  if (elRowDist) elRowDist.textContent = `H: ${strokeAnalytics.rowPercentages.home}% • T: ${strokeAnalytics.rowPercentages.top}%`;
+  if (elAvgLatency) elAvgLatency.textContent = `${strokeAnalytics.avgLatencyMs} ms avg`;
+
+  if (elSlowest) {
+    elSlowest.textContent = strokeAnalytics.slowestKeys.length > 0 
+      ? strokeAnalytics.slowestKeys.slice(0, 3).map(k => `${k.char} (${k.avgMs}ms)`).join(', ')
+      : 'None (Smooth)';
+  }
+  if (elFastest) {
+    elFastest.textContent = strokeAnalytics.fastestKeys.length > 0
+      ? strokeAnalytics.fastestKeys.slice(0, 3).map(k => `${k.char}`).join(', ')
+      : 'Standard';
+  }
+  if (elHesitation) elHesitation.textContent = `${strokeAnalytics.hesitations} pauses`;
+  if (elBurst) elBurst.textContent = `${strokeAnalytics.peakBurstWpm} WPM burst`;
+  if (elCleanStreak) elCleanStreak.textContent = `${strokeAnalytics.maxCleanStreak} chars`;
+  if (elTimeLost) elTimeLost.textContent = `${strokeAnalytics.estimatedSecondsLost} sec lost`;
+  if (elStrokeRatio) elStrokeRatio.textContent = `${state.correctKeystrokes} / ${state.errorKeystrokes}`;
+
+  // Populate Certification Banner
+  const certBanner = document.getElementById('modal-cert-banner');
+  const certTitle = document.getElementById('modal-cert-status-title');
+  const certDesc = document.getElementById('modal-cert-status-desc');
+  const certNameInput = document.getElementById('modal-candidate-name-input');
+
+  if (certBanner) {
+    if (certPass.passed) {
+      certBanner.classList.remove('hidden');
+      if (certTitle) certTitle.textContent = `🏆 Certified Benchmark Passed: ${rank.title}!`;
+      if (certDesc) certDesc.textContent = `Net Speed: ${netWpm} WPM (Exceeds >${certPass.minWpm} WPM requirement with ${acc}% accuracy). Enter your name to generate your verifiable certificate:`;
+      if (certNameInput) {
+        certNameInput.value = localStorage.getItem('topnepali_candidate_name') || '';
+      }
+    } else if (state.mode === 'exam') {
+      certBanner.classList.remove('hidden');
+      if (certTitle) certTitle.textContent = `Official Typing Benchmark: Did Not Yet Qualify`;
+      if (certDesc) certDesc.textContent = `Required: >${certPass.minWpm} WPM (Your speed: ${netWpm} WPM). Practice weak-stroke drills below to qualify!`;
+    } else {
+      certBanner.classList.add('hidden');
+    }
+  }
+
+  // Populate Adaptive Recommendation Callout
+  const adaptiveCallout = document.getElementById('modal-adaptive-callout');
+  const adaptiveKeysLbl = document.getElementById('modal-adaptive-keys-label');
+  const topMissed = Object.entries(state.errorMap).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
+  const weakKeys = topMissed.length > 0 ? topMissed : (strokeAnalytics.slowestKeys.slice(0, 2).map(k => k.char));
+
+  if (adaptiveCallout && weakKeys.length > 0) {
+    adaptiveCallout.classList.remove('hidden');
+    if (adaptiveKeysLbl) adaptiveKeysLbl.textContent = `[${weakKeys.join(', ').toUpperCase()}]`;
+  }
 
   renderTimelineChart(state.timeline);
   document.getElementById('stats-modal')?.classList.add('is-open');
@@ -803,7 +823,7 @@ function finishTest() {
     const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
     hist.unshift({
       id: Date.now(),
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       layout: state.lang,
       mode: modeDesc,
       wpm: netWpm,
@@ -816,7 +836,7 @@ function finishTest() {
   } catch (e) {}
 }
 
-// --- 14. PERSONAL BESTS & HISTORY UPDATER ---
+// --- 10. PERSONAL BESTS & HISTORY UPDATER ---
 function updatePersonalBestsCards() {
   try {
     const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
@@ -843,11 +863,11 @@ function updatePersonalBestsCards() {
     if (elUni) elUni.textContent = `${pbUni} WPM`;
     if (elRom) elRom.textContent = `${pbRom} WPM`;
     if (elPre) elPre.textContent = `${pbPre} WPM`;
-    if (elTotal) elTotal.textContent = `${hist.length} test${hist.length === 1 ? '' : 's'} completed`;
+    if (elTotal) elTotal.textContent = `${hist.length} test${hist.length === 1 ? '' : 's'} recorded`;
   } catch (e) {}
 }
 
-// --- 15. INPUT & KEY EVENT HANDLING ---
+// --- 11. INPUT & KEY EVENT HANDLING ---
 function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
   const workbench = document.getElementById('typing-workbench');
@@ -864,12 +884,11 @@ function bindInputEvents() {
     workbench?.classList.remove('is-active');
   });
 
-  // Real-time Keystroke Input Handler
   inputField?.addEventListener('input', () => {
     if (state.isFinished) return;
     if (!state.isRunning && inputField.value.length > 0) startTimer();
 
-    // Normalize combined traditional & romanized Devanagari ligatures
+    // Auto-normalize traditional ligatures
     if (state.lang === 'nepali_unicode' || state.lang === 'nepali_romanized') {
       const val = inputField.value;
       const normalized = val
@@ -890,6 +909,11 @@ function bindInputEvents() {
   });
 
   inputField?.addEventListener('keydown', (e) => {
+    const curWord = state.words[state.wordIdx];
+    const now = performance.now();
+    const deltaMs = state.lastStrokeTime > 0 ? Math.max(10, Math.min(3000, Math.round(now - state.lastStrokeTime))) : 150;
+    state.lastStrokeTime = now;
+
     // PREVENT SPACE SCROLLING AND ADVANCE WORD
     if (e.key === ' ' || e.code === 'Space') {
       e.preventDefault();
@@ -897,7 +921,6 @@ function bindInputEvents() {
       if (state.isFinished) return;
       if (!state.isRunning) startTimer();
 
-      const curWord = state.words[state.wordIdx];
       const typed = inputField.value.trim();
       if (!curWord) return;
 
@@ -911,6 +934,15 @@ function bindInputEvents() {
       }
       state.totalKeystrokes += (typed.length || 1) + 1;
 
+      state.keystrokeLogs.push({
+        timestamp: now,
+        charExpected: ' ',
+        charTyped: ' ',
+        isCorrect,
+        code: 'Space',
+        latencyMs: deltaMs
+      });
+
       state.typedWords[state.wordIdx] = typed;
 
       const curWordEl = document.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
@@ -922,12 +954,17 @@ function bindInputEvents() {
       state.wordIdx++;
       inputField.value = '';
 
-      // Check test completion criteria
+      // Test completion checks
       if (state.mode === 'words' && state.wordIdx >= state.wordCount) {
         finishTest();
         return;
       }
-      if ((state.mode === 'sentences' || state.mode === 'quotes' || state.mode === 'special') && state.wordIdx >= state.words.length) {
+      if ((state.mode === 'sentences' || state.mode === 'quotes' || state.mode === 'adaptive') && state.wordIdx >= state.words.length) {
+        finishTest();
+        return;
+      }
+      if (state.mode === 'exam' && state.wordIdx >= state.words.length) {
+        // Complete UN Speech Finished!
         finishTest();
         return;
       }
@@ -957,8 +994,17 @@ function bindInputEvents() {
       return;
     }
 
-    // FREEDOM BACKSPACE: jump back to previous word for instant correction!
+    // BACKSPACE SUPPORT
     if (e.key === 'Backspace') {
+      state.keystrokeLogs.push({
+        timestamp: now,
+        charExpected: 'Backspace',
+        charTyped: 'Backspace',
+        isCorrect: false,
+        code: 'Backspace',
+        latencyMs: deltaMs
+      });
+
       if (inputField.value.length === 0 && state.wordIdx > 0) {
         e.preventDefault();
 
@@ -1004,16 +1050,30 @@ function bindInputEvents() {
       if (!state.isRunning) startTimer();
 
       const isAscii = e.key.charCodeAt(0) < 128;
+      const curPos = inputField.selectionStart ?? inputField.value.length;
+      const expectedChar = curWord ? (curWord[curPos] || '') : '';
+
       if (state.lang === 'nepali_unicode' && isAscii) {
         const matched = KEY_CODE_MAP[e.code];
         if (matched && matched.uni) {
           e.preventDefault();
           const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
+          const isCharCorrect = (ch === expectedChar);
+
+          state.keystrokeLogs.push({
+            timestamp: now,
+            charExpected: expectedChar,
+            charTyped: ch,
+            isCorrect: isCharCorrect,
+            code: e.code,
+            latencyMs: deltaMs
+          });
+          recordStrokeData(expectedChar, isCharCorrect, deltaMs);
+
           const start = inputField.selectionStart ?? inputField.value.length;
           const end = inputField.selectionEnd ?? inputField.value.length;
           inputField.setRangeText(ch, start, end, 'end');
 
-          // Auto-merge traditional ligatures
           let val = inputField.value;
           val = val
             .replace(/अा/g, 'आ')
@@ -1030,14 +1090,10 @@ function bindInputEvents() {
         const matched = KEY_CODE_MAP[e.code];
         if (matched && matched.rom) {
           e.preventDefault();
-          const curWord = state.words[state.wordIdx];
-          const curPos = inputField.selectionStart ?? inputField.value.length;
-          const targetChar = curWord ? curWord[curPos] : '';
           let ch = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
 
-          // Halanta handling: TopNepali/MPP phonetic standard allows 'q' for halanta '्'
           if (e.code === 'KeyQ' && !e.shiftKey && !state.isShift) {
-            if (targetChar === '्' || targetChar !== 'ट') {
+            if (expectedChar === '्' || expectedChar !== 'ट') {
               ch = '्';
             } else {
               ch = 'ट';
@@ -1046,18 +1102,27 @@ function bindInputEvents() {
             ch = '्';
           }
 
-          // Word-initial / standalone 'a' handling for independent 'अ' vs 'ा'
           if (e.code === 'KeyA' && !e.shiftKey && !state.isShift) {
-            if (targetChar === 'अ') {
+            if (expectedChar === 'अ') {
               ch = 'अ';
             }
           }
+
+          const isCharCorrect = (ch === expectedChar);
+          state.keystrokeLogs.push({
+            timestamp: now,
+            charExpected: expectedChar,
+            charTyped: ch,
+            isCorrect: isCharCorrect,
+            code: e.code,
+            latencyMs: deltaMs
+          });
+          recordStrokeData(expectedChar, isCharCorrect, deltaMs);
 
           const start = inputField.selectionStart ?? inputField.value.length;
           const end = inputField.selectionEnd ?? inputField.value.length;
           inputField.setRangeText(ch, start, end, 'end');
 
-          // Auto-merge ligatures like अा -> आ, ाे -> ो, ाै -> ौ
           let val = inputField.value;
           val = val
             .replace(/अा/g, 'आ')
@@ -1070,11 +1135,22 @@ function bindInputEvents() {
           inputField.dispatchEvent(new Event('input'));
           return;
         }
+      } else {
+        // English or Preeti native input
+        const isCharCorrect = (e.key === expectedChar);
+        state.keystrokeLogs.push({
+          timestamp: now,
+          charExpected: expectedChar,
+          charTyped: e.key,
+          isCorrect: isCharCorrect,
+          code: e.code,
+          latencyMs: deltaMs
+        });
+        recordStrokeData(expectedChar, isCharCorrect, deltaMs);
       }
     }
   });
 
-  // Auto-focus input on printable key if user clicked away
   window.addEventListener('keydown', (e) => {
     if (document.activeElement !== inputField && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
       inputField?.focus();
@@ -1105,7 +1181,7 @@ function bindInputEvents() {
   });
 }
 
-// --- 16. TOOLBAR, MODAL & BUTTON LISTENERS ---
+// --- 12. TOOLBAR, MODAL & BUTTON LISTENERS ---
 function bindToolbarEvents() {
   // Language Tabs
   document.querySelectorAll('.lang-tab-btn').forEach(btn => {
@@ -1135,22 +1211,14 @@ function bindToolbarEvents() {
       const timeOpts = document.getElementById('time-options');
       const wordsOpts = document.getElementById('words-options');
       const examOpts = document.getElementById('exam-options');
+      const adaptiveOpts = document.getElementById('adaptive-options');
+      const diffOpts = document.getElementById('diff-options');
 
       if (timeOpts) timeOpts.classList.toggle('hidden', state.mode !== 'time');
       if (wordsOpts) wordsOpts.classList.toggle('hidden', state.mode !== 'words');
       if (examOpts) examOpts.classList.toggle('hidden', state.mode !== 'exam');
-
-      if (state.mode === 'exam') {
-        state.duration = 300; // 5 min official exam standard
-        document.querySelectorAll('.exam-btn').forEach(b => {
-          const is300 = b.dataset.seconds === '300';
-          b.classList.toggle('active', is300);
-          b.classList.toggle('bg-[var(--bg-surface)]', is300);
-          b.classList.toggle('font-bold', is300);
-          b.classList.toggle('text-purple-600', is300);
-          b.classList.toggle('text-[var(--text-muted)]', !is300);
-        });
-      }
+      if (adaptiveOpts) adaptiveOpts.classList.toggle('hidden', state.mode !== 'adaptive');
+      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive');
 
       setupTest();
     });
@@ -1184,7 +1252,7 @@ function bindToolbarEvents() {
     });
   });
 
-  // Exam Duration Buttons
+  // Exam Options (Full, 5m, 10m)
   document.querySelectorAll('.exam-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.exam-btn').forEach(b => {
@@ -1193,7 +1261,12 @@ function bindToolbarEvents() {
       });
       btn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-purple-600');
       btn.classList.remove('text-[var(--text-muted)]');
-      state.duration = parseInt(btn.dataset.seconds, 10);
+      state.examType = btn.dataset.modeType || 'full';
+      if (btn.dataset.seconds) {
+        state.duration = parseInt(btn.dataset.seconds, 10);
+      } else {
+        state.duration = 0;
+      }
       setupTest();
     });
   });
@@ -1222,24 +1295,62 @@ function bindToolbarEvents() {
     document.getElementById('stats-modal')?.classList.remove('is-open');
   });
 
-  // Quick Quotes / Literature Button in Header
-  document.getElementById('quick-quotes-btn')?.addEventListener('click', () => {
-    state.lang = 'nepali_unicode';
-    state.mode = 'quotes';
-    state.difficulty = 'medium';
+  // Claim & View Certificate Button in Modal
+  document.getElementById('modal-claim-cert-btn')?.addEventListener('click', async () => {
+    if (!lastFinishedResult) return;
+    const nameInput = document.getElementById('modal-candidate-name-input');
+    const name = (nameInput?.value || '').trim() || 'Qualified Candidate';
+    localStorage.setItem('topnepali_candidate_name', name);
 
-    document.querySelectorAll('.lang-tab-btn').forEach(b => {
-      const isTarget = b.dataset.lang === 'nepali_unicode';
-      b.classList.toggle('active', isTarget);
-      b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
-      b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+    const btn = document.getElementById('modal-claim-cert-btn');
+    if (btn) btn.textContent = 'Generating Certificate...';
+
+    const cert = await saveCertificate({
+      candidateName: name,
+      layout: lastFinishedResult.layout,
+      mode: lastFinishedResult.mode,
+      durationSeconds: lastFinishedResult.elapsed,
+      netWpm: lastFinishedResult.netWpm,
+      rawWpm: lastFinishedResult.rawWpm,
+      accuracy: lastFinishedResult.acc,
+      consistency: lastFinishedResult.strokeAnalytics?.rhythmStability || 95,
+      cpm: lastFinishedResult.cpm,
+      totalKeystrokes: state.totalKeystrokes,
+      correctKeystrokes: state.correctKeystrokes,
+      errorKeystrokes: state.errorKeystrokes,
+      analytics: lastFinishedResult.strokeAnalytics
     });
+
+    // Navigate to Certificate View page
+    window.location.href = `/certificate/view?id=${encodeURIComponent(cert.id)}`;
+  });
+
+  // Launch Adaptive Drill Button in Modal
+  document.getElementById('modal-launch-drill-btn')?.addEventListener('click', () => {
+    document.getElementById('stats-modal')?.classList.remove('is-open');
+
+    // Switch mode to adaptive
+    state.mode = 'adaptive';
     document.querySelectorAll('.mode-tab-btn').forEach(b => {
-      const isTarget = b.dataset.mode === 'quotes';
-      b.classList.toggle('active', isTarget);
-      b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
-      b.classList.toggle('text-[var(--accent-blue)]', isTarget);
+      const isAdaptive = b.dataset.mode === 'adaptive';
+      b.classList.toggle('active', isAdaptive);
+      b.classList.toggle('bg-[var(--bg-surface)]', isAdaptive);
+      b.classList.toggle('text-[var(--accent-blue)]', isAdaptive);
+      b.classList.toggle('text-[var(--text-muted)]', !isAdaptive);
     });
+
+    const timeOpts = document.getElementById('time-options');
+    const wordsOpts = document.getElementById('words-options');
+    const examOpts = document.getElementById('exam-options');
+    const adaptiveOpts = document.getElementById('adaptive-options');
+    const diffOpts = document.getElementById('diff-options');
+
+    if (timeOpts) timeOpts.classList.add('hidden');
+    if (wordsOpts) wordsOpts.classList.add('hidden');
+    if (examOpts) examOpts.classList.add('hidden');
+    if (adaptiveOpts) adaptiveOpts.classList.remove('hidden');
+    if (diffOpts) diffOpts.classList.add('hidden');
+
     setupTest();
   });
 
@@ -1282,7 +1393,7 @@ function bindToolbarEvents() {
     const rank = document.getElementById('modal-rank-pill')?.textContent || 'Master Typist';
     const meta = document.getElementById('modal-test-metadata')?.textContent || '';
 
-    const summary = `🇳🇵 Nepali Typing PRO Results:\nLayout: ${meta}\nSpeed: ${netWpm} Net WPM (${rawWpm} Raw WPM)\nAccuracy: ${acc}\nRank: ${rank}\nPractice your Nepali typing: https://typing.topnepali.com`;
+    const summary = `🏆 TopNepali Typing PRO Results:\nLayout: ${meta}\nSpeed: ${netWpm} Net WPM (${rawWpm} Raw WPM)\nAccuracy: ${acc}\nRank: ${rank}\nBenchmark & Certify your typing: https://typing.topnepali.com`;
 
     navigator.clipboard?.writeText(summary).then(() => {
       const copyTxt = document.getElementById('copy-result-text');
@@ -1330,9 +1441,60 @@ function bindToolbarEvents() {
       document.getElementById('open-history-btn')?.click();
     }
   });
+
+  // URL Query Parameters Initializer (e.g. ?mode=exam&exam=5m&lang=english)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const qLang = params.get('lang');
+    const qMode = params.get('mode');
+    const qExam = params.get('exam');
+
+    if (qLang && ['nepali_unicode', 'nepali_romanized', 'nepali_preeti', 'english'].includes(qLang)) {
+      state.lang = qLang;
+      document.querySelectorAll('.lang-tab-btn').forEach(b => {
+        const isTarget = b.dataset.lang === qLang;
+        b.classList.toggle('active', isTarget);
+        b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+        b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+      });
+    }
+
+    if (qMode && ['time', 'words', 'sentences', 'quotes', 'exam', 'adaptive'].includes(qMode)) {
+      state.mode = qMode;
+      document.querySelectorAll('.mode-tab-btn').forEach(b => {
+        const isTarget = b.dataset.mode === qMode;
+        b.classList.toggle('active', isTarget);
+        b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+        b.classList.toggle('text-[var(--accent-blue)]', isTarget);
+      });
+
+      const timeOpts = document.getElementById('time-options');
+      const wordsOpts = document.getElementById('words-options');
+      const examOpts = document.getElementById('exam-options');
+      const adaptiveOpts = document.getElementById('adaptive-options');
+      const diffOpts = document.getElementById('diff-options');
+
+      if (timeOpts) timeOpts.classList.toggle('hidden', state.mode !== 'time');
+      if (wordsOpts) wordsOpts.classList.toggle('hidden', state.mode !== 'words');
+      if (examOpts) examOpts.classList.toggle('hidden', state.mode !== 'exam');
+      if (adaptiveOpts) adaptiveOpts.classList.toggle('hidden', state.mode !== 'adaptive');
+      if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive');
+
+      if (qExam && ['full', '5m', '10m'].includes(qExam)) {
+        state.examType = qExam;
+        document.querySelectorAll('.exam-btn').forEach(b => {
+          const isTarget = b.dataset.modeType === qExam;
+          b.classList.toggle('active', isTarget);
+          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+          b.classList.toggle('font-bold', isTarget);
+          b.classList.toggle('text-purple-600', isTarget);
+        });
+      }
+    }
+  } catch (e) {}
 }
 
-// --- 17. INITIALIZE ON DOM READY ---
+// --- 13. INITIALIZE ON DOM READY ---
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     bindInputEvents();

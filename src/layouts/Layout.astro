@@ -3,12 +3,14 @@ interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
+  activeNav?: string;
 }
 
 const {
-  title = 'नेपाली Typing PRO — English, Unicode Traditional, Romanized & Preeti Typing',
-  description = 'A sleek, modern Nepali typing test platform. Practice and benchmark your typing speed across English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII with live keyboard maps and deep analytics.',
-  canonicalUrl = 'https://typing.topnepali.com'
+  title = 'TopNepali Typing — Professional Nepali & English Typing Certification',
+  description = 'Enterprise-grade typing test platform for English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII. Earn verifiable certificates, train with adaptive AI drills, and track stroke biomechanics.',
+  canonicalUrl = 'https://typing.topnepali.com',
+  activeNav = 'test'
 } = Astro.props;
 
 import '../styles/global.css';
@@ -17,14 +19,14 @@ import Footer from '../components/Footer.astro';
 ---
 
 <!doctype html>
-<html lang="ne" class="dark" data-theme="dark">
+<html lang="en" class="dark" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="Nepali typing, Preeti typing, Nepali Unicode traditional, Romanized typing test, Devanagari typing speed, WPM typing test Nepal" />
-    <meta name="author" content="Grisma / TopNepali" />
+    <meta name="keywords" content="Nepali typing test, Preeti typing test, Nepali Unicode traditional, Romanized typing test, Devanagari typing speed, WPM typing test Nepal, typing certificate Nepal, Balen speech typing test" />
+    <meta name="author" content="TopNepali / Grisma" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -33,7 +35,12 @@ import Footer from '../components/Footer.astro';
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="Nepali Typing Platform" />
+    <meta property="og:site_name" content="TopNepali Typing Platform" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
 
     <!-- Preload Fonts -->
     <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
@@ -46,13 +53,13 @@ import Footer from '../components/Footer.astro';
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Nepali Typing Test PRO",
+      "name": "TopNepali Typing Platform",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "All",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "NPR"
+        "priceCurrency": "USD"
       },
       "description": description,
       "url": canonicalUrl
@@ -66,7 +73,7 @@ import Footer from '../components/Footer.astro';
     </script>
   </head>
   <body class="bg-[var(--bg-app)] text-[var(--text-primary)] min-h-screen flex flex-col antialiased">
-    <Header />
+    <Header activeNav={activeNav} />
     <main class="flex-1 py-2 sm:py-4">
       <slot />
     </main>

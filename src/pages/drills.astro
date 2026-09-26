@@ -1,0 +1,230 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="AI Adaptive Typing Drills — TopNepali Typing"
+  description="Laser-target and conquer your weakest keystrokes. Smart density-scoring algorithm surfaces high-frequency words containing your exact error and hesitation keys in English and Nepali."
+  activeNav="drills"
+>
+  <div class="container max-w-4xl py-6">
+    
+    <!-- Hero Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 mb-3">
+        <span>⚡</span>
+        <span>AI-POWERED ADAPTIVE MOTOR DRILLS</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Conquer Your Weakest Keystrokes
+      </h1>
+      <p class="text-sm text-[var(--text-secondary)] max-w-2xl mx-auto mt-2">
+        Repetitive random practice is slow. Our adaptive algorithm indexes your hesitation latency and error frequency, generating targeted word sets packed with your exact bottleneck keys.
+      </p>
+    </div>
+
+    <!-- Active Profile & Weak Keys Card -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)] mb-6">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
+            <span>🎯</span>
+            <span>Your Personal Bottleneck Key Profile</span>
+          </h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Continuously refined from your keystroke timing and error history
+          </p>
+        </div>
+
+        <!-- Language Selector for Drill -->
+        <div class="flex items-center gap-1.5 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <button type="button" class="drill-lang-btn active px-3 py-1 rounded-lg font-semibold bg-[var(--bg-surface)] text-amber-500 shadow-sm" data-lang="english">
+            English
+          </button>
+          <button type="button" class="drill-lang-btn px-3 py-1 rounded-lg font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]" data-lang="nepali_unicode">
+            Nepali Trad
+          </button>
+          <button type="button" class="drill-lang-btn px-3 py-1 rounded-lg font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]" data-lang="nepali_romanized">
+            Nepali Rom
+          </button>
+          <button type="button" class="drill-lang-btn px-3 py-1 rounded-lg font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]" data-lang="nepali_preeti">
+            Preeti
+          </button>
+        </div>
+      </div>
+
+      <!-- Detected Weak Keys Grid -->
+      <div class="mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] block mb-3">
+          Detected High-Latency & Error Keys (Click to toggle in drill)
+        </span>
+        <div id="detected-weak-keys-container" class="flex flex-wrap gap-2.5">
+          <!-- Dynamically populated key pill tags -->
+        </div>
+      </div>
+
+      <!-- Target Drill Custom Input -->
+      <div class="mb-6">
+        <label for="custom-keys-input" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+          Or Enter Specific Keys to Target (comma or space separated)
+        </label>
+        <div class="flex gap-2">
+          <input 
+            type="text" 
+            id="custom-keys-input" 
+            placeholder="e.g. w, o, r or ध, भ, ्" 
+            class="flex-1 px-4 py-2 text-xs sm:text-sm rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-primary)] font-mono focus:outline-none focus:border-amber-500"
+          />
+          <button 
+            type="button" 
+            id="apply-custom-keys-btn" 
+            class="px-4 py-2 rounded-xl bg-[var(--bg-surface-subtle)] hover:bg-[var(--border-subtle)] text-[var(--text-primary)] font-semibold text-xs transition-colors"
+          >
+            Apply Keys
+          </button>
+        </div>
+      </div>
+
+      <!-- Generated High-Density Practice Preview -->
+      <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            High-Density Practice Sample (Vocabulary Density: <span id="drill-density-pct" class="text-amber-500">82%</span>)
+          </span>
+          <button type="button" id="refresh-drill-sample-btn" class="text-[11px] text-amber-500 hover:underline">
+            ↻ Regenerate Sample
+          </button>
+        </div>
+
+        <p id="drill-sample-preview" class="text-xs sm:text-sm text-[var(--text-primary)] leading-relaxed font-mono">
+          owl own low below window shadow borrow follow flower power tower slow glow
+        </p>
+      </div>
+
+      <!-- Launch Drill Button -->
+      <button 
+        type="button" 
+        id="launch-drill-workbench-btn" 
+        class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+      >
+        <span>⚡ Launch Targeted Adaptive Drill Workbench</span>
+        <span>→</span>
+      </button>
+    </div>
+
+    <!-- Science of Adaptive Motor Learning -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+      <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-3 flex items-center gap-2">
+        <span>🧠</span>
+        <span>How the Density-Scoring Algorithm Works</span>
+      </h3>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+        Traditional typing tests draw from general vocabulary where your error keys may only appear once every 20 or 30 words. That requires thousands of keystrokes to get sufficient neural feedback.
+      </p>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+        Our algorithm uses <strong>inverted indexing</strong> combined with a <strong>co-occurrence power multiplier</strong>:
+      </p>
+      <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)] mb-4">
+        Score(Word) = [ &Sigma; Weight(Key) &times; Hits<sup>1.5</sup> ] &times; (Distinct Target Keys)<sup>1.6</sup>
+      </div>
+      <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+        Words like <em>window</em>, <em>borrow</em>, and <em>shadow</em> score exponentially higher when targeting 'w' and 'o' because hitting the combination repeatedly forces finger muscles to coordinate tactile spacing and rapid recovery.
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    import { getWeakestKeys, generateAdaptiveWords } from '../lib/adaptive-engine';
+
+    let currentLang = 'english';
+    let activeTargetKeys: string[] = ['w', 'o', 'r'];
+
+    function renderWeakKeyTags() {
+      const container = document.getElementById('detected-weak-keys-container');
+      if (!container) return;
+
+      const weakList = getWeakestKeys(currentLang, 6);
+      container.innerHTML = '';
+
+      weakList.forEach(item => {
+        const isSelected = activeTargetKeys.includes(item.char.toLowerCase());
+        const tag = document.createElement('button');
+        tag.type = 'button';
+        tag.className = `px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+          isSelected 
+            ? 'bg-amber-500/15 border-amber-500 text-amber-600 dark:text-amber-400 shadow-sm' 
+            : 'bg-[var(--bg-surface-subtle)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-amber-500/50'
+        }`;
+        tag.innerHTML = `
+          <span class="text-sm font-bold uppercase">${item.char === ' ' ? 'Space' : item.char}</span>
+          <span class="text-[10px] font-normal opacity-80">${item.avgLatencyMs}ms • ${item.errors} err</span>
+        `;
+
+        tag.addEventListener('click', () => {
+          const c = item.char.toLowerCase();
+          if (activeTargetKeys.includes(c)) {
+            activeTargetKeys = activeTargetKeys.filter(k => k !== c);
+          } else {
+            activeTargetKeys.push(c);
+          }
+          renderWeakKeyTags();
+          updateDrillPreview();
+        });
+
+        container.appendChild(tag);
+      });
+    }
+
+    function updateDrillPreview() {
+      const preview = document.getElementById('drill-sample-preview');
+      const keys = activeTargetKeys.length > 0 ? activeTargetKeys : (currentLang === 'english' ? ['w', 'o'] : ['ध', 'भ']);
+      const sample = generateAdaptiveWords({
+        lang: currentLang,
+        targetKeys: keys,
+        targetCount: 22
+      });
+      if (preview) {
+        preview.textContent = sample.join(' ');
+      }
+    }
+
+    // Language Toggle
+    document.querySelectorAll('.drill-lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.drill-lang-btn').forEach(b => {
+          b.className = 'drill-lang-btn px-3 py-1 rounded-lg font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+        });
+        btn.className = 'drill-lang-btn active px-3 py-1 rounded-lg font-semibold bg-[var(--bg-surface)] text-amber-500 shadow-sm';
+        currentLang = btn.dataset.lang;
+        const weak = getWeakestKeys(currentLang, 3);
+        activeTargetKeys = weak.map(w => w.char.toLowerCase());
+        renderWeakKeyTags();
+        updateDrillPreview();
+      });
+    });
+
+    // Custom Keys Apply
+    document.getElementById('apply-custom-keys-btn')?.addEventListener('click', () => {
+      const input = document.getElementById('custom-keys-input');
+      const val = (input?.value || '').trim();
+      if (val) {
+        activeTargetKeys = val.split(/[\s,]+/).filter(Boolean).map(k => k.toLowerCase());
+        renderWeakKeyTags();
+        updateDrillPreview();
+      }
+    });
+
+    document.getElementById('refresh-drill-sample-btn')?.addEventListener('click', updateDrillPreview);
+
+    // Launch Drill in Workbench
+    document.getElementById('launch-drill-workbench-btn')?.addEventListener('click', () => {
+      const keys = activeTargetKeys.join(',');
+      window.location.href = `/?mode=adaptive&lang=${currentLang}&keys=${encodeURIComponent(keys)}`;
+    });
+
+    // Initialize
+    renderWeakKeyTags();
+    updateDrillPreview();
+  </script>
+</Layout>

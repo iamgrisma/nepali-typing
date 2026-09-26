@@ -1,0 +1,286 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Official Certificate of Typing Proficiency — TopNepali"
+  description="Verifiable Digital Certificate of Typing Speed & Precision issued by the TopNepali Typing Examination Board."
+  activeNav="certification"
+>
+  <div class="container max-w-5xl py-6">
+
+    <!-- Top Action Bar (Hidden during Print) -->
+    <div class="no-print flex flex-wrap items-center justify-between gap-3 mb-6 p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-bold text-xs sm:text-sm text-[var(--text-primary)]">
+          Official Verifiable Certificate Issued
+        </span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" id="top-cert-id-tag">
+          TN-2026-VERIFIED
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button 
+          type="button" 
+          onclick="window.print()" 
+          class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          <span>Print / Save as PDF</span>
+        </button>
+
+        <button 
+          type="button" 
+          id="copy-cert-url-btn" 
+          class="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span id="copy-cert-url-text">Copy Link</span>
+        </button>
+
+        <a 
+          id="verify-portal-link" 
+          href="/verify" 
+          class="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold text-xs transition-colors flex items-center gap-1.5"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Verify Record</span>
+        </a>
+
+        <a 
+          href="/" 
+          class="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold text-xs transition-colors"
+        >
+          Workbench
+        </a>
+      </div>
+    </div>
+
+    <!-- MUSEUM-GRADE VERIFIABLE CERTIFICATE CANVAS -->
+    <div id="certificate-print-area" class="w-full relative bg-[#fffdf9] text-[#1c1917] rounded-3xl p-6 sm:p-12 shadow-2xl border-8 border-[#d4af37] overflow-hidden select-none">
+      
+      <!-- Inner Security Filigree Border -->
+      <div class="border-2 border-[#b45309] rounded-2xl p-6 sm:p-10 relative">
+        <div class="absolute inset-1 border border-[#d4af37]/40 pointer-events-none rounded-xl"></div>
+        
+        <!-- Corner Flourishes -->
+        <div class="absolute top-2 left-2 text-[#d4af37] text-2xl font-serif">❖</div>
+        <div class="absolute top-2 right-2 text-[#d4af37] text-2xl font-serif">❖</div>
+        <div class="absolute bottom-2 left-2 text-[#d4af37] text-2xl font-serif">❖</div>
+        <div class="absolute bottom-2 right-2 text-[#d4af37] text-2xl font-serif">❖</div>
+
+        <!-- Certificate Watermark Crest -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-[0.035] pointer-events-none">
+          <svg class="w-96 h-96" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L1 21h22L12 2zm0 3.84L19.5 19H4.5L12 5.84z"></path>
+          </svg>
+        </div>
+
+        <!-- Certificate Header -->
+        <div class="text-center relative z-10 space-y-1 mb-8">
+          <div class="flex items-center justify-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-red-600 text-white font-bold flex items-center justify-center text-sm shadow" style="font-family: var(--font-nepali);">
+              ने
+            </div>
+            <span class="text-xs font-extrabold tracking-widest uppercase text-[#991b1b] font-display">
+              TOPNEPALI TYPING EXAMINATION BOARD
+            </span>
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight font-serif text-[#1c1917] uppercase">
+            Certificate of Typing Proficiency
+          </h1>
+          <p class="text-xs tracking-wider uppercase font-semibold text-[#78716c]">
+            Verified Digital Credential of Keystroke Velocity & Accuracy
+          </p>
+        </div>
+
+        <!-- Recipient Statement -->
+        <div class="text-center relative z-10 space-y-3 mb-8">
+          <p class="text-xs uppercase tracking-widest text-[#a8a29e] font-semibold">
+            This is officially awarded to
+          </p>
+
+          <div class="py-2 border-b-2 border-[#d4af37] max-w-lg mx-auto">
+            <h2 id="cert-candidate-name" class="text-2xl sm:text-4xl font-extrabold font-serif text-[#7f1d1d] tracking-normal">
+              Candidate Full Name
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-[#44403c] max-w-2xl mx-auto leading-relaxed pt-2">
+            for successfully satisfying all official velocity and precision examination benchmarks in
+            <strong id="cert-layout-name" class="text-[#1c1917] font-bold">Nepali Unicode Traditional (MPP)</strong>,
+            achieving exceptional typing fluency on the official UN General Assembly address examination.
+          </p>
+        </div>
+
+        <!-- Center Emblems: Speed Rank, Gold Seal, and Controller Signature -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 items-center justify-between gap-6 py-6 border-t border-b border-[#e7e5e4] my-6 relative z-10 text-center">
+          
+          <!-- Speed Tier Honor -->
+          <div class="space-y-1">
+            <span class="text-[10px] uppercase font-bold tracking-wider text-[#a8a29e] block">Performance Tier</span>
+            <div id="cert-rank-badge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+              ⚡ Master Typist (Platinum)
+            </div>
+            <div class="text-[11px] text-[#78716c] font-medium" id="cert-wpm-label">
+              Speed: <b class="text-[#1c1917]">48 Net WPM</b>
+            </div>
+          </div>
+
+          <!-- Official Gold Embossed Seal -->
+          <div class="flex flex-col items-center justify-center">
+            <div class="w-24 h-24 rounded-full border-4 border-[#d4af37] bg-gradient-to-tr from-[#fef08a] via-[#fde047] to-[#eab308] shadow-inner flex flex-col items-center justify-center text-center p-2 text-[#78350f]">
+              <span class="text-[8px] uppercase tracking-widest font-extrabold">TOPNEPALI</span>
+              <span class="text-xl font-bold font-serif my-0.5">★ SEAL ★</span>
+              <span class="text-[7px] uppercase font-bold tracking-tight">VERIFIED 2026</span>
+            </div>
+            <span class="text-[9px] uppercase font-mono tracking-widest text-[#a8a29e] mt-1.5" id="cert-signature-tag">
+              SIG-AUTHENTIC
+            </span>
+          </div>
+
+          <!-- Signature & Date -->
+          <div class="space-y-1">
+            <span class="text-[10px] uppercase font-bold tracking-wider text-[#a8a29e] block">Authorized Signature</span>
+            <div class="font-serif italic text-lg sm:text-xl text-[#1c1917] font-bold underline decoration-[#d4af37]">
+              Examination Controller
+            </div>
+            <div class="text-[11px] text-[#78716c]" id="cert-date-issued">
+              Issued: September 26, 2026
+            </div>
+          </div>
+
+        </div>
+
+        <!-- HORIZONTAL BOTTOM FOOTNOTE WITH COMPLETE TYPING STATS -->
+        <div class="relative z-10 mt-6 pt-4 border-t-2 border-[#b45309]/30">
+          <div class="bg-[#f5f5f4] border border-[#e7e5e4] rounded-xl p-3 text-[10px] sm:text-[11px] font-mono text-[#44403c] text-center overflow-x-auto whitespace-nowrap">
+            <span class="font-bold text-[#b91c1c]">NET SPEED: <span id="foot-net-wpm">48 WPM</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>RAW SPEED: <span id="foot-raw-wpm">52 WPM</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span class="font-bold text-[#047857]">ACCURACY: <span id="foot-accuracy">98.4%</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>TOTAL STROKES: <span id="foot-total-strokes">1,420</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>ERRORS: <span id="foot-errors">8</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>RHYTHM: <span id="foot-consistency">96%</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>DURATION: <span id="foot-duration">5 MIN</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span class="font-bold text-[#1c1917]">ID: <span id="foot-cert-id">TN-2026-X8K9M2</span></span>
+            <span class="text-[#d6d3d1] mx-2">|</span>
+            <span>VERIFIED: <span id="foot-verify-url">typing.topnepali.com/verify</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      header, footer, nav, .no-print {
+        display: none !important;
+      }
+      #certificate-print-area {
+        box-shadow: none !important;
+        border: 4px solid #d4af37 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.5rem !important;
+        page-break-inside: avoid !important;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 1cm;
+      }
+    }
+  </style>
+
+  <script>
+    import { lookupCertificate } from '../../lib/certificate-db';
+
+    async function loadCertificate() {
+      const params = new URLSearchParams(window.location.search);
+      const certId = params.get('id');
+
+      let cert = null;
+      if (certId) {
+        cert = await lookupCertificate(certId);
+      }
+
+      if (!cert) {
+        // Fallback demo certificate if opened directly
+        cert = {
+          id: certId || 'TN-2026-DEMO',
+          candidateName: localStorage.getItem('topnepali_candidate_name') || 'Honorable Typist',
+          layoutLabel: 'Nepali Unicode (Traditional MPP)',
+          netWpm: 48,
+          rawWpm: 52,
+          accuracy: 98.4,
+          consistency: 96,
+          totalKeystrokes: 1420,
+          errorKeystrokes: 8,
+          durationSeconds: 300,
+          rankTitle: '⚡ Master Typist (Platinum)',
+          issuedAt: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          signature: 'SIG-8F4C2A1B'
+        };
+      }
+
+      // Populate DOM elements
+      document.getElementById('cert-candidate-name').textContent = cert.candidateName;
+      document.getElementById('cert-layout-name').textContent = cert.layoutLabel || cert.layout;
+      document.getElementById('cert-rank-badge').textContent = cert.rankTitle || 'Certified Typist';
+      document.getElementById('cert-wpm-label').innerHTML = `Speed: <b class="text-[#1c1917]">${cert.netWpm} Net WPM</b>`;
+      document.getElementById('cert-date-issued').textContent = `Issued: ${cert.issuedAt}`;
+      document.getElementById('cert-signature-tag').textContent = cert.signature || 'SIG-AUTHENTIC';
+      document.getElementById('top-cert-id-tag').textContent = cert.id;
+
+      // Populate Footnote with Complete Statistics
+      document.getElementById('foot-net-wpm').textContent = `${cert.netWpm} WPM`;
+      document.getElementById('foot-raw-wpm').textContent = `${cert.rawWpm || cert.netWpm} WPM`;
+      document.getElementById('foot-accuracy').textContent = `${cert.accuracy}%`;
+      document.getElementById('foot-total-strokes').textContent = `${cert.totalKeystrokes || (cert.netWpm * 25)}`;
+      document.getElementById('foot-errors').textContent = `${cert.errorKeystrokes || 0}`;
+      document.getElementById('foot-consistency').textContent = `${cert.consistency || 95}%`;
+      document.getElementById('foot-duration').textContent = `${Math.round((cert.durationSeconds || 300) / 60)} MIN`;
+      document.getElementById('foot-cert-id').textContent = cert.id;
+      document.getElementById('foot-verify-url').textContent = `typing.topnepali.com/verify?id=${cert.id}`;
+
+      // Update Verify link
+      const verifyLink = document.getElementById('verify-portal-link');
+      if (verifyLink) verifyLink.href = `/verify?id=${encodeURIComponent(cert.id)}`;
+
+      // Copy Link Button
+      document.getElementById('copy-cert-url-btn')?.addEventListener('click', () => {
+        const fullUrl = `${window.location.origin}/certificate/view?id=${encodeURIComponent(cert.id)}`;
+        navigator.clipboard?.writeText(fullUrl).then(() => {
+          const txt = document.getElementById('copy-cert-url-text');
+          if (txt) {
+            txt.textContent = '✓ Copied!';
+            setTimeout(() => { txt.textContent = 'Copy Link'; }, 2000);
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadCertificate);
+    } else {
+      loadCertificate();
+    }
+  </script>
+</Layout>

@@ -9,22 +9,31 @@ import SeoContent from '../components/SeoContent.astro';
 import FaqSection from '../components/FaqSection.astro';
 ---
 
-<Layout>
-  <div class="container">
+<Layout 
+  title="TopNepali Typing — Professional Nepali & English Typing Test & Certification"
+  description="Take the official typing speed test across English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII. Qualify for verifiable certificates with >20 WPM (Nepali) & >25 WPM (English)."
+  activeNav="test"
+>
+  <div class="container px-4">
     
     <!-- Hero / Intro Badge (Compact for full viewport visibility) -->
     <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-1 border-b border-[var(--border-subtle)]/40">
       <div class="flex items-center gap-2">
-        <h1 class="text-base sm:text-xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
-          नेपाली Typing <span class="text-[var(--accent-primary)]">PRO</span>
+        <h1 class="text-base sm:text-lg font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+          TopNepali <span class="text-[var(--accent-primary)]">Typing PRO</span>
         </h1>
         <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hidden sm:inline-block">
-          नेपाली युनिकोड • प्रिती • English
+          Nepali Traditional • Romanized • Preeti • English
         </span>
       </div>
-      <p class="text-[11px] text-[var(--text-muted)] hidden md:block">
-        पारम्परिक युनिकोड (MPP), रोमनाइज्ड र प्रिती टाइपिङ प्लेटफर्म
-      </p>
+
+      <!-- Certification Passing Benchmark Pill -->
+      <a href="/test" class="text-[11px] text-[var(--text-secondary)] hover:text-purple-600 transition-colors flex items-center gap-1.5 font-medium">
+        <span>🎓 Certification Benchmark:</span>
+        <span class="font-bold text-emerald-500">&gt;20 WPM (Nepali)</span>
+        <span>•</span>
+        <span class="font-bold text-blue-500">&gt;25 WPM (English)</span>
+      </a>
     </div>
 
     <!-- Mode Selector Toolbar -->
@@ -36,10 +45,10 @@ import FaqSection from '../components/FaqSection.astro';
     <!-- Interactive Hardware Keyboard Visualizer -->
     <KeyboardVisualizer />
 
-    <!-- Rich Cultural, Literary & Educational SEO Guides -->
+    <!-- Comprehensive Authoritative English Educational & SEO Guide -->
     <SeoContent />
 
-    <!-- Structured FAQs Section -->
+    <!-- Structured FAQs Section with JSON-LD -->
     <FaqSection />
 
     <!-- Modals & Drawers -->

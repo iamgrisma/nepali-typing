@@ -1,5 +1,5 @@
 ---
-// ModeSelector toolbar for picking Language, Mode, Duration, and Difficulty
+// ModeSelector toolbar for picking Language, Mode, Duration, Difficulty, Exam & Adaptive Drills
 ---
 
 <div class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-2 sm:p-2.5 shadow-sm mb-2">
@@ -12,7 +12,7 @@
         class="lang-tab-btn active px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm"
         data-lang="nepali_unicode"
       >
-        नेपाली Traditional
+        Nepali Traditional
       </button>
 
       <button 
@@ -20,7 +20,7 @@
         class="lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         data-lang="nepali_romanized"
       >
-        नेपाली Romanized
+        Nepali Romanized
       </button>
 
       <button 
@@ -42,7 +42,7 @@
 
     <!-- Group 2: Mode & Content Types -->
     <div class="flex items-center gap-2 flex-wrap">
-      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam) -->
+      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam / Adaptive) -->
       <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
         <button type="button" class="mode-tab-btn active px-2.5 py-1 rounded-lg font-medium text-[var(--accent-blue)] bg-[var(--bg-surface)]" data-mode="time">
           Time
@@ -54,14 +54,15 @@
           Sentences
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="quotes">
-          Poetry & Quotes
-        </button>
-        <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode="special">
-          123 & !?
+          Prose & Literature
         </button>
         <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="exam">
           <span>🎓</span>
           <span>Exam Test</span>
+        </button>
+        <button type="button" class="mode-tab-btn px-2.5 py-1 rounded-lg font-medium text-amber-500 hover:text-[var(--text-primary)] flex items-center gap-1" data-mode="adaptive">
+          <span>⚡</span>
+          <span>Adaptive Drill</span>
         </button>
       </div>
 
@@ -83,13 +84,19 @@
 
       <!-- Exam Duration Options (Shown when mode == 'exam') -->
       <div id="exam-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <button type="button" class="exam-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="60">1 Min</button>
-        <button type="button" class="exam-btn active px-2 py-1 rounded-lg font-mono font-bold text-purple-600 bg-[var(--bg-surface)]" data-seconds="300">5 Min (Official)</button>
-        <button type="button" class="exam-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-seconds="600">10 Min</button>
+        <button type="button" class="exam-btn active px-2.5 py-1 rounded-lg font-mono font-bold text-purple-600 bg-[var(--bg-surface)]" data-mode-type="full">Full UN Speech</button>
+        <button type="button" class="exam-btn px-2.5 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="5m" data-seconds="300">5 Min (Official)</button>
+        <button type="button" class="exam-btn px-2.5 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="10m" data-seconds="600">10 Min</button>
+      </div>
+
+      <!-- Adaptive Mode Indicators (Shown when mode == 'adaptive') -->
+      <div id="adaptive-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+        <span class="text-[11px] text-amber-500 font-medium px-2 py-0.5">Targeting Weak Strokes:</span>
+        <span id="adaptive-target-tags" class="font-mono font-bold text-amber-500 bg-[var(--bg-surface)] px-2 py-0.5 rounded-lg border border-amber-500/30">Auto-Detecting...</span>
       </div>
 
       <!-- Difficulty Level Selection -->
-      <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+      <div id="diff-options" class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
         <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="easy">Easy</button>
         <button type="button" class="diff-btn active px-2.5 py-1 rounded-lg font-medium font-bold text-amber-500 bg-[var(--bg-surface)]" data-diff="medium">Medium</button>
         <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="hard">Hard</button>
@@ -100,7 +107,7 @@
         type="button" 
         id="toggle-keyboard-btn" 
         class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Visual Keyboard Reference"
+        title="Toggle Visual Hardware Keyboard Reference"
       >
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
