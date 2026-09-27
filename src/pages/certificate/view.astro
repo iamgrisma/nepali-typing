@@ -209,8 +209,8 @@ import Layout from '../../layouts/Layout.astro';
     }
   </style>
 
-  <script>
-    import { lookupCertificate } from '../../lib/certificate-db';
+  <script is:inline type="module">
+    import { lookupCertificate } from '/js/utils/certificate-db.js';
 
     async function loadCertificate() {
       const params = new URLSearchParams(window.location.search);

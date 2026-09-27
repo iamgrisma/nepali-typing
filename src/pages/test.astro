@@ -218,7 +218,7 @@ import Layout from '../layouts/Layout.astro';
       if (name) {
         localStorage.setItem('topnepali_candidate_name', name);
       }
-      // Redirect to main workbench loaded in exam mode
+      // Navigate to main workbench loaded in exam mode
       window.location.href = `/?mode=exam&exam=${selectedType}&lang=${selectedLang}`;
     });
   </script>

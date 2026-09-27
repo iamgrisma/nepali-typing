@@ -20,10 +20,13 @@ import { bindToolbarEvents } from './input/toolbar-handler.js';
 import { updateHeaderTelemetryBadge } from './utils/telemetry-parameters.js';
 
 function initApp() {
-  bindInputEvents();
-  bindToolbarEvents();
-  setupTest();
   updateHeaderTelemetryBadge();
+
+  if (document.getElementById('typing-workbench') || document.getElementById('typing-input')) {
+    bindInputEvents();
+    bindToolbarEvents();
+    setupTest();
+  }
 }
 
 if (document.readyState === 'loading') {

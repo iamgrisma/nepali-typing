@@ -1,16 +1,4 @@
-/**
- * TopNepali Typing — Deep Keystroke & Stroke Analytics Engine
- * Provides "Unimagined Analysis" of human typing mechanics:
- * - Key-by-key hesitation latency heatmap
- * - Left Hand vs Right Hand ergonomic load & error bias
- * - Row distribution (Number, Top, Home, Bottom)
- * - Flow state, pause stalls (>500ms, >1000ms) and streaks
- * - Backspace penalty cost (seconds lost to error correction)
- * - Burst speed vs Sustained speed
- * - Rhythm consistency index
- */
-
-// Key Hand & Finger Mapping (Physical US Standard)
+// Keystroke & Stroke Analytics Engine
 const LEFT_HAND_KEYS = new Set([
   'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT',
   'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG',

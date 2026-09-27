@@ -134,11 +134,11 @@ import Layout from '../layouts/Layout.astro';
 
   </div>
 
-  <script>
-    import { getWeakestKeys, generateAdaptiveWords } from '../lib/adaptive-engine';
+  <script is:inline type="module">
+    import { getWeakestKeys, generateAdaptiveWords } from '/js/utils/adaptive-engine.js';
 
     let currentLang = 'english';
-    let activeTargetKeys: string[] = ['w', 'o', 'r'];
+    let activeTargetKeys = ['w', 'o', 'r'];
 
     function renderWeakKeyTags() {
       const container = document.getElementById('detected-weak-keys-container');
@@ -146,6 +146,11 @@ import Layout from '../layouts/Layout.astro';
 
       const weakList = getWeakestKeys(currentLang, 6);
       container.innerHTML = '';
+
+      if (weakList.length === 0) {
+        container.innerHTML = '<span class="text-xs text-[var(--text-muted)] font-mono">No bottleneck keys recorded yet. Complete a test session or enter custom keys below!</span>';
+        return;
+      }
 
       weakList.forEach(item => {
         const isSelected = activeTargetKeys.includes(item.char.toLowerCase());

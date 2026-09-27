@@ -26,10 +26,6 @@ export function getLastFinishedResult() {
   return lastFinishedResult;
 }
 
-export function setLastFinishedResult(res) {
-  lastFinishedResult = res;
-}
-
 export function setupTest() {
   clearInterval(state.timer);
   state.timer = null;

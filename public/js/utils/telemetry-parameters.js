@@ -1,16 +1,4 @@
-/**
- * TopNepali Typing PRO — Neuromotor Biometric Typing Telemetry System
- * 
- * Provides a rigorous, scientifically grounded catalog of 36 distinct typing
- * telemetry parameters spanning velocity, accuracy, temporal rhythm, hand ergonomics,
- * Devanagari ligatures, and endurance flow.
- * 
- * PROGRESSIVE DISCLOSURE ARCHITECTURE:
- * Each parameter enforces strict data-readiness thresholds. A metric is ONLY
- * displayed as 'Calibrated' when statistically meaningful sample sizes are recorded.
- * As the user types more tests and strokes, additional parameters unlock progressively.
- */
-
+// Neuromotor Biometric Typing Telemetry System (36 Parameters)
 export const TELEMETRY_CATEGORIES = [
   { id: 'all', name: 'All Parameters' },
   { id: 'speed', name: 'Speed & Sprint' },
@@ -678,6 +666,4 @@ export function updateHeaderTelemetryBadge() {
     });
   } catch (e) {}
 }
-
-export const updateTopStatsBadge = updateHeaderTelemetryBadge;
 

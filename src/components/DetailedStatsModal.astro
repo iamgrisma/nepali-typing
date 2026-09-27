@@ -139,20 +139,20 @@
       <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
         <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2.5 flex items-center justify-between">
           <span class="flex items-center gap-1"><span>✋</span> Hand Ergonomics</span>
-          <span class="font-mono text-[10px] text-blue-500" id="analytics-hand-bias">52% L / 48% R</span>
+          <span class="font-mono text-[10px] text-blue-500" id="analytics-hand-bias">50% L / 50% R</span>
         </h3>
         <div class="space-y-2 text-xs">
           <div class="w-full bg-[var(--bg-surface)] h-2 rounded-full overflow-hidden flex border border-[var(--border-subtle)]">
-            <div id="analytics-left-bar" class="bg-blue-500 h-full" style="width: 52%;"></div>
-            <div id="analytics-right-bar" class="bg-teal-500 h-full" style="width: 48%;"></div>
+            <div id="analytics-left-bar" class="bg-blue-500 h-full" style="width: 50%;"></div>
+            <div id="analytics-right-bar" class="bg-teal-500 h-full" style="width: 50%;"></div>
           </div>
           <div class="flex justify-between text-[11px] text-[var(--text-secondary)]">
-            <span>Left Hand Err: <b id="analytics-left-err" class="text-red-500">1.2%</b></span>
-            <span>Right Hand Err: <b id="analytics-right-err" class="text-red-500">1.0%</b></span>
+            <span>Left Hand Err: <b id="analytics-left-err" class="text-red-500">-</b></span>
+            <span>Right Hand Err: <b id="analytics-right-err" class="text-red-500">-</b></span>
           </div>
           <div class="flex justify-between text-[11px] text-[var(--text-muted)] border-t border-[var(--border-subtle)] pt-1.5">
             <span>Row Distribution:</span>
-            <span class="font-mono text-[var(--text-primary)]" id="analytics-row-dist">H: 45% • T: 38%</span>
+            <span class="font-mono text-[var(--text-primary)]" id="analytics-row-dist">-</span>
           </div>
         </div>
       </div>
@@ -161,20 +161,20 @@
       <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
         <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2.5 flex items-center justify-between">
           <span class="flex items-center gap-1"><span>⏱️</span> Stroke Latency</span>
-          <span class="font-mono text-[10px] text-amber-500" id="analytics-avg-latency">210 ms avg</span>
+          <span class="font-mono text-[10px] text-amber-500" id="analytics-avg-latency">-</span>
         </h3>
         <div class="space-y-1.5 text-xs text-[var(--text-secondary)]">
           <div class="flex justify-between items-center">
             <span>Slowest Keys (Hesitations):</span>
-            <span class="font-mono font-bold text-red-500" id="analytics-slowest-keys">W (380ms), O (340ms)</span>
+            <span class="font-mono font-bold text-red-500" id="analytics-slowest-keys">-</span>
           </div>
           <div class="flex justify-between items-center">
             <span>Fastest Reflex Keys:</span>
-            <span class="font-mono font-bold text-emerald-500" id="analytics-fastest-keys">Space, E, A</span>
+            <span class="font-mono font-bold text-emerald-500" id="analytics-fastest-keys">-</span>
           </div>
           <div class="flex justify-between text-[11px] text-[var(--text-muted)] border-t border-[var(--border-subtle)] pt-1.5">
             <span>Hesitation Pauses (&gt;400ms):</span>
-            <span class="font-mono text-[var(--text-primary)]" id="analytics-hesitation-count">4 pauses</span>
+            <span class="font-mono text-[var(--text-primary)]" id="analytics-hesitation-count">-</span>
           </div>
         </div>
       </div>
@@ -183,20 +183,20 @@
       <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
         <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2.5 flex items-center justify-between">
           <span class="flex items-center gap-1"><span>⚡</span> Flow & Recovery</span>
-          <span class="font-mono text-[10px] text-purple-500" id="analytics-peak-burst">68 WPM burst</span>
+          <span class="font-mono text-[10px] text-purple-500" id="analytics-peak-burst">-</span>
         </h3>
         <div class="space-y-1.5 text-xs text-[var(--text-secondary)]">
           <div class="flex justify-between">
             <span>Clean Streak Record:</span>
-            <span class="font-bold text-emerald-500" id="analytics-clean-streak">84 chars</span>
+            <span class="font-bold text-emerald-500" id="analytics-clean-streak">-</span>
           </div>
           <div class="flex justify-between">
             <span>Time Lost to Backspace:</span>
-            <span class="font-mono font-bold text-amber-500" id="analytics-time-lost">2.4 sec lost</span>
+            <span class="font-mono font-bold text-amber-500" id="analytics-time-lost">-</span>
           </div>
           <div class="flex justify-between text-[11px] text-[var(--text-muted)] border-t border-[var(--border-subtle)] pt-1.5">
             <span>Strokes (Corr / Err):</span>
-            <span class="font-mono text-[var(--text-primary)]" id="analytics-stroke-ratio">340 / 6</span>
+            <span class="font-mono text-[var(--text-primary)]" id="analytics-stroke-ratio">-</span>
           </div>
         </div>
       </div>

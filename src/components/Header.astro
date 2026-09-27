@@ -11,24 +11,24 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
   <div class="container flex items-center justify-between h-16 px-4">
     
     <!-- Logo & Brand -->
-    <a href="/" class="flex items-center gap-3 text-decoration-none group">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:scale-105 transition-transform" style="font-family: var(--font-nepali);">
+    <a href="/" class="flex items-center gap-2.5 sm:gap-3 text-decoration-none group min-w-0">
+      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-md group-hover:scale-105 transition-transform flex-shrink-0" style="font-family: var(--font-nepali);">
         ने
       </div>
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-lg font-display tracking-tight text-[var(--text-primary)]">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <span class="font-bold text-base sm:text-lg font-display tracking-tight text-[var(--text-primary)] truncate">
             TopNepali<span class="text-red-600">Typing</span>
           </span>
-          <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">
+          <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">
             CERTIFIED
           </span>
         </div>
-        <p class="text-xs text-[var(--text-muted)] -mt-0.5">English • Nepali Unicode • Romanized • Preeti</p>
+        <p class="hidden sm:block text-xs text-[var(--text-muted)] -mt-0.5 truncate">English • Nepali Unicode • Romanized • Preeti</p>
       </div>
     </a>
 
-    <!-- Primary English Desktop Navigation -->
+    <!-- Primary Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-1 text-xs font-semibold">
       <a 
         href="/" 
@@ -70,28 +70,18 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       </a>
     </nav>
 
-    <!-- Top Navigation Actions -->
-    <div class="flex items-center gap-2">
-      <!-- Certification CTA Button for Mobile/Header -->
-      <a 
-        href="/test" 
-        class="inline-flex md:hidden items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
-      >
-        <span>🎓</span>
-        <span>Exam</span>
-      </a>
-
+    <!-- Desktop Navigation Actions -->
+    <div class="hidden md:flex items-center gap-2">
       <!-- Dedicated Analytics & Biometrics Dashboard Link on Top -->
       <a 
         href="/analytics" 
         id="top-analytics-link"
-        class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 font-bold text-xs transition-all shadow-sm group"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 font-bold text-xs transition-all shadow-sm group"
         title="Open Dedicated Biometric Typing Analytics Dashboard"
       >
         <span class="text-sm group-hover:scale-110 transition-transform">📊</span>
-        <span class="hidden sm:inline">Analytics & Telemetry</span>
-        <span class="sm:hidden font-semibold">Telemetry</span>
-        <span id="header-stats-badge" class="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 font-bold">
+        <span>Analytics & Telemetry</span>
+        <span id="header-stats-badge" class="top-stats-badge font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 font-bold">
           0 Ready
         </span>
       </a>
@@ -131,11 +121,11 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       <!-- Theme Toggle (Dark/Light) -->
       <button 
         id="theme-toggle-btn" 
-        class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
+        class="theme-toggle-btn p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
         title="Toggle Dark / Light Theme"
         aria-label="Toggle Theme"
       >
-        <svg id="theme-icon-sun" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon-sun" class="theme-icon-sun w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -146,10 +136,225 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg id="theme-icon-moon" class="w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon-moon" class="theme-icon-moon w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
     </div>
+
+    <!-- Mobile Top Bar Controls (Theme Toggle + Hamburger Menu Button) -->
+    <div class="flex md:hidden items-center gap-1.5 flex-shrink-0">
+      <button 
+        id="theme-toggle-btn-mobile" 
+        class="theme-toggle-btn p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
+        title="Toggle Dark / Light Theme"
+        aria-label="Toggle Theme"
+      >
+        <svg class="theme-icon-sun w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="theme-icon-moon w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <!-- Hamburger Button -->
+      <button
+        id="mobile-menu-toggle-btn"
+        class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors focus:outline-none"
+        title="Toggle Menu"
+        aria-label="Toggle Menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu-drawer"
+      >
+        <!-- 3-line hamburger icon -->
+        <svg id="hamburger-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <!-- X close icon -->
+        <svg id="close-menu-icon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile Collapsible Hamburger Navigation Drawer -->
+  <div 
+    id="mobile-menu-drawer" 
+    class="hidden md:hidden border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 shadow-lg"
+  >
+    <div class="flex flex-col gap-1.5">
+      <!-- Navigation items -->
+      <a 
+        href="/" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-base">⌨️</span>
+          <span>Typing Bench</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">Practice & Tests</span>
+      </a>
+
+      <a 
+        href="/test" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-purple-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-base">🎓</span>
+          <span>Certification Exam</span>
+        </div>
+        <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+          Official
+        </span>
+      </a>
+
+      <a 
+        href="/verify" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'verify' ? 'bg-[var(--bg-surface-subtle)] text-emerald-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Verify Certificate</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">Check Authenticity</span>
+      </a>
+
+      <a 
+        href="/drills" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-base">⚡</span>
+          <span>Adaptive Drills</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">Target Weak Keys</span>
+      </a>
+
+      <a 
+        href="/analytics" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Deep Analytics</span>
+        </div>
+        <span class="top-stats-badge font-mono text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold">
+          Telemetry
+        </span>
+      </a>
+
+      <!-- Quick Actions Divider -->
+      <div class="my-1 border-t border-[var(--border-subtle)]"></div>
+
+      <!-- Quick Action Buttons for Mobile -->
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button 
+          type="button"
+          id="mobile-history-trigger"
+          class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v5h5"></path>
+            <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+            <path d="M12 7v5l4 2"></path>
+          </svg>
+          <span>History & Records</span>
+        </button>
+
+        <button 
+          type="button"
+          id="mobile-sound-trigger"
+          class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span>Sound Toggle</span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
+
+<script is:inline>
+  (function initMobileMenu() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle-btn');
+    const drawer = document.getElementById('mobile-menu-drawer');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-menu-icon');
+
+    function toggleMenu() {
+      const isExpanded = toggleBtn?.getAttribute('aria-expanded') === 'true';
+      const nextState = !isExpanded;
+      toggleBtn?.setAttribute('aria-expanded', String(nextState));
+      drawer?.classList.toggle('hidden', !nextState);
+      hamburgerIcon?.classList.toggle('hidden', nextState);
+      closeIcon?.classList.toggle('hidden', !nextState);
+    }
+
+    function closeMenu() {
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+      drawer?.classList.add('hidden');
+      hamburgerIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+    }
+
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Close on navigation link click
+    drawer?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Mobile history trigger clicks desktop open-history-btn
+    document.getElementById('mobile-history-trigger')?.addEventListener('click', () => {
+      closeMenu();
+      document.getElementById('open-history-btn')?.click();
+    });
+
+    // Mobile sound trigger clicks desktop sound-toggle-btn
+    document.getElementById('mobile-sound-trigger')?.addEventListener('click', () => {
+      document.getElementById('sound-toggle-btn')?.click();
+    });
+
+    // Close menu when clicking outside header
+    document.addEventListener('click', (e) => {
+      const header = document.querySelector('header');
+      if (header && !header.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    // Close menu on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    // Auto-close if screen expands to desktop width
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        closeMenu();
+      }
+    });
+  })();
+</script>

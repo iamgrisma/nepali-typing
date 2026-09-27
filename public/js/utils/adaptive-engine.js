@@ -1,10 +1,7 @@
 
 const PROFILE_STORAGE_KEY = 'topnepali_stroke_profile';
 
-// =========================================================================
-// 1. COMPREHENSIVE VOCABULARY COVERING EVERY KEY (A-Z & DEVANAGARI)
-// =========================================================================
-
+// Vocabulary lists
 export const ADAPTIVE_ENGLISH_WORDS = [
   // A
   'about', 'after', 'again', 'animal', 'answer', 'always', 'appear', 'awake', 'adapt', 'alarm', 'avatar', 'atlas', 'action', 'artist',
@@ -115,10 +112,7 @@ function buildInvertedIndex(wordList) {
   return index;
 }
 
-// =========================================================================
-// 2. STROKE RECORDING & REAL PROFILE ANALYSIS
-// =========================================================================
-
+// Stroke Recording & Profile Analysis
 export function getStrokeProfile() {
   try {
     return JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}');
@@ -232,14 +226,7 @@ export function getWeakestKeys(lang = 'english', limit = 3) {
   return analysis.keys;
 }
 
-// =========================================================================
-// 3. TARGET KEY MASTERY & PROGRESSION LOGIC
-// =========================================================================
-
-/**
- * Dynamically computes an ambitious yet attainable target goal based on current accuracy.
- * Ensures the target goal is ALWAYS strictly higher than the current accuracy.
- */
+// Target Key Mastery & Goals
 export function calculateTargetGoal(currentAccuracy) {
   const acc = Math.round(Number(currentAccuracy) || 0);
   if (acc < 75) return 85;
@@ -248,9 +235,6 @@ export function calculateTargetGoal(currentAccuracy) {
   return 100;
 }
 
-/**
- * Checks if the current target key has reached mastery (recent accuracy >= targetGoal with >= 5 hits)
- */
 export function checkTargetKeyMastery(targetKey, targetGoal = 90) {
   if (!targetKey) return { mastered: false, recentAccuracy: 0, hits: 0 };
   const profile = getStrokeProfile();
@@ -265,8 +249,6 @@ export function checkTargetKeyMastery(targetKey, targetGoal = 90) {
 
   const recentCorrect = recent.filter(r => r === 1).length;
   const recentAccuracy = Math.round((recentCorrect / recent.length) * 100);
-
-  // If recent accuracy meets or exceeds the target goal, key is mastered!
   const isMastered = (recentAccuracy >= targetGoal);
 
   return {
@@ -277,10 +259,7 @@ export function checkTargetKeyMastery(targetKey, targetGoal = 90) {
   };
 }
 
-// =========================================================================
-// 4. DYNAMIC WORD GENERATION (NO FAKE WORDS)
-// =========================================================================
-
+// Word Generation
 export function generateDiagnosticWords(lang = 'english', count = 30) {
   const pool = (lang === 'english') ? DIAGNOSTIC_ENGLISH_WORDS : DIAGNOSTIC_NEPALI_WORDS;
   const out = [];

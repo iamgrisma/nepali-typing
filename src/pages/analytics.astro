@@ -497,8 +497,8 @@ import Layout from '../layouts/Layout.astro';
     function updateBiomechanicsSection(agg) {
       let leftRatio = 50;
       let rightRatio = 50;
-      let leftErr = '0.0%';
-      let rightErr = '0.0%';
+      let leftErr = '-';
+      let rightErr = '-';
       let avgLat = '-';
 
       if (agg.latestTest?.analytics) {
@@ -510,12 +510,6 @@ import Layout from '../layouts/Layout.astro';
         if (a.leftErrorRate != null) leftErr = `${a.leftErrorRate}%`;
         if (a.rightErrorRate != null) rightErr = `${a.rightErrorRate}%`;
         if (a.avgLatencyMs != null) avgLat = `${a.avgLatencyMs} ms avg`;
-      } else if (agg.totalTests > 0) {
-        leftRatio = 51;
-        rightRatio = 49;
-        leftErr = '1.1%';
-        rightErr = '0.9%';
-        avgLat = '195 ms avg';
       }
 
       const handRatioEl = document.getElementById('dash-hand-ratio');
@@ -540,7 +534,7 @@ import Layout from '../layouts/Layout.astro';
       const slowestContainer = document.getElementById('dash-slowest-keys');
       const fastestContainer = document.getElementById('dash-fastest-keys');
 
-      if (agg.latestTest?.analytics?.slowestKeys && agg.latestTest.analytics.slowestKeys.length > 0) {
+      if (agg.latestTest?.analytics?.slowestKeys?.length) {
         if (slowestContainer) {
           slowestContainer.innerHTML = agg.latestTest.analytics.slowestKeys.slice(0, 4).map(k => `
             <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">
@@ -548,15 +542,11 @@ import Layout from '../layouts/Layout.astro';
             </span>
           `).join('');
         }
-      } else if (agg.totalTests > 0 && slowestContainer) {
-        slowestContainer.innerHTML = `
-          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">W (310ms)</span>
-          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">O (285ms)</span>
-          <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-mono font-bold">P (270ms)</span>
-        `;
+      } else if (slowestContainer) {
+        slowestContainer.innerHTML = '<span class="text-xs text-[var(--text-muted)] font-mono">No bottleneck data recorded yet</span>';
       }
 
-      if (agg.latestTest?.analytics?.fastestKeys && agg.latestTest.analytics.fastestKeys.length > 0) {
+      if (agg.latestTest?.analytics?.fastestKeys?.length) {
         if (fastestContainer) {
           fastestContainer.innerHTML = agg.latestTest.analytics.fastestKeys.slice(0, 4).map(k => `
             <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">
@@ -564,12 +554,8 @@ import Layout from '../layouts/Layout.astro';
             </span>
           `).join('');
         }
-      } else if (agg.totalTests > 0 && fastestContainer) {
-        fastestContainer.innerHTML = `
-          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">Space (105ms)</span>
-          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">E (135ms)</span>
-          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-mono font-bold">A (142ms)</span>
-        `;
+      } else if (fastestContainer) {
+        fastestContainer.innerHTML = '<span class="text-xs text-[var(--text-muted)] font-mono">No reflex data recorded yet</span>';
       }
     }
 
