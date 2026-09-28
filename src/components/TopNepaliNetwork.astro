@@ -299,6 +299,13 @@ const networkApps = [
           trigger.setAttribute('aria-expanded', 'false');
         }
       });
+
+      window.addEventListener('scroll', () => {
+        if (!panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      }, { passive: true });
     });
   }
 
