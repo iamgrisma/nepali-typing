@@ -31,7 +31,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
     </a>
 
     <!-- Primary Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-1 text-xs font-semibold">
+    <nav class="header-desktop-nav hidden md:flex items-center gap-1 text-xs font-semibold">
       <a 
         href="/" 
         class={`px-3 py-1.5 rounded-lg transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
@@ -73,7 +73,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
     </nav>
 
     <!-- Desktop Navigation Actions -->
-    <div class="hidden md:flex items-center gap-2">
+    <div class="header-desktop-actions hidden md:flex items-center gap-2">
       <!-- Dedicated Analytics & Biometrics Dashboard Link on Top -->
       <a 
         href="/analytics" 
@@ -366,3 +366,18 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
     });
   })();
 </script>
+
+<style>
+  .header-desktop-nav,
+  .header-desktop-actions {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .header-desktop-nav {
+      display: flex !important;
+    }
+    .header-desktop-actions {
+      display: flex !important;
+    }
+  }
+</style>
