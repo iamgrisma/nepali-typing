@@ -13,8 +13,8 @@ const networkLinks = [
 
 <footer class="mt-auto border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] text-xs">
   <div class="container py-12 px-4">
-    <!-- 4-Column Responsive Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+    <!-- 4-Column Responsive Grid with Scoped CSS -->
+    <div class="footer-grid">
       
       <!-- Column 1: Typing Tests -->
       <div>
@@ -61,7 +61,7 @@ const networkLinks = [
       </div>
 
       <!-- Column 4: Platform Mission & Identity -->
-      <div class="col-span-2 md:col-span-1">
+      <div>
         <div class="flex items-center gap-2 mb-3">
           <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-red-600 to-rose-500 text-white font-bold flex items-center justify-center text-xs" style="font-family: var(--font-nepali);">
             ने
@@ -91,3 +91,25 @@ const networkLinks = [
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 500px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>
