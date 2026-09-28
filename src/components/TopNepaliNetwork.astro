@@ -1,0 +1,165 @@
+---
+// TopNepaliNetwork.astro — Zero-dependency, lightweight 9-dot ecosystem launcher
+interface Props {
+  currentApp?: 'blog' | 'tools' | 'typing' | 'fonts' | 'share' | 'election';
+  theme?: 'auto' | 'dark' | 'light';
+}
+
+const { currentApp = 'typing', theme = 'auto' } = Astro.props;
+
+const networkApps = [
+  {
+    id: 'blog',
+    name: 'TopNepali Hub',
+    desc: 'Articles, technology & digital insights',
+    url: 'https://topnepali.com',
+    icon: '📰'
+  },
+  {
+    id: 'tools',
+    name: 'TopTools',
+    desc: 'Nepali calendar, date converter & utilities',
+    url: 'https://topnepali.com/tools',
+    icon: '🛠️'
+  },
+  {
+    id: 'typing',
+    name: 'Nepali Typing',
+    desc: 'Typing speed test & verified certificates',
+    url: 'https://typing.topnepali.com',
+    icon: '⌨️'
+  },
+  {
+    id: 'fonts',
+    name: 'FontsDir',
+    desc: 'Devanagari, Preeti & Unicode font downloads',
+    url: 'https://fonts.topnepali.com',
+    icon: '🔤'
+  },
+  {
+    id: 'share',
+    name: 'Flashare',
+    desc: 'Fast direct file transfer between devices',
+    url: 'https://share.topnepali.com',
+    icon: '⚡'
+  },
+  {
+    id: 'election',
+    name: 'Election Nepal',
+    desc: 'Constituency records & parliamentary data',
+    url: 'https://election.topnepali.com',
+    icon: '🗳️'
+  }
+];
+---
+
+<div class="relative topnepali-network-root" data-theme-mode={theme}>
+  <!-- 9-Dot Launcher Button -->
+  <button
+    type="button"
+    class="network-trigger-btn flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-sm active:scale-95"
+    aria-label="TopNepali Apps Menu"
+    aria-expanded="false"
+    title="TopNepali Network"
+  >
+    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+      <circle cx="5" cy="5" r="2.2" />
+      <circle cx="12" cy="5" r="2.2" />
+      <circle cx="19" cy="5" r="2.2" />
+      <circle cx="5" cy="12" r="2.2" />
+      <circle cx="12" cy="12" r="2.2" />
+      <circle cx="19" cy="12" r="2.2" />
+      <circle cx="5" cy="19" r="2.2" />
+      <circle cx="12" cy="19" r="2.2" />
+      <circle cx="19" cy="19" r="2.2" />
+    </svg>
+  </button>
+
+  <!-- Flyout Menu Panel -->
+  <div
+    class="network-dropdown-panel hidden absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] p-2.5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150"
+  >
+    <div class="flex items-center justify-between px-2.5 py-1.5 mb-1.5 border-b border-slate-100 dark:border-slate-800/80">
+      <span class="text-[11px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500">
+        TopNepali Network
+      </span>
+      <a
+        href="https://topnepali.com"
+        class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+      >
+        All Apps →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-1">
+      {networkApps.map((app) => {
+        const isCurrent = app.id === currentApp;
+        return (
+          <a
+            href={app.url}
+            class={`flex items-center gap-3 p-2 rounded-xl transition-all ${
+              isCurrent
+                ? 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800'
+                : 'hover:bg-slate-50 dark:hover:bg-slate-900/60'
+            }`}
+          >
+            <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center text-base shrink-0 shadow-xs">
+              {app.icon}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                  {app.name}
+                </span>
+                {isCurrent && (
+                  <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 ml-auto shrink-0">
+                    CURRENT
+                  </span>
+                )}
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                {app.desc}
+              </p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupNetworkDrawers() {
+    const roots = document.querySelectorAll('.topnepali-network-root');
+    roots.forEach((root) => {
+      const trigger = root.querySelector('.network-trigger-btn');
+      const panel = root.querySelector('.network-dropdown-panel');
+      if (!trigger || !panel) return;
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !panel.classList.contains('hidden');
+        panel.classList.toggle('hidden', isOpen);
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target as Node) && e.target !== trigger) {
+          panel.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  }
+
+  // Support both standard loads and Astro view transitions
+  setupNetworkDrawers();
+  document.addEventListener('astro:page-load', setupNetworkDrawers);
+</script>

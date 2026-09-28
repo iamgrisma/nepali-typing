@@ -1,34 +1,93 @@
 ---
-// TopNepali Typing Footer Component
+// TopNepali Typing Footer Component — Unified 4-Column Design
 const currentYear = new Date().getFullYear();
+
+const networkLinks = [
+  { name: 'TopNepali Hub', url: 'https://topnepali.com' },
+  { name: 'TopTools Utilities', url: 'https://topnepali.com/tools' },
+  { name: 'FontsDir Typography', url: 'https://fonts.topnepali.com' },
+  { name: 'Flashare P2P Transfer', url: 'https://share.topnepali.com' },
+  { name: 'Election Nepal Archive', url: 'https://election.topnepali.com' }
+];
 ---
 
-<footer class="mt-auto border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] py-8 text-xs text-[var(--text-muted)]">
-  <div class="container flex flex-col md:flex-row items-center justify-between gap-6 px-4">
-    
-    <div class="flex items-center gap-2">
-      <span class="w-6 h-6 rounded-lg bg-red-600 text-white font-bold flex items-center justify-center text-xs" style="font-family: var(--font-nepali);">
-        ने
-      </span>
-      <span class="font-display font-semibold text-[var(--text-primary)]">
-        TopNepali Typing
-      </span>
-      <span>• Professional Typing Certification Platform</span>
+<footer class="mt-auto border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] text-xs">
+  <div class="container py-12 px-4">
+    <!-- 4-Column Responsive Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+      
+      <!-- Column 1: Typing Tests -->
+      <div>
+        <h4 class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px] mb-3.5">
+          Typing Tests
+        </h4>
+        <ul class="space-y-2">
+          <li><a href="/" class="hover:text-[var(--text-primary)] transition-colors">English Speed Bench</a></li>
+          <li><a href="/?mode=unicode" class="hover:text-[var(--text-primary)] transition-colors">Nepali Unicode Traditional</a></li>
+          <li><a href="/?mode=romanized" class="hover:text-[var(--text-primary)] transition-colors">Nepali Romanized</a></li>
+          <li><a href="/?mode=preeti" class="hover:text-[var(--text-primary)] transition-colors">Preeti Traditional (ASCII)</a></li>
+          <li><a href="/test" class="text-rose-600 dark:text-rose-400 font-semibold hover:underline">Certification Exam →</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Resources & Tools -->
+      <div>
+        <h4 class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px] mb-3.5">
+          Resources & Tools
+        </h4>
+        <ul class="space-y-2">
+          <li><a href="/verify" class="hover:text-[var(--text-primary)] transition-colors">Verify Certificate</a></li>
+          <li><a href="/drills" class="hover:text-[var(--text-primary)] transition-colors">Adaptive Drills</a></li>
+          <li><a href="/analytics" class="hover:text-[var(--text-primary)] transition-colors">Deep Analytics</a></li>
+          <li><a href="https://fonts.topnepali.com" class="hover:text-[var(--text-primary)] transition-colors">Download Nepali Fonts</a></li>
+          <li><a href="https://github.com/iamgrisma/nepali-typing" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-primary)] transition-colors">Open Source GitHub</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: TopNepali Network Ecosystem -->
+      <div>
+        <h4 class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px] mb-3.5">
+          TopNepali Network
+        </h4>
+        <ul class="space-y-2">
+          {networkLinks.map((item) => (
+            <li>
+              <a href={item.url} class="hover:text-[var(--text-primary)] transition-colors">
+                {item.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Column 4: Platform Mission & Identity -->
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-red-600 to-rose-500 text-white font-bold flex items-center justify-center text-xs" style="font-family: var(--font-nepali);">
+            ने
+          </div>
+          <span class="font-bold text-sm text-[var(--text-primary)]">
+            TopNepali <span class="text-red-600">Typing</span>
+          </span>
+        </div>
+        <p class="text-[var(--text-muted)] leading-relaxed text-[11px] mb-3">
+          Official Nepali typing speed benchmarking and certification platform. Designed for students, professionals, and public service candidates in Nepal.
+        </p>
+        <p class="text-[11px] text-[var(--text-muted)]">
+          Free, privacy-friendly, and accessible on any desktop or mobile device.
+        </p>
+      </div>
+
     </div>
 
-    <div class="flex items-center gap-4 flex-wrap justify-center text-xs">
-      <a href="/" class="hover:text-[var(--text-primary)] transition-colors">Typing Bench</a>
-      <a href="/test" class="hover:text-[var(--text-primary)] transition-colors">Certification Exam</a>
-      <a href="/verify" class="hover:text-[var(--text-primary)] transition-colors">Verify Certificate</a>
-      <a href="/drills" class="hover:text-[var(--text-primary)] transition-colors">Adaptive Drills</a>
-      <a href="/analytics" class="hover:text-[var(--text-primary)] transition-colors">Deep Analytics</a>
-      <a href="https://fonts.topnepali.com" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-primary)] transition-colors">Nepali Fonts</a>
-      <a href="https://github.com/iamgrisma/nepali-typing" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-primary)] transition-colors">GitHub</a>
+    <!-- Bottom Bar -->
+    <div class="border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[var(--text-muted)]">
+      <p>© {currentYear} TopNepali. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="https://topnepali.com/privacy" class="hover:text-[var(--text-primary)] transition-colors">Privacy Policy</a>
+        <a href="https://topnepali.com/terms" class="hover:text-[var(--text-primary)] transition-colors">Terms of Use</a>
+        <a href="mailto:support@topnepali.com" class="hover:text-[var(--text-primary)] transition-colors">Support & Contact</a>
+      </div>
     </div>
-
-    <div class="text-[11px] text-center md:text-right">
-      © {currentYear} <a href="https://typing.topnepali.com" class="hover:underline text-[var(--text-secondary)]">TopNepali Typing</a>. Hosted on Cloudflare Edge. All rights reserved.
-    </div>
-
   </div>
 </footer>

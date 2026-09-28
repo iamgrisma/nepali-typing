@@ -1,4 +1,6 @@
 ---
+import TopNepaliNetwork from './TopNepaliNetwork.astro';
+
 interface Props {
   siteTitle?: string;
   activeNav?: string;
@@ -140,9 +142,12 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
+
+      <!-- 9-Dot Ecosystem Launcher -->
+      <TopNepaliNetwork currentApp="typing" />
     </div>
 
-    <!-- Mobile Top Bar Controls (Theme Toggle + Hamburger Menu Button) -->
+    <!-- Mobile Top Bar Controls (Theme Toggle + Network Launcher + Hamburger) -->
     <div class="flex md:hidden items-center gap-1.5 flex-shrink-0">
       <button 
         id="theme-toggle-btn-mobile" 
@@ -165,6 +170,9 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
+
+      <!-- Mobile 9-Dot Ecosystem Launcher -->
+      <TopNepaliNetwork currentApp="typing" />
 
       <!-- Hamburger Button -->
       <button
