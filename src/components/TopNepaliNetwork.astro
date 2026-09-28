@@ -1,5 +1,5 @@
 ---
-// TopNepaliNetwork.astro — Self-contained, zero-dependency 9-dot ecosystem launcher
+// TopNepaliNetwork.astro — Ultra-lightweight, zero-emoji, minimal DOM 9-dot launcher
 interface Props {
   currentApp?: 'blog' | 'tools' | 'typing' | 'fonts' | 'share' | 'election';
 }
@@ -7,57 +7,20 @@ interface Props {
 const { currentApp = 'typing' } = Astro.props;
 
 const networkApps = [
-  {
-    id: 'blog',
-    name: 'TopNepali Hub',
-    desc: 'Articles, technology & digital insights',
-    url: 'https://topnepali.com',
-    icon: '📰'
-  },
-  {
-    id: 'tools',
-    name: 'TopTools',
-    desc: 'Nepali calendar, date converter & utilities',
-    url: 'https://topnepali.com/tools',
-    icon: '🛠️'
-  },
-  {
-    id: 'typing',
-    name: 'Nepali Typing',
-    desc: 'Typing speed test & verified certificates',
-    url: 'https://typing.topnepali.com',
-    icon: '⌨️'
-  },
-  {
-    id: 'fonts',
-    name: 'FontsDir',
-    desc: 'Devanagari, Preeti & Unicode font downloads',
-    url: 'https://fonts.topnepali.com',
-    icon: '🔤'
-  },
-  {
-    id: 'share',
-    name: 'Flashare',
-    desc: 'Fast direct file transfer between devices',
-    url: 'https://share.topnepali.com',
-    icon: '⚡'
-  },
-  {
-    id: 'election',
-    name: 'Election Nepal',
-    desc: 'Constituency records & parliamentary data',
-    url: 'https://election.topnepali.com',
-    icon: '🗳️'
-  }
+  { id: 'blog', name: 'TopNepali Hub', url: 'https://topnepali.com', icon: 'book' },
+  { id: 'tools', name: 'TopTools', url: 'https://topnepali.com/tools', icon: 'tool' },
+  { id: 'typing', name: 'Nepali Typing', url: 'https://typing.topnepali.com', icon: 'keyboard' },
+  { id: 'fonts', name: 'FontsDir', url: 'https://fonts.topnepali.com', icon: 'type' },
+  { id: 'share', name: 'Flashare', url: 'https://share.topnepali.com', icon: 'zap' },
+  { id: 'election', name: 'Election Nepal', url: 'https://election.topnepali.com', icon: 'landmark' }
 ];
 ---
 
 <div class="topnepali-network-root">
-  <!-- 9-Dot Launcher Button -->
   <button
     type="button"
     class="network-trigger-btn"
-    aria-label="TopNepali Apps Menu"
+    aria-label="TopNepali Network Apps"
     aria-expanded="false"
     title="TopNepali Network"
   >
@@ -74,34 +37,72 @@ const networkApps = [
     </svg>
   </button>
 
-  <!-- Flyout Menu Panel -->
-  <div class="network-dropdown-panel hidden">
+  <nav class="network-dropdown-panel hidden" aria-label="TopNepali Ecosystem">
     <div class="panel-header">
       <span class="panel-title">TopNepali Network</span>
-      <a href="https://topnepali.com" class="all-apps-link">All Apps →</a>
+      <a href="https://topnepali.com" class="all-apps-link">Hub &rarr;</a>
     </div>
 
-    <div class="apps-list">
+    <ul class="apps-list">
       {networkApps.map((app) => {
         const isCurrent = app.id === currentApp;
         return (
-          <a
-            href={app.url}
-            class={`app-item ${isCurrent ? 'current' : ''}`}
-          >
-            <div class="app-icon">{app.icon}</div>
-            <div class="app-info">
-              <div class="app-name-row">
-                <span class="app-name">{app.name}</span>
-                {isCurrent && <span class="current-badge">ACTIVE</span>}
-              </div>
-              <p class="app-desc">{app.desc}</p>
-            </div>
-          </a>
+          <li>
+            <a href={app.url} class={`app-item ${isCurrent ? 'current' : ''}`}>
+              {app.icon === 'book' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+              )}
+              {app.icon === 'tool' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
+              )}
+              {app.icon === 'keyboard' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <line x1="6" y1="8" x2="6" y2="8.01" />
+                  <line x1="10" y1="8" x2="10" y2="8.01" />
+                  <line x1="14" y1="8" x2="14" y2="8.01" />
+                  <line x1="18" y1="8" x2="18" y2="8.01" />
+                  <line x1="6" y1="12" x2="6" y2="12.01" />
+                  <line x1="10" y1="12" x2="10" y2="12.01" />
+                  <line x1="14" y1="12" x2="14" y2="12.01" />
+                  <line x1="18" y1="12" x2="18" y2="12.01" />
+                  <line x1="7" y1="16" x2="17" y2="16" />
+                </svg>
+              )}
+              {app.icon === 'type' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 7 4 4 20 4 20 7" />
+                  <line x1="9" y1="20" x2="15" y2="20" />
+                  <line x1="12" y1="4" x2="12" y2="20" />
+                </svg>
+              )}
+              {app.icon === 'zap' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              )}
+              {app.icon === 'landmark' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="21" x2="21" y2="21" />
+                  <line x1="5" y1="21" x2="5" y2="10" />
+                  <line x1="19" y1="21" x2="19" y2="10" />
+                  <path d="M12 3l9 7H3l9-7z" />
+                </svg>
+              )}
+
+              <span class="app-name">{app.name}</span>
+              {isCurrent && <span class="active-badge">ACTIVE</span>}
+            </a>
+          </li>
         );
       })}
-    </div>
-  </div>
+    </ul>
+  </nav>
 </div>
 
 <style>
@@ -141,27 +142,23 @@ const networkApps = [
     height: 17px;
   }
 
-  /* Dropdown Panel */
   .network-dropdown-panel {
     position: absolute;
     top: calc(100% + 8px);
-    right: 0; /* Strictly align right edge with trigger button */
-    width: 285px;
-    max-width: calc(100vw - 20px);
+    right: 0;
+    width: 220px;
     background: var(--bg-surface, #0f172a);
     border: 1px solid var(--border-subtle, #334155);
-    border-radius: 16px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-    padding: 8px;
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    padding: 6px;
     z-index: 9999;
   }
 
-  /* Mobile narrow screen adjustment so right margin never clips */
   @media (max-width: 480px) {
     .network-dropdown-panel {
       right: -6px;
-      width: 275px;
-      max-width: calc(100vw - 16px);
+      width: 210px;
     }
   }
 
@@ -173,21 +170,21 @@ const networkApps = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 8px 8px;
+    padding: 6px 8px 6px;
     border-bottom: 1px solid var(--border-subtle, #1e293b);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .panel-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--text-muted, #94a3b8);
   }
 
   .all-apps-link {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     color: #38bdf8;
     text-decoration: none;
@@ -198,19 +195,24 @@ const networkApps = [
   }
 
   .apps-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
 
   .app-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 10px;
+    gap: 9px;
+    padding: 7px 9px;
+    border-radius: 8px;
     text-decoration: none;
-    color: inherit;
+    color: var(--text-primary, #f8fafc);
+    font-size: 12px;
+    font-weight: 600;
     transition: background 0.12s ease;
   }
 
@@ -220,61 +222,42 @@ const networkApps = [
 
   .app-item.current {
     background: var(--bg-surface-subtle, #1e293b);
-    border: 1px solid var(--accent-primary, #e11d48);
+    color: var(--accent-primary, #e11d48);
     pointer-events: none;
   }
 
-  .app-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--bg-surface-elevated, #1e293b);
-    border: 1px solid var(--border-subtle, #334155);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+  .item-icon {
+    width: 15px;
+    height: 15px;
     flex-shrink: 0;
+    color: var(--text-muted, #94a3b8);
+    transition: color 0.12s ease;
   }
 
-  .app-info {
-    flex: 1;
-    min-width: 0;
+  .app-item:hover .item-icon {
+    color: var(--text-primary, #f8fafc);
   }
 
-  .app-name-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
+  .app-item.current .item-icon {
+    color: var(--accent-primary, #e11d48);
   }
 
   .app-name {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--text-primary, #f8fafc);
+    flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .current-badge {
-    font-size: 9px;
+  .active-badge {
+    font-size: 8px;
     font-weight: 800;
-    padding: 1px 5px;
-    border-radius: 4px;
-    background: rgba(225, 29, 72, 0.18);
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: rgba(225, 29, 72, 0.15);
     color: var(--accent-primary, #f43f5e);
+    letter-spacing: 0.04em;
     flex-shrink: 0;
-  }
-
-  .app-desc {
-    font-size: 11px;
-    color: var(--text-muted, #94a3b8);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 1px;
   }
 </style>
 

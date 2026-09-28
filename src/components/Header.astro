@@ -43,7 +43,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         href="/test" 
         class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-purple-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <span>🎓</span>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
         <span>Certification Exam</span>
       </a>
 
@@ -59,7 +59,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         href="/drills" 
         class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <span>⚡</span>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         <span>Adaptive Drills</span>
       </a>
 
@@ -81,8 +81,8 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 font-bold text-xs transition-all shadow-sm group"
         title="Open Dedicated Biometric Typing Analytics Dashboard"
       >
-        <span class="text-sm group-hover:scale-110 transition-transform">📊</span>
-        <span>Analytics & Telemetry</span>
+        <svg class="w-3.5 h-3.5 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Analytics</span>
         <span id="header-stats-badge" class="top-stats-badge font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 font-bold">
           0 Ready
         </span>
@@ -222,7 +222,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-purple-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
         <div class="flex items-center gap-3">
-          <span class="text-base">🎓</span>
+          <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
           <span>Certification Exam</span>
         </div>
         <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
@@ -246,7 +246,7 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
         <div class="flex items-center gap-3">
-          <span class="text-base">⚡</span>
+          <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
           <span>Adaptive Drills</span>
         </div>
         <span class="text-[11px] text-[var(--text-muted)] font-normal">Target Weak Keys</span>
