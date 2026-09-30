@@ -182,6 +182,86 @@ export function setupTest() {
   updatePersonalBestsCards();
 }
 
+/**
+ * Setup test with specific words (for Retype & Compete feature).
+ * Reuses the exact same words so the user can compete against their previous run.
+ */
+export function setupTestWithWords(words) {
+  // Reset all state as normal
+  clearInterval(state.timer);
+  state.timer = null;
+  state.isRunning = false;
+  state.isFinished = false;
+  state.wordIdx = 0;
+  state.typedWords = [];
+  state.timeline = [];
+  state.keystrokeLogs = [];
+  state.lastStrokeTime = 0;
+  state.totalKeystrokes = 0;
+  state.correctKeystrokes = 0;
+  state.errorKeystrokes = 0;
+  state.errorMap = {};
+  state.cleanWords = 0;
+  state.correctedWords = 0;
+  state.incorrectWords = 0;
+  state.currentWordErrors = 0;
+  state.currentWordBackspaces = 0;
+  state.currentWordStartTime = performance.now();
+  state.wordsLog = [];
+  state.secsLeft = state.duration;
+
+  // Use provided words
+  state.words = [...words];
+
+  const timerDisp = document.getElementById('live-timer-display');
+  const progDisp = document.getElementById('live-progress-display');
+  const wpmDisp = document.getElementById('live-wpm-display');
+  const accDisp = document.getElementById('live-acc-display');
+  const wordAccDisp = document.getElementById('live-word-acc-display');
+  const strokeAccDisp = document.getElementById('live-stroke-acc-display');
+  const inputField = document.getElementById('typing-input');
+
+  if (timerDisp) timerDisp.textContent = state.mode === 'time' ? `${state.secsLeft}s` : '0s';
+  if (progDisp) progDisp.textContent = `0 / ${state.words.length} words`;
+  if (wpmDisp) wpmDisp.textContent = '0';
+  if (accDisp) accDisp.textContent = '100%';
+  if (wordAccDisp) wordAccDisp.textContent = '100%';
+  if (strokeAccDisp) strokeAccDisp.textContent = '100%';
+  if (inputField) { inputField.value = ''; inputField.focus(); }
+
+  const container = document.getElementById('words-container');
+  if (container) {
+    container.innerHTML = '';
+    if (state.lang === 'nepali_preeti') {
+      container.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
+    } else if (state.lang === 'english') {
+      container.style.fontFamily = "'Inter', sans-serif";
+    } else {
+      container.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
+    }
+
+    const caretDiv = document.createElement('div');
+    caretDiv.id = 'typing-caret';
+    caretDiv.className = 'typing-caret';
+    container.appendChild(caretDiv);
+
+    state.words.forEach((w, wI) => {
+      const wSpan = document.createElement('span');
+      wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
+      wSpan.dataset.wordIndex = `${wI}`;
+      const clusters = getGraphemes(w, state.lang);
+      wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
+      container.appendChild(wSpan);
+    });
+    container.scrollTop = 0;
+  }
+
+  renderKeyboard();
+  highlightTargetKey();
+  updateCaret();
+  updatePersonalBestsCards();
+}
+
 let isMasteryTransitioning = false;
 export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
   if (isMasteryTransitioning) return;
@@ -490,7 +570,7 @@ export function finishTest() {
   if (certBanner) {
     if (certPass.passed) {
       certBanner.classList.remove('hidden');
-      if (certTitle) certTitle.textContent = `🏆 Certified Benchmark Passed: ${rank.title}!`;
+      if (certTitle) certTitle.textContent = `Certified Benchmark Passed: ${rank.title}!`;
       if (certDesc) certDesc.textContent = `Net Speed: ${netWpm} WPM (Exceeds >${certPass.minWpm} WPM requirement with ${acc}% accuracy). Enter your name to generate your verifiable certificate:`;
       if (certNameInput) {
         certNameInput.value = localStorage.getItem('topnepali_candidate_name') || '';
@@ -523,7 +603,43 @@ export function finishTest() {
   }
 
   renderTimelineChart(state.timeline);
+
+  // Show Retest Comparison Banner if previousRunWpm exists
+  const retestComparison = document.getElementById('modal-retest-comparison');
+  if (retestComparison) {
+    if (state.previousRunWpm != null && state.previousRunWpm > 0) {
+      retestComparison.classList.remove('hidden');
+      const prevEl = document.getElementById('retest-prev-wpm');
+      const currEl = document.getElementById('retest-curr-wpm');
+      const diffEl = document.getElementById('retest-diff-wpm');
+      if (prevEl) prevEl.textContent = `${state.previousRunWpm} WPM`;
+      if (currEl) currEl.textContent = `${netWpm} WPM`;
+      const diff = netWpm - state.previousRunWpm;
+      if (diffEl) {
+        diffEl.textContent = diff > 0 ? `+${diff} WPM` : diff < 0 ? `${diff} WPM` : `±0 WPM`;
+        diffEl.className = 'font-bold font-mono ' + (diff > 0 ? 'text-emerald-500' : diff < 0 ? 'text-red-500' : 'text-[var(--text-muted)]');
+      }
+    } else {
+      retestComparison.classList.add('hidden');
+    }
+  }
+
   document.getElementById('stats-modal')?.classList.add('is-open');
+
+  // Defocus workbench background inputs so typing is not stolen by workbench
+  document.getElementById('typing-input')?.blur();
+  document.getElementById('freestyle-input')?.blur();
+
+  // If candidate benchmark achieved, smoothly focus the candidate name field
+  if (certPass.passed) {
+    setTimeout(() => {
+      const nameInput = document.getElementById('modal-candidate-name-input');
+      if (nameInput) {
+        nameInput.focus();
+        nameInput.select();
+      }
+    }, 150);
+  }
 
   // Save record to LocalStorage
   try {
@@ -692,6 +808,8 @@ export function finishFreestyleTest() {
 
   renderTimelineChart(state.timeline);
   document.getElementById('stats-modal')?.classList.add('is-open');
+  document.getElementById('freestyle-input')?.blur();
+  document.getElementById('typing-input')?.blur();
 
   // Save record to LocalStorage
   try {

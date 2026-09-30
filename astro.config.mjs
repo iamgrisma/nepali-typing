@@ -1,10 +1,10 @@
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
+import icon from 'astro-icon';
 
 // Full static generation for Cloudflare Pages (Zero CPU, instant CDN delivery)
 export default defineConfig({
+  integrations: [icon()],
   output: 'static',
-  adapter: cloudflare(),
   site: 'https://typing.topnepali.com',
   compressHTML: true,
   build: {

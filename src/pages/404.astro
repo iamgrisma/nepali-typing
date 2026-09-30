@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+---
+
+<Layout title="404 - Page Not Found | TopNepali Typing" activeNav="">
+  <main class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+    <div class="max-w-md w-full text-center">
+      <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-500/10 text-[var(--accent-primary)] flex items-center justify-center border border-red-500/20">
+        <Icon name="lucide:alert-circle" class="w-8 h-8" />
+      </div>
+
+      <h1 class="text-3xl font-extrabold font-display text-[var(--text-primary)] mb-2">
+        Page Not Found
+      </h1>
+      
+      <p class="text-sm text-[var(--text-secondary)] mb-8">
+        The page you are looking for doesn't exist or has been moved. Choose a destination below to continue typing.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a 
+          href="/" 
+          class="btn-primary w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
+        >
+          <Icon name="lucide:keyboard" class="w-4 h-4" />
+          <span>Launch Typing Bench</span>
+        </a>
+
+        <a 
+          href="/keyboard-layout" 
+          class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-xs font-semibold transition-all flex items-center justify-center gap-2"
+        >
+          <Icon name="lucide:type" class="w-4 h-4" />
+          <span>Keyboard Layouts</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>

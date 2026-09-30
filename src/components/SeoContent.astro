@@ -1,5 +1,6 @@
 ---
 // English Typing Guide & Layout Architecture Reference
+import { Icon } from 'astro-icon/components';
 ---
 
 <section class="mt-14 pt-10 border-t border-[var(--border-subtle)]">
@@ -8,11 +9,11 @@
     <!-- Section 1: Platform Overview -->
     <div>
       <div class="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)]">
-        <span>🌐</span>
-        <span>Typing Benchmark & Certification</span>
+        <Icon name="lucide:globe" class="w-4 h-4" />
+        <span>Typing Benchmark &amp; Certification</span>
       </div>
       <h2 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)] mb-4 tracking-tight">
-        Professional Typing Benchmark & Skill Assessment
+        Professional Typing Benchmark &amp; Skill Assessment
       </h2>
       <p class="mb-3">
         Touch typing is an essential skill for software development, administrative work, writing, and daily communication. <strong>TopNepali Typing</strong> benchmarks, analyzes, and certifies typing proficiency across four standard keyboard layouts: <strong>Nepali Unicode Traditional (MPP)</strong>, <strong>Nepali Unicode Romanized</strong>, <strong>Preeti (ASCII Typewriter)</strong>, and <strong>English US QWERTY</strong>.
@@ -25,7 +26,7 @@
     <!-- Section 2: Keyboard Layouts Architecture Matrix -->
     <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm">
       <h3 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
-        Nepali & English Keyboard Layouts Comparison
+        Nepali &amp; English Keyboard Layouts Comparison
       </h3>
       <p class="text-xs text-[var(--text-muted)] mb-5">
         Key distinctions in character encoding, physical key mapping, and application domains:
@@ -58,11 +59,11 @@
               <td class="py-3">Standard International QWERTY</td>
             </tr>
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Web & Search (SEO)</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable & Accessible</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable & Accessible</td>
+              <td class="py-3 font-semibold text-[var(--text-primary)]">Web &amp; Search (SEO)</td>
+              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
+              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
               <td class="py-3 text-red-500 font-semibold">Non-searchable (Font reliant)</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable & Accessible</td>
+              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
             </tr>
             <tr>
               <td class="py-3 font-semibold text-[var(--text-primary)]">Target Key for 'क'</td>
@@ -87,7 +88,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
         <div class="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-bold text-sm mb-3">
-          <span>📜</span>
+          <Icon name="lucide:file-check" class="w-4 h-4" />
           <h3 class="font-display text-base text-[var(--text-primary)]">Certification Criteria</h3>
         </div>
         <p class="text-xs mb-3">
@@ -115,7 +116,7 @@
 
       <div class="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
         <div class="flex items-center gap-2 text-amber-500 font-bold text-sm mb-3">
-          <span>🏅</span>
+          <Icon name="lucide:award" class="w-4 h-4" />
           <h3 class="font-display text-base text-[var(--text-primary)]">Proficiency Tiers</h3>
         </div>
         <p class="text-xs mb-3">
@@ -123,23 +124,23 @@
         </p>
         <div class="space-y-2 text-xs">
           <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-purple-600 dark:text-purple-400">💎 Speed Demon (Grandmaster)</span>
+            <span class="font-bold text-purple-600 dark:text-purple-400">Grandmaster (Speed Demon)</span>
             <span class="font-mono font-semibold">60+ WPM (NP) • 90+ WPM (EN)</span>
           </div>
           <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-cyan-500">⚡ Master Typist (Platinum)</span>
+            <span class="font-bold text-cyan-500">Master Typist (Platinum)</span>
             <span class="font-mono font-semibold">50–59 WPM (NP) • 70–89 WPM (EN)</span>
           </div>
           <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-amber-500">🥇 Advanced Typist (Gold)</span>
+            <span class="font-bold text-amber-500">Advanced Typist (Gold)</span>
             <span class="font-mono font-semibold">40–49 WPM (NP) • 55–69 WPM (EN)</span>
           </div>
           <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-slate-400">🥈 Professional Typist (Silver)</span>
+            <span class="font-bold text-slate-400">Professional Typist (Silver)</span>
             <span class="font-mono font-semibold">30–39 WPM (NP) • 40–54 WPM (EN)</span>
           </div>
           <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-amber-700 dark:text-amber-500">🥉 Certified Typist (Bronze)</span>
+            <span class="font-bold text-amber-700 dark:text-amber-500">Certified Typist (Bronze)</span>
             <span class="font-mono font-semibold">21–29 WPM (NP) • 26–39 WPM (EN)</span>
           </div>
         </div>
@@ -159,7 +160,7 @@
     <!-- Section 5: Biomechanics & Keystroke Telemetry -->
     <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm">
       <h3 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
-        Keystroke Biomechanics & Telemetry
+        Keystroke Biomechanics &amp; Telemetry
       </h3>
       <p class="text-xs sm:text-sm mb-4">
         Our analytics engine measures keystroke timing, physical layout scan codes, and corrective interventions:
@@ -167,19 +168,28 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
         <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <span class="font-bold text-[var(--text-primary)] block mb-1">⏱️ Latency & Hesitation Heatmap</span>
+          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
+            <Icon name="lucide:timer" class="w-3.5 h-3.5 text-amber-500" />
+            <span>Latency &amp; Hesitation Heatmap</span>
+          </div>
           <p class="text-[var(--text-muted)]">
             Tracks per-key latency to distinguish smooth muscle memory from cognitive pauses over 400ms.
           </p>
         </div>
         <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <span class="font-bold text-[var(--text-primary)] block mb-1">✋ Left vs. Right Hand Ergonomics</span>
+          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
+            <Icon name="lucide:activity" class="w-3.5 h-3.5 text-blue-500" />
+            <span>Left vs. Right Hand Ergonomics</span>
+          </div>
           <p class="text-[var(--text-muted)]">
             Measures lateral keystroke distribution and error rates between hands to identify asymmetrical strain.
           </p>
         </div>
         <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <span class="font-bold text-[var(--text-primary)] block mb-1">⚡ Error Recovery Cost</span>
+          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
+            <Icon name="lucide:zap" class="w-3.5 h-3.5 text-purple-500" />
+            <span>Error Recovery Cost</span>
+          </div>
           <p class="text-[var(--text-muted)]">
             Quantifies time lost to backspacing and corrections, demonstrating the impact of accuracy on speed.
           </p>
@@ -190,7 +200,7 @@
     <!-- Section 6: Adaptive Drill Engine -->
     <div class="bg-gradient-to-br from-amber-500/10 via-[var(--bg-surface)] to-[var(--bg-surface)] border border-amber-500/20 rounded-2xl p-6 shadow-sm">
       <div class="flex items-center gap-2 text-amber-500 font-bold text-sm mb-2">
-        <span>⚡</span>
+        <Icon name="lucide:zap" class="w-4 h-4" />
         <h3 class="font-display text-lg text-[var(--text-primary)]">Adaptive Weak Key Practice</h3>
       </div>
       <p class="text-xs sm:text-sm mb-3">

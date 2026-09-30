@@ -469,11 +469,23 @@ export const TELEMETRY_METRICS_SPEC = [
 /**
  * Aggregates all user historical session data and stroke profiles
  */
-export function aggregateTelemetryData() {
+export function aggregateTelemetryData(filter = null) {
   let tests = [];
   try {
     tests = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
   } catch (e) {}
+
+  if (filter) {
+    if (filter.type === 'layout' && filter.value && filter.value !== 'all') {
+      tests = tests.filter(t => t.layout === filter.value);
+    } else if (filter.type === 'lang' && filter.value) {
+      if (filter.value === 'nepali') {
+        tests = tests.filter(t => t.layout && t.layout !== 'english');
+      } else if (filter.value === 'english') {
+        tests = tests.filter(t => t.layout === 'english');
+      }
+    }
+  }
 
   let strokeProfile = {};
   try {
@@ -553,8 +565,8 @@ export function aggregateTelemetryData() {
  * Evaluates all 36 curated telemetry parameters against actual user data.
  * Correctly distinguishes between Calibrated (ready) and Calibrating (insufficient data).
  */
-export function evaluateAllParameters() {
-  const agg = aggregateTelemetryData();
+export function evaluateAllParameters(filter = null) {
+  const agg = aggregateTelemetryData(filter);
   const evaluated = [];
   let readyCount = 0;
 
@@ -658,11 +670,11 @@ export function updateHeaderTelemetryBadge() {
     const data = evaluateAllParameters();
     const badge = document.getElementById('header-stats-badge');
     if (badge) {
-      badge.textContent = `${data.readyCount} Calibrated`;
+      badge.textContent = `${data.readyCount} Ready`;
     }
     const topBadges = document.querySelectorAll('.top-stats-badge');
     topBadges.forEach(b => {
-      b.textContent = `${data.readyCount} Calibrated`;
+      b.textContent = `${data.readyCount} Ready`;
     });
   } catch (e) {}
 }

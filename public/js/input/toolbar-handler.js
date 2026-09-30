@@ -201,6 +201,28 @@ export function bindToolbarEvents() {
     document.getElementById('stats-modal')?.classList.remove('is-open');
   });
 
+  // Retype & Compete: restart same words with previous WPM stored for comparison
+  document.getElementById('retest-same-btn')?.addEventListener('click', () => {
+    const lastResult = getLastFinishedResult();
+    if (lastResult) {
+      state.previousRunWpm = lastResult.netWpm;
+      state.previousRunAcc = lastResult.acc;
+      // Keep the same words for retesting
+      state.retestWords = [...state.words];
+    }
+    document.getElementById('stats-modal')?.classList.remove('is-open');
+    // Setup test with same words
+    if (state.retestWords && state.retestWords.length > 0) {
+      state.words = [...state.retestWords];
+      // Import and call the retest setup
+      import('../core/engine.js').then(mod => {
+        mod.setupTestWithWords(state.words);
+      });
+    } else {
+      setupTest();
+    }
+  });
+
   // Claim & View Certificate Button in Modal
   document.getElementById('modal-claim-cert-btn')?.addEventListener('click', async () => {
     const lastResult = getLastFinishedResult();
@@ -231,6 +253,21 @@ export function bindToolbarEvents() {
     // Navigate to Certificate View page
     window.location.href = `/certificate/view?id=${encodeURIComponent(cert.id)}`;
   });
+
+  // Candidate Name Input Events (ensure focus is preserved & Enter submits)
+  const candidateNameInput = document.getElementById('modal-candidate-name-input');
+  if (candidateNameInput) {
+    candidateNameInput.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('modal-claim-cert-btn')?.click();
+      }
+    });
+    candidateNameInput.addEventListener('focus', (e) => {
+      e.stopPropagation();
+    });
+  }
 
   // Launch Adaptive Drill Button in Modal
   document.getElementById('modal-launch-drill-btn')?.addEventListener('click', () => {

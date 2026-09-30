@@ -6,136 +6,114 @@ interface Props {
   activeNav?: string;
 }
 
-const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
+const { activeNav = 'test' } = Astro.props;
 ---
 
 <header class="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
-  <div class="container flex items-center justify-between h-16 px-4">
+  <div class="container flex items-center justify-between h-16">
     
     <!-- Logo & Brand -->
-    <a href="/" class="flex items-center gap-2.5 sm:gap-3 text-decoration-none group min-w-0">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-md group-hover:scale-105 transition-transform flex-shrink-0" style="font-family: var(--font-nepali);">
+    <a href="/" class="flex items-center gap-2 text-decoration-none group shrink-0 mr-3 sm:mr-4">
+      <div class="brand-logo-badge w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm group-hover:scale-105 transition-transform shrink-0" style="font-family: var(--font-nepali);">
         ने
       </div>
-      <div class="min-w-0">
-        <div class="flex items-center gap-1.5 sm:gap-2">
-          <span class="font-bold text-base sm:text-lg font-display tracking-tight text-[var(--text-primary)] truncate">
-            TopNepali<span class="text-red-600">Typing</span>
-          </span>
-          <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">
-            CERTIFIED
-          </span>
-        </div>
-        <p class="hidden sm:block text-xs text-[var(--text-muted)] -mt-0.5 truncate">English • Nepali Unicode • Romanized • Preeti</p>
-      </div>
+      <span class="font-bold text-base font-display tracking-tight text-[var(--text-primary)]">
+        TopNepali<span class="text-red-600">Typing</span>
+      </span>
     </a>
 
-    <!-- Primary Desktop Navigation -->
-    <nav class="header-desktop-nav hidden md:flex items-center gap-1 text-xs font-semibold">
+    <!-- Primary Desktop Navigation (Simple, Compact Text Links - No Icons) -->
+    <nav class="header-nav items-center gap-1 text-xs font-semibold">
       <a 
         href="/" 
-        class={`px-3 py-1.5 rounded-lg transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        Typing Bench
-      </a>
-
-      <a 
-        href="/test" 
-        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-purple-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
-      >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-        <span>Certification Exam</span>
-      </a>
-
-      <a 
-        href="/verify" 
-        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'verify' ? 'bg-[var(--bg-surface-subtle)] text-emerald-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
-      >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        <span>Verify Certificate</span>
-      </a>
-
-      <a 
-        href="/drills" 
-        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
-      >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        <span>Adaptive Drills</span>
+        Bench
       </a>
 
       <a 
         href="/keyboard-layout" 
-        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-sky-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
-        <span>Keyboard Layouts</span>
+        Layouts
       </a>
 
       <a 
-        href="/analytics" 
-        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        href="/test" 
+        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-        <span>Deep Analytics</span>
+        Certification
       </a>
-    </nav>
 
-    <!-- Desktop Navigation Actions -->
-    <div class="header-desktop-actions hidden md:flex items-center gap-2">
-      <!-- Dedicated Analytics & Biometrics Dashboard Link on Top -->
+      <a 
+        href="/verify" 
+        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'verify' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        Verify
+      </a>
+
+      <a 
+        href="/drills" 
+        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        Drills
+      </a>
+
       <a 
         href="/analytics" 
         id="top-analytics-link"
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 font-bold text-xs transition-all shadow-sm group"
-        title="Open Dedicated Biometric Typing Analytics Dashboard"
+        class={`px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-600 dark:text-blue-400 font-bold' : 'text-[var(--text-secondary)] hover:text-blue-600 hover:bg-[var(--bg-surface-subtle)]'}`}
+        title="Biometric Typing Analytics"
       >
-        <svg class="w-3.5 h-3.5 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         <span>Analytics</span>
-        <span id="header-stats-badge" class="top-stats-badge font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 font-bold">
-          0 Ready
+        <span id="header-stats-badge" class="top-stats-badge font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold">
+          0
         </span>
       </a>
+    </nav>
 
-      <!-- History Modal Trigger -->
+    <!-- Top Bar Controls (Single Cluster: History, Sound, Theme, 9-Dot Launcher, Hamburger on mobile) -->
+    <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+      <!-- History Modal Trigger (Desktop) -->
       <button 
         id="open-history-btn" 
-        class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="View Typing History & Personal Bests"
+        class="header-desktop-tool p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+        title="Typing History"
         aria-label="History"
       >
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 3v5h5"></path>
           <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
           <path d="M12 7v5l4 2"></path>
         </svg>
       </button>
 
-      <!-- Sound Toggle -->
+      <!-- Keystroke Sound Toggle (Desktop) -->
       <button 
         id="sound-toggle-btn" 
-        class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Keystroke Audio Feedback"
+        class="header-desktop-tool p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+        title="Toggle Audio Feedback"
         aria-label="Toggle Sound"
       >
-        <svg id="sound-icon-on" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="sound-icon-on" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         </svg>
-        <svg id="sound-icon-off" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="sound-icon-off" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <line x1="23" y1="9" x2="17" y2="15"></line>
           <line x1="17" y1="9" x2="23" y2="15"></line>
         </svg>
       </button>
 
-      <!-- Theme Toggle (Dark/Light) -->
+      <!-- Theme Toggle (Dark / Light) — SINGLE INSTANCE FOR BOTH MOBILE & DESKTOP -->
       <button 
         id="theme-toggle-btn" 
-        class="theme-toggle-btn p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Dark / Light Theme"
+        class="theme-toggle-btn p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+        title="Toggle Theme"
         aria-label="Toggle Theme"
       >
-        <svg id="theme-icon-sun" class="theme-icon-sun w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="theme-icon-sun w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -146,59 +124,29 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg id="theme-icon-moon" class="theme-icon-moon w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="theme-icon-moon w-4 h-4 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
 
-      <!-- 9-Dot Ecosystem Launcher -->
-      <TopNepaliNetwork currentApp="typing" />
-    </div>
-
-    <!-- Mobile Top Bar Controls (Theme Toggle + Network Launcher + Hamburger) -->
-    <div class="flex md:hidden items-center gap-1.5 flex-shrink-0">
-      <button 
-        id="theme-toggle-btn-mobile" 
-        class="theme-toggle-btn p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Dark / Light Theme"
-        aria-label="Toggle Theme"
-      >
-        <svg class="theme-icon-sun w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <svg class="theme-icon-moon w-5 h-5 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-
-      <!-- Mobile 9-Dot Ecosystem Launcher -->
+      <!-- TopNepali 9-Dot Network Launcher — SINGLE INSTANCE -->
       <TopNepaliNetwork currentApp="typing" />
 
-      <!-- Hamburger Button -->
+      <!-- Mobile Hamburger Button — STRICTLY MOBILE ONLY -->
       <button
         id="mobile-menu-toggle-btn"
-        class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors focus:outline-none"
+        class="header-burger p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors focus:outline-none cursor-pointer"
         title="Toggle Menu"
         aria-label="Toggle Menu"
         aria-expanded="false"
         aria-controls="mobile-menu-drawer"
       >
-        <!-- 3-line hamburger icon -->
-        <svg id="hamburger-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="hamburger-icon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
-        <!-- X close icon -->
-        <svg id="close-menu-icon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="close-menu-icon" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -207,119 +155,92 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
 
   </div>
 
-  <!-- Mobile Collapsible Hamburger Navigation Drawer -->
+  <!-- Mobile Collapsible Navigation Drawer -->
   <div 
     id="mobile-menu-drawer" 
-    class="hidden md:hidden border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 shadow-lg"
+    class="mobile-drawer border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 shadow-lg"
   >
-    <div class="flex flex-col gap-1.5">
-      <!-- Navigation items -->
+    <div class="flex flex-col gap-1 text-sm font-semibold">
       <a 
         href="/" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
-          <span>Typing Bench</span>
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)] font-normal">Practice & Tests</span>
+        Typing Bench
       </a>
 
       <a 
         href="/keyboard-layout" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-sky-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
-          <span>Keyboard Layouts</span>
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)] font-normal">Traditional & Preeti</span>
+        Keyboard Layouts
       </a>
 
       <a 
         href="/test" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-purple-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'certification' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-          <span>Certification Exam</span>
-        </div>
-        <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-          Official
-        </span>
+        Certification Exam
       </a>
 
       <a 
         href="/verify" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'verify' ? 'bg-[var(--bg-surface-subtle)] text-emerald-600 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'verify' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>Verify Certificate</span>
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)] font-normal">Check Authenticity</span>
+        Verify Certificate
       </a>
 
       <a 
         href="/drills" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'drills' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span>Adaptive Drills</span>
-        </div>
-        <span class="text-[11px] text-[var(--text-muted)] font-normal">Target Weak Keys</span>
+        Adaptive Drills
       </a>
 
       <a 
         href="/analytics" 
-        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-600 dark:text-blue-400 font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          <span>Deep Analytics</span>
-        </div>
-        <span class="top-stats-badge font-mono text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold">
-          Telemetry
-        </span>
+        Analytics
       </a>
-
-      <!-- Quick Actions Divider -->
-      <div class="my-1 border-t border-[var(--border-subtle)]"></div>
-
-      <!-- Quick Action Buttons for Mobile -->
-      <div class="grid grid-cols-2 gap-2 pt-1">
-        <button 
-          type="button"
-          id="mobile-history-trigger"
-          class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3v5h5"></path>
-            <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
-            <path d="M12 7v5l4 2"></path>
-          </svg>
-          <span>History & Records</span>
-        </button>
-
-        <button 
-          type="button"
-          id="mobile-sound-trigger"
-          class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-          <span>Sound Toggle</span>
-        </button>
-      </div>
     </div>
   </div>
 </header>
 
+<style>
+  .header-nav {
+    display: none;
+  }
+  .header-burger {
+    display: flex;
+  }
+  .header-desktop-tool {
+    display: none;
+  }
+  .mobile-drawer {
+    display: none;
+  }
+  .mobile-drawer.is-open {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .header-nav {
+      display: flex !important;
+    }
+    .header-burger {
+      display: none !important;
+    }
+    .header-desktop-tool {
+      display: flex !important;
+    }
+    .mobile-drawer {
+      display: none !important;
+    }
+  }
+</style>
+
 <script is:inline>
-  (function initMobileMenu() {
+  (function initHeader() {
     const toggleBtn = document.getElementById('mobile-menu-toggle-btn');
     const drawer = document.getElementById('mobile-menu-drawer');
     const hamburgerIcon = document.getElementById('hamburger-icon');
@@ -329,14 +250,14 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       const isExpanded = toggleBtn?.getAttribute('aria-expanded') === 'true';
       const nextState = !isExpanded;
       toggleBtn?.setAttribute('aria-expanded', String(nextState));
-      drawer?.classList.toggle('hidden', !nextState);
+      drawer?.classList.toggle('is-open', nextState);
       hamburgerIcon?.classList.toggle('hidden', nextState);
       closeIcon?.classList.toggle('hidden', !nextState);
     }
 
     function closeMenu() {
       toggleBtn?.setAttribute('aria-expanded', 'false');
-      drawer?.classList.add('hidden');
+      drawer?.classList.remove('is-open');
       hamburgerIcon?.classList.remove('hidden');
       closeIcon?.classList.add('hidden');
     }
@@ -346,23 +267,10 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       toggleMenu();
     });
 
-    // Close on navigation link click
     drawer?.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', closeMenu);
     });
 
-    // Mobile history trigger clicks desktop open-history-btn
-    document.getElementById('mobile-history-trigger')?.addEventListener('click', () => {
-      closeMenu();
-      document.getElementById('open-history-btn')?.click();
-    });
-
-    // Mobile sound trigger clicks desktop sound-toggle-btn
-    document.getElementById('mobile-sound-trigger')?.addEventListener('click', () => {
-      document.getElementById('sound-toggle-btn')?.click();
-    });
-
-    // Close menu when clicking outside header
     document.addEventListener('click', (e) => {
       const header = document.querySelector('header');
       if (header && !header.contains(e.target)) {
@@ -370,14 +278,10 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       }
     });
 
-    // Close menu on Escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeMenu();
-      }
+      if (e.key === 'Escape') closeMenu();
     });
 
-    // Auto-close if screen expands to desktop width
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) {
         closeMenu();
@@ -385,18 +289,3 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
     });
   })();
 </script>
-
-<style>
-  .header-desktop-nav,
-  .header-desktop-actions {
-    display: none;
-  }
-  @media (min-width: 768px) {
-    .header-desktop-nav {
-      display: flex !important;
-    }
-    .header-desktop-actions {
-      display: flex !important;
-    }
-  }
-</style>

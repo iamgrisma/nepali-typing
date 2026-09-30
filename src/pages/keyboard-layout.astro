@@ -1,0 +1,277 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+---
+
+<Layout title="Keyboard Layouts & Cheatsheet | TopNepali Typing" activeNav="layouts">
+  <div class="container py-6">
+    
+    <!-- Page Header -->
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-2 text-xs font-semibold text-[var(--accent-primary)]">
+        <Icon name="lucide:keyboard" class="w-4 h-4" />
+        <span>LAYOUT REFERENCE GUIDE</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">
+        Nepali & English Keyboard Layouts
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
+        Complete mapping guide, shift layers, and special ligature keystroke formulas for Traditional Unicode, Romanized, Preeti, and English QWERTY.
+      </p>
+    </div>
+
+    <!-- Layout Switcher Tab Bar -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-2 mb-6 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <div class="flex flex-wrap gap-1" id="layout-page-tabs">
+        <button 
+          type="button" 
+          class="layout-tab-btn active px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+          data-layout="nepali_unicode"
+        >
+          <Icon name="lucide:type" class="w-3.5 h-3.5" />
+          <span>Nepali Unicode (Traditional)</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
+          data-layout="nepali_romanized"
+        >
+          <Icon name="lucide:languages" class="w-3.5 h-3.5" />
+          <span>Romanized (Phonetic)</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
+          data-layout="nepali_preeti"
+        >
+          <Icon name="lucide:file-text" class="w-3.5 h-3.5" />
+          <span>Preeti (ASCII)</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
+          data-layout="english"
+        >
+          <Icon name="lucide:globe" class="w-3.5 h-3.5" />
+          <span>English QWERTY</span>
+        </button>
+      </div>
+
+      <!-- Live Search Character Box -->
+      <div class="relative w-full sm:w-64">
+        <input 
+          type="text" 
+          id="layout-char-search" 
+          placeholder="Search character (e.g. ज्ञ, द्ध, त्र)..."
+          class="w-full px-3 py-1.5 pl-8 text-xs rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] placeholder-[var(--text-muted)]"
+        />
+        <Icon name="lucide:search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[var(--text-muted)] pointer-events-none" />
+      </div>
+    </div>
+
+    <!-- Active Hardware Matrix Visualizer -->
+    <div class="mb-8">
+      <KeyboardVisualizer />
+    </div>
+
+    <!-- Search Result Banner (Hidden by default) -->
+    <div id="search-result-box" class="hidden mb-6 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs">
+      <div class="flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400 mb-1">
+        <Icon name="lucide:info" class="w-4 h-4 shrink-0" />
+        <span id="search-result-title">Keystroke Match Found</span>
+      </div>
+      <p class="text-[var(--text-secondary)]" id="search-result-desc"></p>
+    </div>
+
+    <!-- Information Grid: Rules & Ligatures -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      
+      <!-- Ligatures & Halanta Rules -->
+      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+        <div class="flex items-center gap-2 mb-3">
+          <Icon name="lucide:sparkles" class="w-4 h-4 text-purple-500" />
+          <h2 class="text-sm font-bold font-display text-[var(--text-primary)]">
+            Ligatures & Conjunct Formulas (हलन्त र संयुक्त वर्ण)
+          </h2>
+        </div>
+        <p class="text-xs text-[var(--text-secondary)] mb-4">
+          Devanagari conjuncts are formed by typing a consonant followed by Halanta (्) and the next consonant:
+        </p>
+
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono">
+            <span>क् + ष = <b>क्ष</b> (Kshya)</span>
+            <span class="text-[var(--text-muted)]">Key: k + \ + c (Unicode)</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono">
+            <span>त् + र = <b>त्र</b> (Tra)</span>
+            <span class="text-[var(--text-muted)]">Key: q (Direct key)</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono">
+            <span>ज् + ञ = <b>ज्ञ</b> (Gya)</span>
+            <span class="text-[var(--text-muted)]">Key: Shift + 1</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono">
+            <span>श् + र = <b>श्र</b> (Shra)</span>
+            <span class="text-[var(--text-muted)]">Key: Shift + ; + \ + r</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-mono">
+            <span>द् + ध = <b>द्ध</b> (Ddha)</span>
+            <span class="text-[var(--text-muted)]">Key: Shift + 4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Reference & Shortcuts -->
+      <div class="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+        <div class="flex items-center gap-2 mb-3">
+          <Icon name="lucide:zap" class="w-4 h-4 text-amber-500" />
+          <h2 class="text-sm font-bold font-display text-[var(--text-primary)]">
+            Essential Tips & System Shortcuts
+          </h2>
+        </div>
+        <p class="text-xs text-[var(--text-secondary)] mb-4">
+          Master typing throughput across various official and government portals with these keyboard combinations:
+        </p>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-3 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <span class="font-bold text-[var(--text-primary)] block mb-1">Instant Layout Switching:</span>
+            <p class="text-[var(--text-secondary)]">
+              Press <kbd>Alt</kbd> + <kbd>Shift</kbd> (Windows style) anytime on the typing bench to immediately cycle between Unicode, Preeti, and English.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <span class="font-bold text-[var(--text-primary)] block mb-1">Purna Viram (॥ / ।):</span>
+            <p class="text-[var(--text-secondary)]">
+              In Nepali Unicode Traditional, single danda is mapped to <kbd>Shift + /</kbd> or <kbd>Shift + `</kbd>.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <span class="font-bold text-[var(--text-primary)] block mb-1">Ref (र्) at Start of Word:</span>
+            <p class="text-[var(--text-secondary)]">
+              Press <kbd>&lbrace;</kbd> or <kbd>[</kbd> before the base letter to form upper-stroke reph like कर्म, धर्म.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Practice Callout -->
+    <div class="text-center py-6 border-t border-[var(--border-subtle)]">
+      <h3 class="text-sm font-bold text-[var(--text-primary)] mb-1">
+        Ready to test your muscle memory?
+      </h3>
+      <p class="text-xs text-[var(--text-secondary)] mb-4">
+        Jump straight to the live typing workbench with your preferred layout loaded.
+      </p>
+      <a 
+        href="/" 
+        class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm"
+      >
+        <Icon name="lucide:keyboard" class="w-4 h-4" />
+        <span>Launch Typing Bench</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Client Script for Interactive Layout Switching & Search -->
+  <script is:inline type="module">
+    import { state } from '/js/core/state.js';
+    import { renderKeyboard } from '/js/ui/keyboard-view.js';
+    import { KEY_ROWS } from '/js/data/keyboards.js';
+
+    function initLayoutPage() {
+      // 1. Initial Render
+      renderKeyboard();
+
+      // 2. Tab switching
+      const tabBtns = document.querySelectorAll('.layout-tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => {
+            b.classList.remove('active', 'font-bold');
+            b.classList.add('font-semibold');
+          });
+          btn.classList.add('active', 'font-bold');
+          btn.classList.remove('font-semibold');
+
+          state.lang = btn.dataset.layout;
+          renderKeyboard();
+        });
+      });
+
+      // 3. Search Key Input
+      const searchInput = document.getElementById('layout-char-search');
+      const resultBox = document.getElementById('search-result-box');
+      const resultTitle = document.getElementById('search-result-title');
+      const resultDesc = document.getElementById('search-result-desc');
+
+      if (searchInput && resultBox) {
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value.trim();
+          if (!q) {
+            resultBox.classList.add('hidden');
+            document.querySelectorAll('.keycap.is-target').forEach(el => el.classList.remove('is-target'));
+            return;
+          }
+
+          // Search across active layout
+          let found = null;
+          for (const row of KEY_ROWS) {
+            for (const k of row) {
+              if (k.special || k.shell) continue;
+              const chNormal = state.lang === 'nepali_unicode' ? k.uni?.[0] :
+                               state.lang === 'nepali_romanized' ? k.rom?.[0] :
+                               state.lang === 'nepali_preeti' ? k.pre?.[2] : k.eng?.[0];
+              const chShift = state.lang === 'nepali_unicode' ? k.uni?.[1] :
+                              state.lang === 'nepali_romanized' ? k.rom?.[1] :
+                              state.lang === 'nepali_preeti' ? k.pre?.[3] : k.eng?.[1];
+
+              if (chNormal === q || (chNormal && chNormal.includes(q))) {
+                found = { key: k.key, code: k.code, char: chNormal, isShift: false };
+                break;
+              }
+              if (chShift === q || (chShift && chShift.includes(q))) {
+                found = { key: k.key, code: k.code, char: chShift, isShift: true };
+                break;
+              }
+            }
+            if (found) break;
+          }
+
+          document.querySelectorAll('.keycap.is-target').forEach(el => el.classList.remove('is-target'));
+
+          if (found) {
+            resultBox.classList.remove('hidden');
+            resultTitle.textContent = `Character Found: "${found.char}"`;
+            resultDesc.textContent = found.isShift 
+              ? `Press Shift + [${found.key.toUpperCase()}] key (Code: ${found.code})`
+              : `Press direct key [${found.key.toUpperCase()}] (Code: ${found.code})`;
+
+            const keyEl = document.querySelector(`.keycap[data-code="${found.code}"]`);
+            if (keyEl) keyEl.classList.add('is-target');
+          } else {
+            resultBox.classList.remove('hidden');
+            resultTitle.textContent = `Character Not Found Directly`;
+            resultDesc.textContent = `"${q}" may be a conjunct ligature formed using Halanta (्) between two consonants.`;
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLayoutPage);
+    } else {
+      initLayoutPage();
+    }
+  </script>
+</Layout>

@@ -130,6 +130,11 @@ export function bindInputEvents() {
       if (curWordEl) {
         curWordEl.classList.remove('is-active-word');
         curWordEl.classList.add(isCorrect ? 'is-word-correct' : 'is-word-error');
+        if (isCorrect) {
+          curWordEl.querySelectorAll('.char-node:not(.is-extra-error)').forEach(span => {
+            span.className = 'char-node is-correct';
+          });
+        }
       }
 
       state.wordIdx++;
@@ -467,6 +472,8 @@ export function bindInputEvents() {
 
   // Windows-style Left Alt + Left Shift layout switch capture listener
   window.addEventListener('keydown', (e) => {
+    if (document.querySelector('.modal-backdrop.is-open, #stats-modal.is-open')) return;
+
     const isAlt = (e.code === 'AltLeft' || e.key === 'Alt');
     const isShift = (e.code === 'ShiftLeft' || e.key === 'Shift');
     const isRightMod = (e.code === 'AltRight' || e.code === 'ShiftRight' || e.code === 'AltGraph');
@@ -491,6 +498,15 @@ export function bindInputEvents() {
   }, true);
 
   window.addEventListener('keydown', (e) => {
+    // Don't steal focus from modal inputs (e.g., certificate name)
+    const modalOpen = document.querySelector('.modal-backdrop.is-open, #stats-modal.is-open');
+    const activeEl = document.activeElement;
+    const isModalInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.closest('.modal-backdrop, #stats-modal');
+    
+    if (modalOpen || isModalInput) {
+      return; // Let the modal handle input natively
+    }
+
     if (state.mode === 'freestyle') {
       if (document.activeElement !== freestyleInput && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
         freestyleInput?.focus();

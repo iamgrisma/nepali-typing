@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
 ---
 
 <Layout 
@@ -9,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
   ogImage="https://img.topnepali.com/typing.tn/og/default-svg.webp"
   activeNav="analytics"
 >
-  <div class="container max-w-6xl py-6 px-4">
+  <div class="container py-6">
     
     <!-- Hero Header -->
     <div class="mb-8">
@@ -52,12 +53,12 @@ import Layout from '../layouts/Layout.astro';
     <div class="mb-8">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
-          <span>🏆</span>
+          <Icon name="lucide:trophy" class="w-4 h-4 text-amber-500" />
           <span>Lifetime Personal Bests</span>
         </h2>
         <a href="/" class="text-xs text-[var(--accent-primary)] hover:underline font-semibold flex items-center gap-1">
           <span>Take a test</span>
-          <span>→</span>
+          <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
         </a>
       </div>
 
@@ -120,6 +121,51 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
+    <!-- Layout & Language Filter Tabs -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+          <Icon name="lucide:sliders-horizontal" class="w-4 h-4 text-blue-500" />
+          <span>Filter Analytics by Keyboard Layout</span>
+        </h2>
+        <div id="analytics-filter-indicator" class="hidden text-xs text-blue-600 dark:text-blue-400 font-semibold items-center gap-1">
+          <span>Active:</span>
+          <span id="analytics-filter-label" class="underline">All</span>
+          <button type="button" id="analytics-filter-clear" class="ml-1 cursor-pointer font-bold hover:text-red-500" title="Reset filter">✕</button>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2" id="analytics-layout-filter-tabs">
+        <button type="button" class="analytics-layout-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer bg-[var(--accent-primary)] text-white border-[var(--accent-primary)] shadow-sm flex items-center gap-1.5" data-layout="all">
+          <span>All Layouts</span>
+        </button>
+        <button type="button" class="analytics-layout-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold border-2 transition-all cursor-pointer bg-[var(--bg-surface)] text-blue-600 dark:text-blue-400 border-blue-500/30 hover:border-blue-500 flex items-center gap-1.5" data-layout="english">
+          <Icon name="lucide:globe" class="w-3.5 h-3.5" />
+          <span>English QWERTY</span>
+        </button>
+        <button type="button" class="analytics-layout-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold border-2 transition-all cursor-pointer bg-[var(--bg-surface)] text-purple-600 dark:text-purple-400 border-purple-500/30 hover:border-purple-500 flex items-center gap-1.5" data-layout="nepali_unicode">
+          <Icon name="lucide:type" class="w-3.5 h-3.5" />
+          <span>Nepali Unicode</span>
+        </button>
+        <button type="button" class="analytics-layout-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold border-2 transition-all cursor-pointer bg-[var(--bg-surface)] text-cyan-600 dark:text-cyan-400 border-cyan-500/30 hover:border-cyan-500 flex items-center gap-1.5" data-layout="nepali_romanized">
+          <Icon name="lucide:languages" class="w-3.5 h-3.5" />
+          <span>Romanized</span>
+        </button>
+        <button type="button" class="analytics-layout-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold border-2 transition-all cursor-pointer bg-[var(--bg-surface)] text-orange-600 dark:text-orange-400 border-orange-500/30 hover:border-orange-500 flex items-center gap-1.5" data-layout="nepali_preeti">
+          <Icon name="lucide:file-text" class="w-3.5 h-3.5" />
+          <span>Preeti (ASCII)</span>
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-2" id="analytics-lang-filter-tabs">
+        <span class="text-[11px] text-[var(--text-muted)] self-center mr-1 font-semibold">Language View:</span>
+        <button type="button" class="analytics-lang-btn px-3 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] border-[var(--border-subtle)] hover:border-[var(--accent-primary)]" data-lang="nepali">
+          Nepali (All Layouts)
+        </button>
+        <button type="button" class="analytics-lang-btn px-3 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] border-[var(--border-subtle)] hover:border-[var(--accent-primary)]" data-lang="english">
+          English Only
+        </button>
+      </div>
+    </div>
+
     <!-- Biomechanical Diagnostics Strip (Hand Balance & Latency Profile) -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
       
@@ -127,7 +173,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="p-5 sm:p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
-            <span class="text-base">✋</span>
+            <Icon name="lucide:activity" class="w-4 h-4 text-blue-500" />
             <h3 class="text-sm font-bold font-display text-[var(--text-primary)]">
               Lateral Hand Ergonomics & Balance
             </h3>
@@ -169,7 +215,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="p-5 sm:p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
-            <span class="text-base">⏱️</span>
+            <Icon name="lucide:timer" class="w-4 h-4 text-amber-500" />
             <h3 class="text-sm font-bold font-display text-[var(--text-primary)]">
               Keystroke Interval & Motor Hesitations
             </h3>
@@ -215,7 +261,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[var(--border-subtle)]">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xl">📊</span>
+            <Icon name="lucide:bar-chart-3" class="w-5 h-5 text-blue-500" />
             <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)]">
               36-Point Biometric Typing Telemetry Suite
             </h2>
@@ -233,7 +279,7 @@ import Layout from '../layouts/Layout.astro';
             class="telemetry-view-btn active px-3 py-1.5 rounded-lg transition-all bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm flex items-center gap-1.5 cursor-pointer"
             data-view="ready"
           >
-            <span>✓ Calibrated Only</span>
+            <span>Calibrated Only</span>
             <span id="tab-ready-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">0</span>
           </button>
 
@@ -243,7 +289,7 @@ import Layout from '../layouts/Layout.astro';
             class="telemetry-view-btn px-3 py-1.5 rounded-lg transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1.5 cursor-pointer"
             data-view="calibrating"
           >
-            <span>⏳ Calibrating Data</span>
+            <span>Calibrating</span>
             <span id="tab-calibrating-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">36</span>
           </button>
 
@@ -268,10 +314,10 @@ import Layout from '../layouts/Layout.astro';
             All Categories
           </button>
           <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="speed">
-            Speed & Sprint
+            Speed &amp; Sprint
           </button>
           <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="accuracy">
-            Accuracy & Recovery
+            Accuracy &amp; Recovery
           </button>
           <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="rhythm">
             Temporal Rhythm
@@ -283,7 +329,7 @@ import Layout from '../layouts/Layout.astro';
             Nepali Ligatures
           </button>
           <button type="button" class="telemetry-cat-btn px-3 py-1 rounded-lg font-medium whitespace-nowrap bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer" data-cat="endurance">
-            Endurance & Flow
+            Endurance &amp; Flow
           </button>
         </div>
 
@@ -295,10 +341,7 @@ import Layout from '../layouts/Layout.astro';
             placeholder="Search metric name, #id, or term..."
             class="w-full px-3 py-1.5 pl-8 text-xs rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] placeholder-[var(--text-muted)]"
           />
-          <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[var(--text-muted)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+          <Icon name="lucide:search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[var(--text-muted)] pointer-events-none" />
         </div>
       </div>
 
@@ -309,8 +352,8 @@ import Layout from '../layouts/Layout.astro';
 
       <!-- Empty State Banner (Shown when 0 cards match the active filter) -->
       <div id="telemetry-empty-state" class="hidden text-center py-12 px-4">
-        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 text-xl">
-          📊
+        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
+          <Icon name="lucide:bar-chart-2" class="w-6 h-6" />
         </div>
         <h3 class="text-base font-bold font-display text-[var(--text-primary)]" id="telemetry-empty-title">
           No Calibrated Parameters Yet
@@ -323,7 +366,7 @@ import Layout from '../layouts/Layout.astro';
           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--accent-primary)] text-white font-bold text-xs shadow-sm hover:opacity-95 transition-opacity"
         >
           <span>Launch Typing Bench</span>
-          <span>→</span>
+          <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
         </a>
       </div>
 
@@ -334,7 +377,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[var(--border-subtle)]">
         <div>
           <h2 class="text-base font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
-            <span>📜</span>
+            <Icon name="lucide:history" class="w-4 h-4 text-[var(--accent-primary)]" />
             <span>Recorded Typing Sessions History</span>
           </h2>
           <p class="text-xs text-[var(--text-muted)] mt-0.5">
@@ -348,7 +391,7 @@ import Layout from '../layouts/Layout.astro';
             id="dash-export-btn" 
             class="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <Icon name="lucide:download" class="w-3.5 h-3.5" />
             <span>Export JSON</span>
           </button>
           <button 
@@ -356,7 +399,7 @@ import Layout from '../layouts/Layout.astro';
             id="dash-clear-btn" 
             class="px-3 py-1.5 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <Icon name="lucide:trash-2" class="w-3.5 h-3.5" />
             <span>Clear History</span>
           </button>
         </div>
@@ -398,7 +441,8 @@ import Layout from '../layouts/Layout.astro';
       viewMode: 'ready', // 'ready' | 'calibrating' | 'all'
       category: 'all',
       searchQuery: '',
-      evaluation: null
+      evaluation: null,
+      layoutFilter: null // { type: 'layout'|'lang', value: string } or null for all
     };
 
     const categoryThemeMap = {
@@ -435,8 +479,8 @@ import Layout from '../layouts/Layout.astro';
     };
 
     function initAnalyticsDashboard() {
-      // 1. Evaluate Parameters
-      dashboardState.evaluation = evaluateAllParameters();
+      // 1. Evaluate Parameters (with optional layout filter)
+      dashboardState.evaluation = evaluateAllParameters(dashboardState.layoutFilter);
       const evalData = dashboardState.evaluation;
 
       // 2. Update Header live badge
@@ -450,7 +494,7 @@ import Layout from '../layouts/Layout.astro';
       const tabReadyBadge = document.getElementById('tab-ready-badge');
       const tabCalibratingBadge = document.getElementById('tab-calibrating-badge');
 
-      const agg = aggregateTelemetryData();
+      const agg = aggregateTelemetryData(dashboardState.layoutFilter);
       const pct = Math.round((evalData.readyCount / evalData.totalParameters) * 100);
 
       if (calibratedRatioEl) calibratedRatioEl.textContent = `${evalData.readyCount} / ${evalData.totalParameters} Ready`;
@@ -617,93 +661,66 @@ import Layout from '../layouts/Layout.astro';
         const formattedId = p.id < 10 ? `#0${p.id}` : `#${p.id}`;
 
         if (p.isReady) {
-          // CALIBRATED PARAMETER CARD
+          // CALIBRATED PARAMETER CARD - Clean, lightweight DOM
           return `
-            <div class="p-5 rounded-2xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/40 transition-all shadow-sm flex flex-col justify-between group">
+            <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/50 transition-colors flex flex-col justify-between">
               <div>
-                <!-- Top metadata: ID, Category & Calibrated Pill -->
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono text-[10px] font-bold text-[var(--text-muted)]">${formattedId}</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.pill}">
-                      ${p.category}
-                    </span>
-                  </div>
-                  <span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                <div class="flex items-center justify-between text-[11px] mb-1.5">
+                  <span class="font-mono text-[var(--text-muted)]">${formattedId} • <span class="capitalize font-semibold text-[var(--text-secondary)]">${p.category}</span></span>
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400 text-[11px] flex items-center gap-1">
                     <span>✓</span>
                     <span>Calibrated</span>
                   </span>
                 </div>
 
-                <!-- Parameter Name -->
-                <h4 class="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
+                <h4 class="text-sm font-bold text-[var(--text-primary)]">
                   ${p.name}
                 </h4>
 
-                <!-- Big Value & Unit -->
-                <div class="my-3 flex items-baseline gap-2">
-                  <span class="text-2xl sm:text-3xl font-extrabold font-display ${theme.badge}">
-                    ${p.formattedValue}
-                  </span>
+                <div class="my-2 text-2xl sm:text-3xl font-extrabold font-display ${theme.badge}">
+                  ${p.formattedValue}
                 </div>
 
-                <!-- Practical Motor Insight -->
                 ${p.insightText ? `
-                  <div class="p-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] mb-3">
-                    <div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Motor Insight</div>
-                    <p class="text-xs text-[var(--text-secondary)] leading-snug font-medium">
-                      ${p.insightText}
-                    </p>
-                  </div>
+                  <p class="text-xs text-[var(--text-secondary)] leading-relaxed my-2">
+                    ${p.insightText}
+                  </p>
                 ` : ''}
               </div>
 
-              <!-- Parameter Physical Description -->
               <p class="text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)] leading-relaxed">
                 ${p.description}
               </p>
             </div>
           `;
         } else {
-          // CALIBRATING (GATHERING SAMPLE DATA) CARD
+          // CALIBRATING CARD - Clean, lightweight DOM
           return `
-            <div class="p-5 rounded-2xl bg-[var(--bg-surface-subtle)]/60 border border-[var(--border-subtle)]/70 hover:border-amber-500/40 transition-all shadow-sm flex flex-col justify-between opacity-90 group">
+            <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)]/70 border border-[var(--border-subtle)] flex flex-col justify-between opacity-85">
               <div>
-                <!-- Top metadata: ID, Category & Calibrating Pill -->
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono text-[10px] font-bold text-[var(--text-muted)]">${formattedId}</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.pill} opacity-75">
-                      ${p.category}
-                    </span>
-                  </div>
-                  <span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
-                    <span>⏳</span>
-                    <span>Gathering Data</span>
-                  </span>
+                <div class="flex items-center justify-between text-[11px] mb-1.5">
+                  <span class="font-mono text-[var(--text-muted)]">${formattedId} • <span class="capitalize font-semibold text-[var(--text-secondary)]">${p.category}</span></span>
+                  <span class="font-semibold text-amber-500 text-[11px]">Calibrating</span>
                 </div>
 
-                <!-- Parameter Name -->
                 <h4 class="text-sm font-bold text-[var(--text-secondary)]">
                   ${p.name}
                 </h4>
 
-                <!-- Progress Bar & Requirement -->
-                <div class="my-3 space-y-1.5">
+                <div class="my-2 space-y-1.5">
                   <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)]">
-                    <span>Sample Calibration</span>
+                    <span>Progress</span>
                     <span class="font-bold text-amber-500">${p.progressPercent}%</span>
                   </div>
-                  <div class="w-full bg-[var(--bg-surface)] h-2 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                  <div class="w-full bg-[var(--bg-surface)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
                     <div class="bg-amber-500 h-full rounded-full transition-all duration-300" style="width: ${p.progressPercent}%;"></div>
                   </div>
-                  <div class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                  <p class="text-[11px] text-amber-600 dark:text-amber-400">
                     ${p.missingReason || 'Requires additional keystrokes'}
-                  </div>
+                  </p>
                 </div>
               </div>
 
-              <!-- Parameter Physical Description -->
               <p class="text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)] leading-relaxed">
                 ${p.description}
               </p>
@@ -753,7 +770,11 @@ import Layout from '../layouts/Layout.astro';
       }).join('');
     }
 
+    let eventsBound = false;
     function bindDashboardEvents() {
+      if (eventsBound) return;
+      eventsBound = true;
+
       // 1. View Mode Buttons (Ready / Calibrating / All)
       const viewButtons = document.querySelectorAll('.telemetry-view-btn');
       viewButtons.forEach(btn => {
@@ -822,8 +843,90 @@ import Layout from '../layouts/Layout.astro';
           if (confirm('Clear all historical typing sessions and stroke biometric profiles? This action cannot be undone.')) {
             localStorage.removeItem('nepali_typing_history');
             localStorage.removeItem('topnepali_stroke_profile');
+            dashboardState.layoutFilter = null;
             initAnalyticsDashboard();
           }
+        });
+      }
+
+      // 6. Layout Filter Tabs
+      const layoutNames = { all: 'All Layouts', english: 'English QWERTY', nepali_unicode: 'Nepali Unicode', nepali_romanized: 'Romanized', nepali_preeti: 'Preeti' };
+      const filterIndicator = document.getElementById('analytics-filter-indicator');
+      const filterLabel = document.getElementById('analytics-filter-label');
+      const filterClear = document.getElementById('analytics-filter-clear');
+
+      document.querySelectorAll('.analytics-layout-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update button active state
+          document.querySelectorAll('.analytics-layout-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white', 'border-[var(--accent-primary)]', 'shadow-sm');
+            b.classList.add('bg-[var(--bg-surface)]');
+          });
+          btn.classList.add('active', 'bg-[var(--accent-primary)]', 'text-white', 'border-[var(--accent-primary)]', 'shadow-sm');
+          btn.classList.remove('bg-[var(--bg-surface)]');
+
+          // Clear lang filter active state
+          document.querySelectorAll('.analytics-lang-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white');
+            b.classList.add('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+          });
+
+          const layout = btn.dataset.layout;
+          if (layout === 'all') {
+            dashboardState.layoutFilter = null;
+            if (filterIndicator) filterIndicator.classList.add('hidden');
+          } else {
+            dashboardState.layoutFilter = { type: 'layout', value: layout };
+            if (filterIndicator) filterIndicator.classList.remove('hidden');
+            if (filterLabel) filterLabel.textContent = layoutNames[layout] || layout;
+          }
+          initAnalyticsDashboard();
+        });
+      });
+
+      // 7. Language Filter Tabs
+      document.querySelectorAll('.analytics-lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Clear layout active state
+          document.querySelectorAll('.analytics-layout-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white', 'border-[var(--accent-primary)]', 'shadow-sm');
+            b.classList.add('bg-[var(--bg-surface)]');
+          });
+          // Set lang active
+          document.querySelectorAll('.analytics-lang-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white');
+            b.classList.add('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+          });
+          btn.classList.add('active', 'bg-[var(--accent-primary)]', 'text-white');
+          btn.classList.remove('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+
+          dashboardState.layoutFilter = { type: 'lang', value: btn.dataset.lang };
+          if (filterIndicator) filterIndicator.classList.remove('hidden');
+          if (filterLabel) filterLabel.textContent = btn.dataset.lang === 'nepali' ? 'Nepali (All Layouts)' : 'English Only';
+          initAnalyticsDashboard();
+        });
+      });
+
+      // Clear filter button
+      if (filterClear) {
+        filterClear.addEventListener('click', () => {
+          dashboardState.layoutFilter = null;
+          if (filterIndicator) filterIndicator.classList.add('hidden');
+          // Reset layout tabs
+          document.querySelectorAll('.analytics-layout-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white', 'border-[var(--accent-primary)]', 'shadow-sm');
+            b.classList.add('bg-[var(--bg-surface)]');
+          });
+          const allBtn = document.querySelector('.analytics-layout-btn[data-layout="all"]');
+          if (allBtn) {
+            allBtn.classList.add('active', 'bg-[var(--accent-primary)]', 'text-white', 'border-[var(--accent-primary)]', 'shadow-sm');
+            allBtn.classList.remove('bg-[var(--bg-surface)]');
+          }
+          document.querySelectorAll('.analytics-lang-btn').forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white');
+            b.classList.add('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]');
+          });
+          initAnalyticsDashboard();
         });
       }
     }

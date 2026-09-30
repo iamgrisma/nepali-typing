@@ -21,17 +21,17 @@
         <button 
           type="button" 
           id="kb-shift-toggle" 
-          class="px-2 py-0.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono flex items-center gap-1 text-[11px]"
+          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-bold transition-all shadow-xs cursor-pointer"
           title="Toggle Shift Layer (Shift Key)"
         >
           <span>Shift</span>
-          <span id="kb-shift-indicator" class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+          <span id="kb-shift-indicator" class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
         </button>
       </div>
     </div>
 
-    <!-- 5 Rows Keyboard Matrix Container -->
-    <div id="keyboard-matrix" class="w-full flex flex-col gap-1 select-none overflow-x-auto">
+    <!-- 5 Rows Keyboard Matrix Container with tactile keyboard deck -->
+    <div id="keyboard-matrix" class="w-full flex flex-col gap-1.5 select-none overflow-x-auto p-2 sm:p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
       <div class="kb-row flex gap-1 w-full" data-row="1"></div>
       <div class="kb-row flex gap-1 w-full" data-row="2"></div>
       <div class="kb-row flex gap-1 w-full" data-row="3"></div>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Keystroke Detail Helper Bar -->
-    <div class="mt-1.5 pt-1.5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[11px] text-[var(--text-muted)]">
+    <div class="mt-2 pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
       <div class="flex items-center gap-4">
         <div>Next: <span id="kb-target-char" class="font-bold text-[var(--accent-primary)] font-mono text-xs ml-0.5">-</span></div>
         <div>Active: <span id="kb-active-char" class="font-bold text-[var(--text-primary)] font-mono ml-0.5">-</span></div>

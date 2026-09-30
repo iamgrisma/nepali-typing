@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
 ---
 
 <Layout 
@@ -13,7 +14,7 @@ import Layout from '../layouts/Layout.astro';
     
     <div class="text-center mb-8">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <Icon name="lucide:shield-check" class="w-3.5 h-3.5" />
         <span>PUBLIC VERIFICATION REGISTRY</span>
       </div>
       <h1 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">
@@ -38,7 +39,7 @@ import Layout from '../layouts/Layout.astro';
           type="submit" 
           class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
         >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <Icon name="lucide:search" class="w-4 h-4" />
           <span>Verify Record</span>
         </button>
       </form>
@@ -49,8 +50,8 @@ import Layout from '../layouts/Layout.astro';
       <!-- Success Card -->
       <div id="verify-success-card" class="hidden bg-[var(--bg-surface)] border-2 border-emerald-500/40 rounded-2xl p-6 sm:p-8 shadow-md">
         <div class="flex items-center gap-3 pb-4 border-b border-[var(--border-subtle)] mb-5">
-          <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">
-            ✓
+          <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <Icon name="lucide:check-circle-2" class="w-6 h-6" />
           </div>
           <div>
             <h2 class="text-base sm:text-lg font-bold font-display text-[var(--text-primary)]">
@@ -102,15 +103,15 @@ import Layout from '../layouts/Layout.astro';
             class="btn btn-primary text-xs flex items-center gap-1.5"
           >
             <span>View Full Official Certificate</span>
-            <span>→</span>
+            <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
           </a>
         </div>
       </div>
 
       <!-- Not Found Card -->
       <div id="verify-error-card" class="hidden bg-[var(--bg-surface)] border border-red-500/30 rounded-2xl p-6 text-center">
-        <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center text-xl font-bold mx-auto mb-3">
-          ✕
+        <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-3">
+          <Icon name="lucide:alert-circle" class="w-6 h-6" />
         </div>
         <h3 class="font-bold text-sm text-[var(--text-primary)] mb-1">
           No Certificate Record Found
