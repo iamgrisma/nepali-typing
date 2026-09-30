@@ -6,8 +6,18 @@ export default defineConfig({
   output: 'static',
   adapter: cloudflare(),
   site: 'https://typing.topnepali.com',
+  compressHTML: true,
+  build: {
+    inlineStylesheets: 'auto',
+  },
   server: {
     host: '0.0.0.0',
     port: 3000,
+  },
+  vite: {
+    build: {
+      cssMinify: true,
+      minify: 'esbuild',
+    },
   },
 });
