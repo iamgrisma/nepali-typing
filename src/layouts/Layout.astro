@@ -3,19 +3,62 @@ interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
+  keywords?: string;
+  ogImage?: string;
+  ogType?: string;
   activeNav?: string;
+  schema?: Record<string, any> | Array<Record<string, any>>;
 }
 
 const {
   title = 'TopNepali Typing — Professional Nepali & English Typing Certification',
   description = 'Enterprise-grade typing test platform for English QWERTY, Nepali Unicode Traditional, Romanized, and Preeti ASCII. Earn verifiable certificates, train with adaptive AI drills, and track stroke biomechanics.',
   canonicalUrl = 'https://typing.topnepali.com',
-  activeNav = 'test'
+  keywords = 'Nepali typing test, Preeti typing test, Nepali Unicode traditional, Romanized typing test, Devanagari typing speed, WPM typing test Nepal, typing certificate Nepal, Loksewa typing test, Balen speech typing test',
+  ogImage = 'https://img.topnepali.com/typing.tn/og/default-svg.webp',
+  ogType = 'website',
+  activeNav = 'test',
+  schema
 } = Astro.props;
 
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const defaultWebApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TopNepali Typing Platform",
+  "url": canonicalUrl,
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": description,
+  "screenshot": ogImage
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://typing.topnepali.com"
+    },
+    ...(canonicalUrl !== 'https://typing.topnepali.com' ? [{
+      "@type": "ListItem",
+      "position": 2,
+      "name": title.split('—')[0].trim(),
+      "item": canonicalUrl
+    }] : [])
+  ]
+};
 ---
 
 <!doctype html>
@@ -25,22 +68,31 @@ import Footer from '../components/Footer.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="Nepali typing test, Preeti typing test, Nepali Unicode traditional, Romanized typing test, Devanagari typing speed, WPM typing test Nepal, typing certificate Nepal, Balen speech typing test" />
+    <meta name="keywords" content={keywords} />
     <meta name="author" content="TopNepali / Grisma" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TopNepali Typing Platform" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="TopNepali Typing Platform" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
     <!-- Preload Fonts -->
     <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
@@ -49,21 +101,50 @@ import Footer from '../components/Footer.astro';
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Structured Data: WebApplication -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "TopNepali Typing Platform",
-      "applicationCategory": "EducationalApplication",
-      "operatingSystem": "All",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": description,
-      "url": canonicalUrl
-    })} />
+    <!-- Verification & Monetization Meta -->
+    <meta name="google-adsense-platform-account" content="ca-host-pub-2644536267352236" />
+    <meta name="google-adsense-platform-domain" content="sitekit.withgoogle.com" />
+
+    <!-- Preconnect & DNS-Prefetch -->
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
+    <link rel="preconnect" href="https://www.clarity.ms" crossorigin />
+
+    <!-- Google AdSense -->
+    <script
+      is:inline
+      defer
+      crossorigin="anonymous"
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5410507143596599"
+    ></script>
+
+    <!-- Google Analytics 4 (Unified Network Property) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-K2R0GSQE0M"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-K2R0GSQE0M');
+    </script>
+
+    <!-- Microsoft Clarity -->
+    <script is:inline type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "7n9ehw4x5h");
+    </script>
+
+    <!-- Structured Data: WebApplication & Breadcrumbs -->
+    <script type="application/ld+json" set:html={JSON.stringify(defaultWebApplicationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
 
     <!-- Theme State Initialization (Prevent FOUC) -->
     <script is:inline>
