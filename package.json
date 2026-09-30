@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "astro dev --host 0.0.0.0 --port 3000",
     "start": "astro preview --host 0.0.0.0 --port 3000",
+    "generate-og": "node scripts/generate-og-svgs.js",
+    "prebuild": "node scripts/generate-og-svgs.js",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "astro build && wrangler pages deploy dist --project-name=nepali-typing"

@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = true;
+
 export const GET: APIRoute = async () => {
   const currentDate = new Date().toISOString().split('T')[0];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -11,16 +13,52 @@ export const GET: APIRoute = async () => {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://typing.topnepali.com/nepali-traditional-typing-test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/romanized-nepali-typing-test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/preeti-typing-test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/english-typing-test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/loksewa-typing-test</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/keyboard-layout</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
     <loc>https://typing.topnepali.com/test</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://typing.topnepali.com/verify</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://typing.topnepali.com/drills</loc>
@@ -32,7 +70,7 @@ export const GET: APIRoute = async () => {
     <loc>https://typing.topnepali.com/analytics</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.80</priority>
   </url>
 </urlset>`;
 

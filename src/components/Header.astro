@@ -64,6 +64,14 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
       </a>
 
       <a 
+        href="/keyboard-layout" 
+        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-sky-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+        <span>Keyboard Layouts</span>
+      </a>
+
+      <a 
         href="/analytics" 
         class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
@@ -211,10 +219,21 @@ const { siteTitle = 'TopNepali Typing', activeNav = 'test' } = Astro.props;
         class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
         <div class="flex items-center gap-3">
-          <span class="text-base">⌨️</span>
+          <svg class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
           <span>Typing Bench</span>
         </div>
         <span class="text-[11px] text-[var(--text-muted)] font-normal">Practice & Tests</span>
+      </a>
+
+      <a 
+        href="/keyboard-layout" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-sky-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+          <span>Keyboard Layouts</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">Traditional & Preeti</span>
       </a>
 
       <a 

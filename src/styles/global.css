@@ -482,7 +482,7 @@ input, textarea {
 .pointer-events-none { pointer-events: none; }
 .cursor-pointer { cursor: pointer; }
 .cursor-text { cursor: text; }
-.whitespace-nowrap { whitespace: nowrap; }
+.whitespace-nowrap { white-space: nowrap; }
 
 /* SVG icons */
 .w-3 { width: 0.75rem; height: 0.75rem; }

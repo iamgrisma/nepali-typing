@@ -361,12 +361,14 @@ export function bindToolbarEvents() {
     }
   });
 
-  // URL Query Parameters Initializer (e.g. ?mode=exam&exam=5m&lang=english)
+  // URL Query Parameters & Workbench Dataset Initializer
   try {
     const params = new URLSearchParams(window.location.search);
-    const qLang = params.get('lang');
-    const qMode = params.get('mode');
+    const wb = document.getElementById('typing-workbench');
+    const qLang = params.get('lang') || wb?.dataset.defaultLang;
+    const qMode = params.get('mode') || wb?.dataset.defaultMode;
     const qExam = params.get('exam');
+    const qDuration = params.get('duration') || wb?.dataset.defaultDuration;
 
     if (qLang && ['nepali_unicode', 'nepali_romanized', 'nepali_preeti', 'english'].includes(qLang)) {
       state.lang = qLang;
@@ -375,7 +377,25 @@ export function bindToolbarEvents() {
         b.classList.toggle('active', isTarget);
         b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
         b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+        b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
       });
+    }
+
+    if (qDuration) {
+      const durVal = parseInt(qDuration, 10);
+      if (!isNaN(durVal) && durVal > 0) {
+        state.duration = durVal;
+        state.secsLeft = durVal;
+        document.querySelectorAll('.time-btn').forEach(b => {
+          const isTarget = b.dataset.seconds === String(durVal);
+          b.classList.toggle('active', isTarget);
+          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
+          b.classList.toggle('text-[var(--accent-primary)]', isTarget);
+          b.classList.toggle('font-bold', isTarget);
+        });
+        const timerDisplay = document.getElementById('live-timer-display');
+        if (timerDisplay) timerDisplay.textContent = `${durVal}s`;
+      }
     }
 
     if (qMode && ['time', 'words', 'sentences', 'quotes', 'exam', 'adaptive', 'freestyle'].includes(qMode)) {

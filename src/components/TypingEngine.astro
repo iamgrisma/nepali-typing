@@ -1,6 +1,22 @@
 ---
 // TypingEngine Component — Refined Minimalist Workbench with Free Style Support
-const initialWords = [
+interface Props {
+  defaultLang?: string;
+  defaultMode?: string;
+  defaultDuration?: number;
+}
+
+const {
+  defaultLang = 'nepali_unicode',
+  defaultMode = 'time',
+  defaultDuration = 60
+} = Astro.props;
+
+const initialWords = defaultLang === 'english' ? [
+  'the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog', 'and', 'runs',
+  'through', 'the', 'green', 'forest', 'with', 'great', 'speed', 'and', 'grace',
+  'learning', 'to', 'type', 'accurately', 'is', 'a', 'valuable', 'digital', 'skill'
+] : [
   'नेपाल', 'प्रकृतिको', 'अनुपम', 'वरदान', 'पाएको', 'एउटा', 'सुन्दर', 'र', 'शान्त', 'देश', 'हो',
   'बिहानको', 'एक', 'कप', 'तातो', 'चियाले', 'मन', 'नै', 'प्रफुल्ल', 'बनाउँछ',
   'साथीभाइसँग', 'बसेर', 'गफगाफ', 'गर्नुको', 'मज्जा', 'नै', 'बेग्लै', 'हुन्छ'
@@ -16,7 +32,7 @@ const initialWords = [
     <div class="flex items-center gap-3">
       <div class="flex items-center gap-1.5 text-[var(--accent-primary)] font-bold text-sm sm:text-base">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span id="live-timer-display">60s</span>
+        <span id="live-timer-display">{defaultDuration}s</span>
       </div>
       <div class="text-[11px] text-[var(--text-muted)]" id="live-progress-display">0 / 25 words</div>
     </div>
@@ -57,7 +73,14 @@ const initialWords = [
   </div>
 
   <!-- Standard Typing Workbench: Exactly 2-Line Focus & Preview Window -->
-  <div id="typing-workbench" class="typing-box h-[92px] min-h-[92px] max-h-[92px] p-2 flex flex-col justify-start relative cursor-text overflow-hidden" tabindex="0">
+  <div 
+    id="typing-workbench" 
+    class="typing-box h-[92px] min-h-[92px] max-h-[92px] p-2 flex flex-col justify-start relative cursor-text overflow-hidden" 
+    tabindex="0"
+    data-default-lang={defaultLang}
+    data-default-mode={defaultMode}
+    data-default-duration={defaultDuration}
+  >
     <div id="words-container" class="words-stream h-[76px] min-h-[76px] max-h-[76px] text-xl sm:text-2xl leading-[38px] select-none font-medium overflow-hidden">
       <!-- Blinking / Sliding Caret -->
       <div id="typing-caret" class="typing-caret hidden"></div>
