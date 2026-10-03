@@ -32,7 +32,15 @@ const faqSchema = {
       "name": "How can I type Nepali if I don't have a Nepali keyboard installed?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Our in-browser typing engine intercepts physical keystrokes on any standard English QWERTY keyboard. You can select Nepali Unicode Traditional or Romanized in the Typing Layout dropdown to type directly in Devanagari without downloading any software."
+        "text": "Our in-browser typing engine intercepts physical keystrokes on any standard English QWERTY keyboard. You can select Nepali Traditional or Romanized in the Typing Layout dropdown to type directly in Devanagari without downloading any software."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I type mixed English words while writing Nepali?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Press Left Alt + Left Shift anytime or select English QWERTY in the typing layout to type English words or brackets like (corn) seamlessly without interrupting your workflow."
       }
     }
   ]
@@ -87,66 +95,29 @@ const appSchema = {
 
     <!-- Master Converter Toolbar -->
     <div class="converter-toolbar">
-      <!-- Mode Switcher & Swap Chords -->
-      <div class="flex items-center gap-1.5 flex-wrap">
-        <div class="inline-flex p-1 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <button
-            type="button"
-            id="mode-uni-to-preeti"
-            class="converter-btn converter-btn-primary"
-            data-mode="toPreeti"
-          >
-            Unicode &rarr; Preeti
-          </button>
-          <button
-            type="button"
-            id="mode-preeti-to-uni"
-            class="converter-btn"
-            data-mode="toUnicode"
-          >
-            Preeti &rarr; Unicode
-          </button>
-        </div>
-
-        <button
-          type="button"
-          id="swap-mode-btn"
-          class="converter-btn p-2"
-          title="Swap Input and Output Text"
-          aria-label="Swap Input and Output"
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Switch Converter Destination -->
+        <a
+          href="/preeti-to-unicode/"
+          class="converter-btn flex items-center gap-1.5 font-semibold text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          title="Switch to Preeti to Unicode Converter"
         >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
           </svg>
-        </button>
+          <span>Preeti &rarr; Unicode</span>
+        </a>
 
         <!-- Manual Convert Action Button -->
         <button
           type="button"
           id="btn-convert-now"
-          class="converter-btn converter-btn-primary font-bold px-3 py-1.5 flex items-center gap-1"
+          class="converter-btn converter-btn-primary font-bold px-3 py-1.5 flex items-center gap-1 cursor-pointer"
           title="Convert text immediately"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
           <span>Convert Now</span>
         </button>
-      </div>
-
-      <!-- In-Browser Typing Engine Layout Selector (With Alt+Shift chord) -->
-      <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Typing Layout:</span>
-        <select
-          id="select-typing-layout"
-          class="converter-btn text-xs font-medium cursor-pointer bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-lg py-1 px-2 outline-none"
-        >
-          <option value="traditional" selected>Nepali Unicode (Traditional)</option>
-          <option value="romanized">Nepali Unicode (Romanized)</option>
-          <option value="english">English QWERTY</option>
-          <option value="preeti">Preeti Typewriter (ASCII)</option>
-        </select>
-        <span class="text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border-subtle)] px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] hidden sm:inline-block" title="Press Left Alt + Left Shift to toggle keyboard layout anytime">
-          Left Alt+Shift
-        </span>
       </div>
 
       <!-- Rich Text Formatting Actions -->
@@ -194,18 +165,27 @@ const appSchema = {
       <!-- Input Pane (Nepali Unicode) -->
       <div class="converter-pane">
         <div class="converter-pane-header">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span id="input-label" class="font-bold uppercase tracking-wider text-xs text-[var(--text-primary)]">
               Nepali Unicode Input
             </span>
-            <button
-              type="button"
-              id="btn-toggle-input-font"
-              class="converter-pill border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 cursor-pointer"
-              title="Input encoding"
-            >
-              <span id="input-font-tag">UTF-8 UNICODE</span>
-            </button>
+
+            <!-- Dedicated Typing Layout Selector on Input Box -->
+            <div class="inline-flex items-center gap-1 pl-1">
+              <span class="text-xs font-semibold text-[var(--text-muted)] hidden sm:inline">Layout:</span>
+              <select
+                id="select-typing-layout"
+                class="converter-btn text-xs font-semibold cursor-pointer bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-lg py-0.5 px-2 outline-none"
+                title="Select typing layout or press Left Alt + Left Shift to toggle"
+              >
+                <option value="traditional" selected>Nepali Traditional</option>
+                <option value="romanized">Nepali Romanized</option>
+                <option value="english">English QWERTY</option>
+              </select>
+              <span class="text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border-subtle)] px-1.5 py-0.5 rounded bg-[var(--bg-surface-subtle)] hidden sm:inline-block" title="Press Left Alt + Left Shift to cycle layout">
+                Alt+Shift
+              </span>
+            </div>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -215,13 +195,14 @@ const appSchema = {
           </div>
         </div>
 
-        <!-- Editable Input Content Area -->
+        <!-- Editable Input Content Area (Unicode) -->
         <div
           id="editor-input"
           contenteditable="true"
           spellcheck="false"
           class="converter-editor font-nepali select-text"
-          data-placeholder="Type in Nepali Unicode or paste text here..."
+          data-font-nepali="true"
+          data-placeholder="Type in Nepali Unicode (Traditional/Romanized/English) or paste text here..."
         ></div>
 
         <div class="converter-pane-footer">
@@ -247,7 +228,7 @@ const appSchema = {
               type="button"
               id="btn-toggle-output-font"
               class="converter-pill border border-rose-500/30 text-rose-600 dark:text-rose-400 bg-rose-500/10 cursor-pointer"
-              title="Toggle between authentic Nepali Visual rendering and Raw ASCII characters"
+              title="Toggle between authentic Nepali Devanagari visual preview and Raw ASCII keys"
             >
               <svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               <span id="output-font-tag">Nepali Visual</span>
@@ -264,18 +245,32 @@ const appSchema = {
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               <span>Copy Formatted</span>
             </button>
-            <button type="button" id="btn-copy-plain" class="converter-btn text-xs">Copy Plain ASCII</button>
-            <button type="button" id="btn-download-txt" class="converter-btn text-xs">Download</button>
+            <button type="button" id="btn-copy-plain" class="converter-btn text-xs" title="Copy plain ASCII characters for Adobe InDesign/PageMaker">Copy ASCII</button>
+            
+            <!-- Formatted Word Document Download -->
+            <button
+              type="button"
+              id="btn-download-doc"
+              class="converter-btn text-xs font-bold border-blue-500/40 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+              title="Download formatted Microsoft Word document (.doc) with headings, bold, and styles preserved"
+            >
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Word (.doc)</span>
+            </button>
+
+            <!-- Plain Text File Download -->
+            <button type="button" id="btn-download-txt" class="converter-btn text-xs" title="Download plain text file">.txt</button>
             <button type="button" id="btn-print-doc" class="converter-btn text-xs">Print</button>
           </div>
         </div>
 
-        <!-- Converted Output Area -->
+        <!-- Converted Output Area (Preeti Visual by Default) -->
         <div
           id="editor-output"
           contenteditable="true"
           spellcheck="false"
           class="converter-editor font-preeti select-text"
+          data-preeti-visual="true"
           data-placeholder="Converted Preeti text appears here instantly..."
         ></div>
 
@@ -292,23 +287,22 @@ const appSchema = {
     </div>
 
     <!-- Frequently Asked Questions -->
-    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
+    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm mb-8 mt-8">
       <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
         Frequently Asked Questions
       </h2>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
         <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
           <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How do I paste Preeti text into InDesign or PageMaker?</h3>
           <p class="text-[var(--text-secondary)] leading-relaxed">
-            Click 'Copy Plain ASCII', then paste directly into Adobe InDesign or PageMaker text frames with the font family set to Preeti or Kantipur. All ligatures and raswa ikaar markers align naturally.
+            Click 'Copy ASCII', then paste directly into Adobe InDesign or PageMaker text frames with the font family set to Preeti or Kantipur. All ligatures and raswa ikaar markers align naturally.
           </p>
         </div>
 
         <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
           <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I type Nepali without installing any keyboard?</h3>
           <p class="text-[var(--text-secondary)] leading-relaxed">
-            Yes. The built-in typing layout engine intercepts keystrokes on standard English keyboards. Select 'Nepali Unicode (Traditional)' or 'Romanized' in the Typing Layout dropdown to type directly.
+            Yes. The built-in typing layout engine intercepts keystrokes on standard English keyboards. Select 'Nepali Traditional' or 'Romanized' in the Typing Layout dropdown to type directly.
           </p>
         </div>
 
@@ -320,9 +314,9 @@ const appSchema = {
         </div>
 
         <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Are formatting tags preserved?</h3>
+          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Are formatting tags preserved in Word documents?</h3>
           <p class="text-[var(--text-secondary)] leading-relaxed">
-            Yes. Bold, italic, headings (H2/H3), and list elements are preserved during conversion so you can copy formatted rich text directly into Microsoft Word or Google Docs.
+            Yes. Bold, italic, headings (H2/H3), and list elements are preserved during conversion so you can click 'Word (.doc)' to open with full formatting in Microsoft Word or Google Docs.
           </p>
         </div>
       </div>
@@ -332,59 +326,59 @@ const appSchema = {
 
   <div id="converter-toast" class="converter-toast"></div>
 
-  <!-- Self-Contained In-Browser Converter & Typing Engine Script (Zero external module dependencies) -->
+  <!-- Self-Contained In-Browser Converter & Typing Engine Script -->
   <script is:inline>
     (function initConverter() {
-      // 1. Hardware Matrix for Traditional, Romanized & Preeti Keyboards
+      // 1. Hardware Matrix for Traditional, Romanized & English Typing
       const KEY_CODE_MAP = {
-        "Backquote":{"uni":["ञ","॥"],"rom":["़","ऽ"],"pre":["`","~","ञ","ञ्"]},
-        "Digit1":{"uni":["१","ज्ञ"],"rom":["१","!"],"pre":["1","!","ज्ञ","१"]},
-        "Digit2":{"uni":["२","ई"],"rom":["२","@"],"pre":["2","@","द्द","२"]},
-        "Digit3":{"uni":["३","घ"],"rom":["३","#"],"pre":["3","#","घ","३"]},
-        "Digit4":{"uni":["४","द्ध"],"rom":["४","$"],"pre":["4","$","द्ध","४"]},
-        "Digit5":{"uni":["५","छ"],"rom":["५","%"],"pre":["5","%","छ","५"]},
-        "Digit6":{"uni":["६","ट"],"rom":["६","^"],"pre":["6","^","ट","६"]},
-        "Digit7":{"uni":["७","ठ"],"rom":["७","&"],"pre":["7","&","ठ","७"]},
-        "Digit8":{"uni":["८","ड"],"rom":["८","*"],"pre":["8","*","ड","८"]},
-        "Digit9":{"uni":["९","ढ"],"rom":["९","("],"pre":["9","(","ढ","९"]},
-        "Digit0":{"uni":["०","ण"],"rom":["०",")"],"pre":["0",")","ण","०"]},
-        "Minus":{"uni":["औ","ओ"],"rom":["-","_"],"pre":["-","_","❨","❩"]},
-        "Equal":{"uni":["‍","‌"],"rom":["‍","‌"],"pre":[".","+",".","ं"]},
-        "KeyQ":{"uni":["त्र","त्त"],"rom":["ट","ठ"],"pre":["q","Q","त्र","त्त"]},
-        "KeyW":{"uni":["ध","ड्ढ"],"rom":["ौ","औ"],"pre":["w","W","ध","ध्"]},
-        "KeyE":{"uni":["भ","ऐ"],"rom":["े","ै"],"pre":["e","E","भ","भ्"]},
-        "KeyR":{"uni":["च","द्ब"],"rom":["र","ृ"],"pre":["r","R","च","च्"]},
-        "KeyT":{"uni":["त","ट्ट"],"rom":["त","थ"],"pre":["t","T","त","त्"]},
-        "KeyY":{"uni":["थ","ठ्ठ"],"rom":["य","ञ"],"pre":["y","Y","थ","थ्"]},
-        "KeyU":{"uni":["ग","ऊ"],"rom":["ु","ू"],"pre":["u","U","ग","ग्"]},
-        "KeyI":{"uni":["ष","क्ष"],"rom":["ि","ी"],"pre":["i","I","ष","क्ष्"]},
-        "KeyO":{"uni":["य","इ"],"rom":["ो","ओ"],"pre":["o","O","य","इ"]},
-        "KeyP":{"uni":["उ","ए"],"rom":["प","फ"],"pre":["p","P","उ","ए"]},
-        "BracketLeft":{"uni":["र्","ृ"],"rom":["इ","ई"],"pre":["[","{","ृ","र्"]},
-        "BracketRight":{"uni":["े","ै"],"rom":["ए","ऐ"],"pre":["]","}","े","ै"]},
-        "Backslash":{"uni":["्","ं"],"rom":["ॐ","ः"],"pre":["\\","|","्","्र"]},
-        "KeyA":{"uni":["ब","आ"],"rom":["ा","आ"],"pre":["a","A","ब","ब्"]},
-        "KeyS":{"uni":["क","ङ्क"],"rom":["स","श"],"pre":["s","S","क","क्"]},
-        "KeyD":{"uni":["म","ङ्ग"],"rom":["द","ध"],"pre":["d","D","म","म्"]},
-        "KeyF":{"uni":["ा","ँ"],"rom":["उ","ऊ"],"pre":["f","F","ा","ँ"]},
-        "KeyG":{"uni":["न","द्द"],"rom":["ग","घ"],"pre":["g","G","न","न्"]},
-        "KeyH":{"uni":["ज","झ"],"rom":["ह","अ"],"pre":["h","H","ज","ज्"]},
-        "KeyJ":{"uni":["व","ो"],"rom":["ज","झ"],"pre":["j","J","व","व्"]},
-        "KeyK":{"uni":["प","फ"],"rom":["क","ख"],"pre":["k","K","प","प्"]},
-        "KeyL":{"uni":["ि","ी"],"rom":["ल","॥"],"pre":["l","L","ि","ी"]},
-        "Semicolon":{"uni":["स","ट्ठ"],"rom":[";",":"],"pre":[";",":","स","स्"]},
-        "Quote":{"uni":["ु","ू"],"rom":["'","\""],"pre":["'","\"","ु","ू"]},
-        "KeyZ":{"uni":["श","क्क"],"rom":["ष","ऋ"],"pre":["z","Z","श","श्"]},
-        "KeyX":{"uni":["ह","ह्य"],"rom":["ड","ढ"],"pre":["x","X","ह","ह्"]},
-        "KeyC":{"uni":["अ","ऋ"],"rom":["च","छ"],"pre":["c","C","अ","ऋ"]},
-        "KeyV":{"uni":["ख","ॐ"],"rom":["व","ँ"],"pre":["v","V","ख","ख्"]},
-        "KeyB":{"uni":["द","ौ"],"rom":["ब","भ"],"pre":["b","B","द","द्य"]},
-        "KeyN":{"uni":["ल","द्य"],"rom":["न","ण"],"pre":["n","N","ल","ल्"]},
-        "KeyM":{"uni":["ः","ड्ड"],"rom":["म","ं"],"pre":["m","M","फ","ः"]},
-        "Comma":{"uni":["ऽ","ङ"],"rom":[",","ङ"],"pre":[",","<",",","?"]},
-        "Period":{"uni":["।","श्र"],"rom":["।","."],"pre":[".",">","।","श्र"]},
-        "Slash":{"uni":["र","रु"],"rom":["्","?"],"pre":["/","?","र","रु"]},
-        "Space":{"uni":[" "," "],"rom":[" "," "],"pre":[" "," "]}
+        "Backquote":{"uni":["ञ","॥"],"rom":["़","ऽ"]},
+        "Digit1":{"uni":["१","ज्ञ"],"rom":["१","!"]},
+        "Digit2":{"uni":["२","ई"],"rom":["२","@"]},
+        "Digit3":{"uni":["३","घ"],"rom":["३","#"]},
+        "Digit4":{"uni":["४","द्ध"],"rom":["४","$"]},
+        "Digit5":{"uni":["५","छ"],"rom":["५","%"]},
+        "Digit6":{"uni":["६","ट"],"rom":["६","^"]},
+        "Digit7":{"uni":["७","ठ"],"rom":["७","&"]},
+        "Digit8":{"uni":["८","ड"],"rom":["८","*"]},
+        "Digit9":{"uni":["९","ढ"],"rom":["९","("]},
+        "Digit0":{"uni":["०","ण"],"rom":["०",")"]},
+        "Minus":{"uni":["औ","ओ"],"rom":["-","_"]},
+        "Equal":{"uni":["‍","‌"],"rom":["‍","‌"]},
+        "KeyQ":{"uni":["त्र","त्त"],"rom":["ट","ठ"]},
+        "KeyW":{"uni":["ध","ड्ढ"],"rom":["ौ","औ"]},
+        "KeyE":{"uni":["भ","ऐ"],"rom":["े","ै"]},
+        "KeyR":{"uni":["च","द्ब"],"rom":["र","ृ"]},
+        "KeyT":{"uni":["त","ट्ट"],"rom":["त","थ"]},
+        "KeyY":{"uni":["थ","ठ्ठ"],"rom":["य","ञ"]},
+        "KeyU":{"uni":["ग","ऊ"],"rom":["ु","ू"]},
+        "KeyI":{"uni":["ष","क्ष"],"rom":["ि","ी"]},
+        "KeyO":{"uni":["य","इ"],"rom":["ो","ओ"]},
+        "KeyP":{"uni":["उ","ए"],"rom":["प","फ"]},
+        "BracketLeft":{"uni":["र्","ृ"],"rom":["इ","ई"]},
+        "BracketRight":{"uni":["े","ै"],"rom":["ए","ऐ"]},
+        "Backslash":{"uni":["्","ं"],"rom":["ॐ","ः"]},
+        "KeyA":{"uni":["ब","आ"],"rom":["ा","आ"]},
+        "KeyS":{"uni":["क","ङ्क"],"rom":["स","श"]},
+        "KeyD":{"uni":["म","ङ्ग"],"rom":["द","ध"]},
+        "KeyF":{"uni":["ा","ँ"],"rom":["उ","ऊ"]},
+        "KeyG":{"uni":["न","द्द"],"rom":["ग","घ"]},
+        "KeyH":{"uni":["ज","झ"],"rom":["ह","अ"]},
+        "KeyJ":{"uni":["व","ो"],"rom":["ज","झ"]},
+        "KeyK":{"uni":["प","फ"],"rom":["क","ख"]},
+        "KeyL":{"uni":["ि","ी"],"rom":["ल","॥"]},
+        "Semicolon":{"uni":["स","ट्ठ"],"rom":[";",":"]},
+        "Quote":{"uni":["ु","ू"],"rom":["'","\""]},
+        "KeyZ":{"uni":["श","क्क"],"rom":["ष","ऋ"]},
+        "KeyX":{"uni":["ह","ह्य"],"rom":["ड","ढ"]},
+        "KeyC":{"uni":["अ","ऋ"],"rom":["च","छ"]},
+        "KeyV":{"uni":["ख","ॐ"],"rom":["व","ँ"]},
+        "KeyB":{"uni":["द","ौ"],"rom":["ब","भ"]},
+        "KeyN":{"uni":["ल","द्य"],"rom":["न","ण"]},
+        "KeyM":{"uni":["ः","ड्ड"],"rom":["म","ं"]},
+        "Comma":{"uni":["ऽ","ङ"],"rom":[",","ङ"]},
+        "Period":{"uni":["।","श्र"],"rom":["।","."]},
+        "Slash":{"uni":["र","रु"],"rom":["्","?"]},
+        "Space":{"uni":[" "," "],"rom":[" "," "]}
       };
 
       // 2. Comprehensive Preeti <-> Unicode Character & Ligature Tables
@@ -434,46 +428,6 @@ const appSchema = {
         ["ः", "M"], ["ो", "f]"], ["ौ", "f}"]
       ];
 
-      const PREETI_TO_UNICODE_MAP = [
-        ["k|m", "फ्र"], ["cf}F", "औँ"], ["cf}+", "औँ"], ["cf}", "औ"], ["cf]", "ओ"],
-        ["cf", "आ"], ["pm", "ऊ"], ["P]", "ऐ"], ["8Þ", "ड़"], ["9Þ", "ढ़"],
-        ["6«", "ट्र"], ["7«", "ठ्र"], ["8«", "ड्र"], ["9«", "ढ्र"], ["6|", "ट्र"],
-        ["7|", "ठ्र"], ["8|", "ड्र"], ["9|", "ढ्र"], ["If", "क्ष"], ["0f", "ण"],
-        ["if", "ष"], ["f}F", "ौँ"], ["f}+", "ौँ"], ["f]F", "ों"], ["f]+", "ों"],
-        ["f}", "ौ"], ["f]", "ो"], ["k|", "प्र"], ["km", "फ"], ["Qm", "क्त"],
-        ["qm", "क्र"], ["em", "झ"], ["1", "ज्ञ"], ["2", "द्द"], ["4", "द्ध"],
-        ["Q", "त्त"], [">", "श्र"], ["?", "रु"], ["¿", "रू"], ["B", "द्य"],
-        ["I", "क्ष्"], ["q", "त्र"], ["å", "द्व"], ["§", "ट्ट"], ["•", "ड्ड"],
-        ["°", "ड्ढ"], ["¶", "ठ्ठ"], ["Ý", "ट्ठ"], ["ß", "द्म"], ["¡", "ज्ञ्"],
-        ["¢", "द्घ"], ["„", "ध्र"], ["›", "द्र"], ["‹", "ङ्घ"], ["Ë", "ङ्ग"],
-        ["Í", "ङ्क"], ["Î", "ङ्ख"], ["Å", "हृ"],
-        ["!", "१"], ["@", "२"], ["#", "३"], ["$", "४"], ["%", "५"],
-        ["^", "६"], ["&", "७"], ["*", "८"], ["(", "९"], [")", "०"],
-        ["ç", "ॐ"], ["˜", "ऽ"], [".", "।"], ["<", "?"],
-        ["c", "अ"], ["O", "इ"], ["p", "उ"], ["P", "ए"], ["C", "ऋ"],
-        ["S", "क्"], ["s", "क"], ["V", "ख्"], ["v", "ख"], ["U", "ग्"], ["u", "ग"],
-        ["£", "घ्"], ["3", "घ"], ["ª", "ङ"], ["R", "च्"], ["r", "च"], ["5", "छ"],
-        ["H", "ज्"], ["h", "ज"], ["‰", "झ्"], ["´", "झ"], ["~", "ञ्"], ["`", "ञ"],
-        ["6", "ट"], ["7", "ठ"], ["8", "ड"], ["9", "ढ"], ["0", "ण्"],
-        ["T", "त्"], ["t", "त"], ["Y", "थ्"], ["y", "थ"], ["b", "द"],
-        ["W", "ध्"], ["w", "ध"], ["G", "न्"], ["g", "न"], ["K", "प्"], ["k", "प"],
-        ["ˆ", "फ्"], ["m", "फ"], ["A", "ब्"], ["a", "ब"], ["E", "भ्"], ["e", "भ"],
-        ["D", "म्"], ["d", "म"], ["o", "य"], ["/", "र"], ["N", "ल्"], ["n", "ल"],
-        ["J", "व्"], ["j", "व"], ["Z", "श्"], ["z", "श"], ["i", "ष्"],
-        [":", "स्"], [";", "स"], ["X", "ह्"], ["x", "ह"],
-        ["f", "ा"], ["l", "ि"], ["L", "ी"], ["]", "े"], ["}", "ै"],
-        ["'", "ु"], ['"', "ू"], ["[", "ृ"], ["+", "ं"], ["F", "ँ"],
-        ["M", "ः"], ["\\", "्"], ["|", "्र"], ["Ø", "्य"], ["{", "र्"]
-      ];
-
-      const PREETI_HALF_CONS = '(?:[SVU£R~TYWGKˆAEDNJZ:X]|i(?![fF])|[svu3r5h´`67890tybwgkmaedonjzx]\\\\)';
-      const PREETI_FULL_CONS = '(?:k\\|m|k\\||km|Qm|qm|em|If|if|6«|7«|8«|9«|6\\||7\\||8\\||9\\||8Þ|9Þ|1|2|4|Q|>|\\?|¿|B|I|q|å|§|•|°|¶|Ý|ß|¡|¢|„|›|‹|Ë|Í|Î|Å|[svu3r5h´`67890tybwgkmaedonjzx0cOpPC])';
-      const PREETI_MATRAS = '[fL\\]}\'\"\\[+FM]';
-
-      function hasDevanagari(text) {
-        return /[\u0900-\u097F]/.test(text);
-      }
-
       function toPreeti(text) {
         if (!text) return '';
         let s = text;
@@ -490,45 +444,26 @@ const appSchema = {
         return s;
       }
 
-      function preetiToUnicode(input) {
-        if (!input) return '';
-        let text = input;
-        text = text.replaceAll('O{', 'ई');
-        const rephPattern = new RegExp(`(${PREETI_HALF_CONS}*${PREETI_FULL_CONS}${PREETI_MATRAS}*)\\{`, 'g');
-        text = text.replace(rephPattern, '{$1');
-        const ikaarPattern = new RegExp(`l(${PREETI_HALF_CONS}*${PREETI_FULL_CONS})`, 'g');
-        text = text.replace(ikaarPattern, '$1l');
-        for (const [p, u] of PREETI_TO_UNICODE_MAP) {
-          text = text.replaceAll(p, u);
-        }
-        return text;
-      }
-
-      function convertNodesRecursively(node, dir) {
+      function convertNodesRecursively(node) {
         if (!node) return;
         if (node.nodeType === 3) {
           if (node.nodeValue && node.nodeValue.length > 0) {
-            node.nodeValue = (dir === 'toPreeti') ? toPreeti(node.nodeValue) : preetiToUnicode(node.nodeValue);
+            node.nodeValue = toPreeti(node.nodeValue);
           }
         } else if (node.nodeType === 1) {
           for (let i = 0; i < node.childNodes.length; i++) {
-            convertNodesRecursively(node.childNodes[i], dir);
+            convertNodesRecursively(node.childNodes[i]);
           }
         }
       }
 
       // 3. UI State
-      let currentMode = 'toPreeti'; // Default: 'toPreeti' on this page
-      let inputPreetiVisual = true;
-      let outputPreetiVisual = true;
+      let outputPreetiVisual = true; // true: Font_preeti (Nepali visual), false: Monospace (Raw ASCII)
       let currentFontSize = 20;
-      let typingLayout = 'traditional'; // Default: 'traditional'
+      let typingLayout = 'traditional'; // 'traditional' | 'romanized' | 'english'
 
       const editorInput = document.getElementById('editor-input');
       const editorOutput = document.getElementById('editor-output');
-      const inputLabel = document.getElementById('input-label');
-      const outputLabel = document.getElementById('output-label');
-      const inputFontTag = document.getElementById('input-font-tag');
       const outputFontTag = document.getElementById('output-font-tag');
 
       const inputCharCount = document.getElementById('input-char-count');
@@ -536,14 +471,10 @@ const appSchema = {
       const outputCharCount = document.getElementById('output-char-count');
       const outputWordCount = document.getElementById('output-word-count');
 
-      const modeBtnUniToPreeti = document.getElementById('mode-uni-to-preeti');
-      const modeBtnPreetiToUni = document.getElementById('mode-preeti-to-uni');
-      const swapModeBtn = document.getElementById('swap-mode-btn');
       const btnConvertNow = document.getElementById('btn-convert-now');
       const selectTypingLayout = document.getElementById('select-typing-layout');
-
-      const btnToggleInputFont = document.getElementById('btn-toggle-input-font');
       const btnToggleOutputFont = document.getElementById('btn-toggle-output-font');
+
       const btnFontSmaller = document.getElementById('btn-font-smaller');
       const btnFontLarger = document.getElementById('btn-font-larger');
       const labelFontSize = document.getElementById('label-font-size');
@@ -554,6 +485,7 @@ const appSchema = {
 
       const btnCopyRich = document.getElementById('btn-copy-rich');
       const btnCopyPlain = document.getElementById('btn-copy-plain');
+      const btnDownloadDoc = document.getElementById('btn-download-doc');
       const btnDownloadTxt = document.getElementById('btn-download-txt');
       const btnPrintDoc = document.getElementById('btn-print-doc');
       const copyStatusIndicator = document.getElementById('copy-status-indicator');
@@ -561,8 +493,7 @@ const appSchema = {
 
       const fmtButtons = document.querySelectorAll('.fmt-btn');
 
-      const SAMPLE_UNICODE = '<h2>नेपाल सरकार</h2><p><b>नेपाल</b> काठमाडौँमा <i>संविधान</i> कार्यान्वयन तथा प्रशासन सुधार सम्बन्धी प्रक्रिया प्रविधि मुख्य नेपाली ज्ञान र शिक्षा प्रशिक्षण सञ्चालन भएको छ ।</p><ul><li>श्रीमान् प्रधानमन्त्रीको दृष्टिकोण</li><li>विद्यार्थी र प्रतिस्पर्धीहरूको लागि सुविधा</li></ul>';
-      const SAMPLE_PREETI = '<h2>g]kfn ;/sf/</h2><p><b>g]kfn</b> sf7df8f}+df <i>;+ljwfg</i> sfof{Gjog tyf k|zf;g ;\'wf/ ;DaGwL k|lqmof k|ljlw dVo g]kfnL 1fg / lzIff k|lzIf0f ;~rfng ePsf] 5 .</p><ul><li>>Ldfg\\ k|wfgdGqLsf] b[li6sf]0f</li><li>ljBfyL{ / k|lt:kwL{x¿sf] nflu ;\'ljwf</li></ul>';
+      const SAMPLE_UNICODE = '<h2>नेपाल सरकार</h2><p><b>नेपाल</b> काठमाडौँमा <i>संविधान</i> कार्यान्वयन तथा प्रशासन सुधार सम्बन्धी प्रक्रिया प्रविधि मुख्य नेपाली ज्ञान र शिक्षा (Education) प्रशिक्षण सञ्चालन भएको छ ।</p><ul><li>श्रीमान् प्रधानमन्त्रीको दृष्टिकोण</li><li>विद्यार्थी र प्रतिस्पर्धीहरूको लागि सुविधा</li></ul>';
 
       function showToast(msg) {
         if (toastEl) {
@@ -584,58 +515,18 @@ const appSchema = {
         if (labelFontSize) labelFontSize.textContent = `${currentFontSize}px`;
       }
 
-      function applyFonts() {
-        if (currentMode === 'toPreeti') {
-          // Left: Unicode, Right: Preeti
-          editorInput.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-          editorInput.style.letterSpacing = 'normal';
-          if (inputFontTag) inputFontTag.textContent = 'UTF-8 UNICODE';
-
-          if (outputPreetiVisual) {
-            editorOutput.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
-            editorOutput.style.letterSpacing = '0.02em';
-            if (outputFontTag) outputFontTag.textContent = 'Nepali Visual';
-          } else {
-            editorOutput.style.fontFamily = "'JetBrains Mono', monospace";
-            editorOutput.style.letterSpacing = 'normal';
-            if (outputFontTag) outputFontTag.textContent = 'Raw ASCII Keys';
-          }
+      function applyPreetiVisualState() {
+        if (outputPreetiVisual) {
+          editorOutput.setAttribute('data-preeti-visual', 'true');
+          editorOutput.classList.add('font-preeti');
+          editorOutput.classList.remove('font-ascii');
+          if (outputFontTag) outputFontTag.textContent = 'Nepali Visual';
         } else {
-          // Left: Preeti, Right: Unicode
-          if (inputPreetiVisual) {
-            editorInput.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
-            editorInput.style.letterSpacing = '0.02em';
-            if (inputFontTag) inputFontTag.textContent = 'Nepali Visual';
-          } else {
-            editorInput.style.fontFamily = "'JetBrains Mono', monospace";
-            editorInput.style.letterSpacing = 'normal';
-            if (inputFontTag) inputFontTag.textContent = 'Raw ASCII Keys';
-          }
-          editorOutput.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-          editorOutput.style.letterSpacing = 'normal';
-          if (outputFontTag) outputFontTag.textContent = 'UTF-8 UNICODE';
+          editorOutput.setAttribute('data-preeti-visual', 'false');
+          editorOutput.classList.remove('font-preeti');
+          editorOutput.classList.add('font-ascii');
+          if (outputFontTag) outputFontTag.textContent = 'Raw ASCII Keys';
         }
-      }
-
-      function updateModeUI() {
-        if (currentMode === 'toPreeti') {
-          modeBtnUniToPreeti.classList.add('converter-btn-primary');
-          modeBtnPreetiToUni.classList.remove('converter-btn-primary');
-
-          inputLabel.textContent = 'Nepali Unicode Input';
-          outputLabel.textContent = 'Preeti Text Output';
-          selectTypingLayout.value = 'traditional';
-          typingLayout = 'traditional';
-        } else {
-          modeBtnPreetiToUni.classList.add('converter-btn-primary');
-          modeBtnUniToPreeti.classList.remove('converter-btn-primary');
-
-          inputLabel.textContent = 'Preeti Text Input';
-          outputLabel.textContent = 'Nepali Unicode Output';
-          selectTypingLayout.value = 'preeti';
-          typingLayout = 'preeti';
-        }
-        applyFonts();
       }
 
       function calculateStats(text) {
@@ -660,7 +551,7 @@ const appSchema = {
           }
 
           const clone = editorInput.cloneNode(true);
-          convertNodesRecursively(clone, currentMode);
+          convertNodesRecursively(clone);
           editorOutput.innerHTML = clone.innerHTML;
 
           const outText = editorOutput.innerText || '';
@@ -697,7 +588,7 @@ const appSchema = {
       let isAltDown = false;
       let isShiftDown = false;
       function toggleTypingLayout() {
-        const layouts = ['traditional', 'romanized', 'preeti', 'english'];
+        const layouts = ['traditional', 'romanized', 'english'];
         let curIdx = layouts.indexOf(typingLayout);
         let nextIdx = (curIdx + 1) % layouts.length;
         typingLayout = layouts[nextIdx];
@@ -705,7 +596,6 @@ const appSchema = {
         const names = {
           traditional: 'Nepali Traditional',
           romanized: 'Nepali Romanized',
-          preeti: 'Preeti Typewriter',
           english: 'English QWERTY'
         };
         showToast(`Layout: ${names[typingLayout] || typingLayout} (Alt+Shift)`);
@@ -743,13 +633,12 @@ const appSchema = {
           if (matched && matched.rom) {
             e.preventDefault();
             let ch = e.shiftKey ? matched.rom[1] : matched.rom[0];
-            if (e.code === 'KeyQ' && !e.shiftKey) ch = '्';
-            if (e.code === 'Slash' && !e.shiftKey) ch = '्';
             document.execCommand('insertText', false, ch);
             normalizeEditorLigatures();
             runConversion();
           }
         }
+        // In 'english' layout, physical keys insert directly without interception.
       });
 
       // Keystroke-by-keystroke real-time conversion
@@ -757,6 +646,12 @@ const appSchema = {
       editorInput.addEventListener('input', () => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(runConversion, 15);
+      });
+
+      // Paste handling
+      editorInput.addEventListener('paste', (e) => {
+        // Allow standard paste into contenteditable and trigger conversion
+        setTimeout(runConversion, 10);
       });
 
       // Toolbar formatting commands
@@ -771,61 +666,28 @@ const appSchema = {
         });
       });
 
-      // Mode Switchers
-      modeBtnUniToPreeti.addEventListener('click', () => {
-        if (currentMode === 'toPreeti') return;
-        currentMode = 'toPreeti';
-        updateModeUI();
-        runConversion();
-      });
-
-      modeBtnPreetiToUni.addEventListener('click', () => {
-        if (currentMode === 'toUnicode') return;
-        currentMode = 'toUnicode';
-        updateModeUI();
-        runConversion();
-      });
-
-      // Swap button
-      swapModeBtn.addEventListener('click', () => {
-        const tempHtml = editorOutput.innerHTML;
-        currentMode = (currentMode === 'toPreeti') ? 'toUnicode' : 'toPreeti';
-        updateModeUI();
-        editorInput.innerHTML = tempHtml;
-        runConversion();
-      });
-
       // Explicit Manual Convert Button
       if (btnConvertNow) {
         btnConvertNow.addEventListener('click', () => {
           runConversion();
-          showToast('Converted text successfully');
+          showToast('Converted Unicode to Preeti successfully');
         });
       }
 
-      // Typing Layout Switcher Dropdown
-      selectTypingLayout.addEventListener('change', (e) => {
-        typingLayout = e.target.value;
-        const name = e.target.options[e.target.selectedIndex].text;
-        showToast(`Layout: ${name}`);
-      });
+      // Typing Layout Switcher Dropdown (Inside Input Pane)
+      if (selectTypingLayout) {
+        selectTypingLayout.addEventListener('change', (e) => {
+          typingLayout = e.target.value;
+          const name = e.target.options[e.target.selectedIndex].text;
+          showToast(`Layout: ${name}`);
+        });
+      }
 
-      // Font View Toggles
+      // Font View Toggle (Output Preeti Pane)
       if (btnToggleOutputFont) {
         btnToggleOutputFont.addEventListener('click', () => {
-          if (currentMode === 'toPreeti') {
-            outputPreetiVisual = !outputPreetiVisual;
-          }
-          applyFonts();
-        });
-      }
-
-      if (btnToggleInputFont) {
-        btnToggleInputFont.addEventListener('click', () => {
-          if (currentMode === 'toUnicode') {
-            inputPreetiVisual = !inputPreetiVisual;
-          }
-          applyFonts();
+          outputPreetiVisual = !outputPreetiVisual;
+          applyPreetiVisualState();
         });
       }
 
@@ -839,7 +701,7 @@ const appSchema = {
 
       // Sample Text
       btnSampleText.addEventListener('click', () => {
-        editorInput.innerHTML = (currentMode === 'toPreeti') ? SAMPLE_UNICODE : SAMPLE_PREETI;
+        editorInput.innerHTML = SAMPLE_UNICODE;
         runConversion();
       });
 
@@ -868,7 +730,7 @@ const appSchema = {
         editorInput.focus();
       });
 
-      // Copy Formatted
+      // Copy Formatted (Word & Google Docs)
       btnCopyRich.addEventListener('click', async () => {
         const htmlData = editorOutput.innerHTML;
         const textData = editorOutput.innerText || '';
@@ -901,7 +763,7 @@ const appSchema = {
         }
       });
 
-      // Copy Plain
+      // Copy Plain ASCII (Adobe InDesign & PageMaker)
       btnCopyPlain.addEventListener('click', async () => {
         const textData = editorOutput.innerText || '';
         if (!textData.trim()) return;
@@ -919,18 +781,70 @@ const appSchema = {
         }
       });
 
-      // Download Text
+      // Download Word Document (.doc with full formatting preserved)
+      if (btnDownloadDoc) {
+        btnDownloadDoc.addEventListener('click', () => {
+          const htmlContent = editorOutput.innerHTML;
+          if (!htmlContent.trim()) return;
+
+          const docHtml = `<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>Preeti Document</title>
+<!--[if gte mso 9]>
+<xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  body {
+    font-family: 'Preeti', 'Kantipur', sans-serif;
+    font-size: 14pt;
+    line-height: 1.6;
+    color: #000000;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Preeti', 'Kantipur', sans-serif;
+    color: #000000;
+  }
+  p { margin: 0 0 10pt 0; }
+  ul, ol { margin-bottom: 10pt; }
+</style>
+</head>
+<body>
+  ${htmlContent}
+</body>
+</html>`;
+
+          const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'preeti-document.doc';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Downloaded Word document (formatting preserved)');
+        });
+      }
+
+      // Download Plain Text (.txt)
       btnDownloadTxt.addEventListener('click', () => {
         const textData = editorOutput.innerText || '';
         if (!textData.trim()) return;
-        const filename = (currentMode === 'toPreeti') ? 'preeti-text.txt' : 'nepali-unicode.txt';
         const blob = new Blob([textData], { type: 'text/plain;charset=utf-8' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = filename;
+        a.download = 'preeti-text.txt';
         a.click();
         URL.revokeObjectURL(a.href);
-        showToast(`Downloaded ${filename}`);
+        showToast('Downloaded preeti-text.txt');
       });
 
       // Print Document
@@ -960,7 +874,7 @@ const appSchema = {
 
       // Initial execution
       setEditorFontSize(20);
-      updateModeUI();
+      applyPreetiVisualState();
       editorInput.innerHTML = SAMPLE_UNICODE;
       runConversion();
     })();

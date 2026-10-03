@@ -3,12 +3,36 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
-/* Font Face: Preeti (Legacy ASCII) */
+/* Font Face: Preeti (Legacy ASCII) — Full Weight and Style Coverage */
 @font-face {
   font-family: 'Font_preeti';
   src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Font_preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Font_preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Font_preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -16,7 +40,7 @@
 @font-face {
   font-family: 'Font_kokila';
   src: url('/fonts/kokila.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -104,21 +128,28 @@
 }
 
 /* Typography Utility Classes */
-.font-preeti {
-  font-family: 'Font_preeti', 'Preeti', sans-serif !important;
-  font-size: 1.25rem !important;
+.font-preeti,
+.font-preeti *,
+[data-preeti-visual="true"],
+[data-preeti-visual="true"] * {
+  font-family: 'Font_preeti', 'Preeti', local('Preeti'), sans-serif !important;
   letter-spacing: 0.02em;
 }
 
-.font-nepali {
+.font-nepali,
+.font-nepali *,
+[data-font-nepali="true"],
+[data-font-nepali="true"] * {
   font-family: 'Font_kokila', 'Mukta', 'Kalimati', sans-serif !important;
-  font-size: 1.2rem !important;
   line-height: 1.75;
 }
 
-.font-ascii {
+.font-ascii,
+.font-ascii *,
+[data-preeti-visual="false"],
+[data-preeti-visual="false"] * {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
-  font-size: 1rem !important;
+  letter-spacing: normal;
 }
 
 /* Core Reset */
