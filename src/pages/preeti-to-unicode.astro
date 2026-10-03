@@ -367,7 +367,7 @@ const appSchema = {
         ["if", "ष"], ["f}F", "ौँ"], ["f}+", "ौँ"], ["f]F", "ों"], ["f]+", "ों"],
         ["f}", "ौ"], ["f]", "ो"], ["k|", "प्र"], ["km", "फ"], ["Qm", "क्त"],
         ["qm", "क्र"], ["em", "झ"], ["1", "ज्ञ"], ["2", "द्द"], ["4", "द्ध"],
-        ["Q", "त्त"], [">", "श्र"], ["?", "रु"], ["¿", "रू"], ["B", "द्य"],
+        ["Q", "त्त"], [">", "श्र"], ["?", "रु"], ["¿", "रू"], ["/\"", "रू"], ["/'", "रु"], ["B", "द्य"],
         ["I", "क्ष्"], ["q", "त्र"], ["å", "द्व"], ["§", "ट्ट"], ["•", "ड्ड"],
         ["°", "ड्ढ"], ["¶", "ठ्ठ"], ["Ý", "ट्ठ"], ["ß", "द्म"], ["¡", "ज्ञ्"],
         ["¢", "द्घ"], ["„", "ध्र"], ["›", "द्र"], ["‹", "ङ्घ"], ["Ë", "ङ्ग"],
@@ -453,7 +453,7 @@ const appSchema = {
         ["श्र", ">"], ["रु", "?"], ["द्य", "B"], ["क्ष्", "I"], ["क्ष", "If"],
         ["त्त", "Q"], ["द्म", "b\\d"], ["त्र", "q"], ["ध्र", "w|"], ["ङ्घ", "‹"],
         ["ड्ड", "8\\8"], ["द्र", "b|"], ["ट्ट", "6\\6"], ["ड्ढ", "°"], ["ठ्ठ", "7\\7"],
-        ["रू", "/\""], ["हृ", "x["], ["ङ्ग", "+u"], ["ङ्क", "+s"], ["ङ्ख", "+v"],
+        ["रू", "¿"], ["हृ", "x["], ["ङ्ग", "+u"], ["ङ्क", "+s"], ["ङ्ख", "+v"],
         ["ट्ठ", "7\\7"], ["द्व", "b\\j"], ["ट्र", "6|"], ["ठ्र", "7|"], ["ड्र", "8|"],
         ["ढ्र", "9|"], ["्र", "|"], ["ड़", "8Þ"], ["ढ़", "9Þ"],
         ["क्", "S"], ["क", "s"], ["ख्", "V"], ["ख", "v"], ["ग्", "U"], ["ग", "u"],
@@ -689,6 +689,33 @@ const appSchema = {
               newRange.collapse(true);
               sel.removeAllRanges();
               sel.addRange(newRange);
+            }
+          }
+
+          // Smart Preeti Ligature: typing ' or " immediately after / creates authentic ru (?) and roo (¿)
+          if (e.key === "'" || e.key === '"') {
+            const sel2 = window.getSelection();
+            if (sel2 && sel2.rangeCount > 0) {
+              const range2 = sel2.getRangeAt(0);
+              if (range2.startContainer.nodeType === 3 && range2.startOffset > 0) {
+                const text = range2.startContainer.nodeValue;
+                const charBefore = text.slice(range2.startOffset - 1, range2.startOffset);
+                if (charBefore === '/') {
+                  e.preventDefault();
+                  const replacement = (e.key === "'") ? '?' : '¿';
+                  range2.setStart(range2.startContainer, range2.startOffset - 1);
+                  range2.deleteContents();
+                  const textNode = document.createTextNode(replacement);
+                  range2.insertNode(textNode);
+                  const newRange = document.createRange();
+                  newRange.setStartAfter(textNode);
+                  newRange.collapse(true);
+                  sel2.removeAllRanges();
+                  sel2.addRange(newRange);
+                  runConversion();
+                  return;
+                }
+              }
             }
           }
         }
