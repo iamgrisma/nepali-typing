@@ -276,18 +276,52 @@ export function convertText(text, direction = 'toUnicode') {
 
 /**
  * Formatted HTML converter. Preserves all markup (<b>, <i>, <u>, <h1>, <p>, <ul>, etc.)
- * and converts only inner text nodes.
+ * and converts only inner text nodes while decoding essential Preeti characters like >, <, &.
  * @param {string} html - HTML string
  * @param {'toUnicode' | 'toPreeti'} direction - Conversion mode
  */
 export function convertHtml(html, direction = 'toUnicode') {
   if (!html) return '';
   const converterFn = direction === 'toPreeti' ? toPreeti : preetiToUnicode;
-  return html.replace(/(<[^>]+>|&[a-zA-Z0-9#]+;)|([^<>&]+)/g, (match, tagOrEntity, text) => {
-    if (tagOrEntity) return tagOrEntity;
-    if (text) return converterFn(text);
+  return html.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
+    if (tag) return tag;
+    if (text) {
+      let decoded = text
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&')
+        .replace(/&nbsp;/g, ' ');
+      return converterFn(decoded);
+    }
     return match;
   });
+}
+
+/**
+ * DOM TreeWalker converter. Traverses text nodes in a DOM tree and converts them in-place,
+ * guaranteeing 100% preservation of HTML nodes, event listeners, and CSS styles without regex hazards.
+ * @param {Node} rootElement - Container DOM element or document fragment
+ * @param {'toUnicode' | 'toPreeti'} direction - Conversion mode
+ */
+export function convertDom(rootElement, direction = 'toUnicode') {
+  if (!rootElement || typeof document === 'undefined') return;
+  const converterFn = direction === 'toPreeti' ? toPreeti : preetiToUnicode;
+  const walker = document.createTreeWalker(
+    rootElement,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false
+  );
+  let node;
+  const textNodes = [];
+  while ((node = walker.nextNode())) {
+    textNodes.push(node);
+  }
+  for (const textNode of textNodes) {
+    if (textNode.nodeValue && textNode.nodeValue.trim().length > 0) {
+      textNode.nodeValue = converterFn(textNode.nodeValue);
+    }
+  }
 }
 
 /**

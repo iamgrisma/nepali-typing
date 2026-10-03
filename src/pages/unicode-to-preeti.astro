@@ -26,8 +26,31 @@ const faqSchema = {
         "@type": "Answer",
         "text": "The converter automatically recognizes trailing halantas in words such as श्रीमान्, महान्, and छन् and produces proper Preeti backslash sequences (>Ldfg\\, dxfg\\, 5g\\) without corrupting adjacent words."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I type Nepali if I don't have a Nepali keyboard installed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our in-browser typing engine intercepts physical keystrokes on any standard English QWERTY keyboard. You can select Nepali Unicode Traditional or Romanized in the Typing Layout dropdown to type directly in Devanagari without downloading any software."
+      }
     }
   ]
+};
+
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Unicode to Preeti Converter by TopNepali",
+  "url": canonicalUrl,
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR"
+  },
+  "description": pageDesc
 };
 ---
 
@@ -37,10 +60,10 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
+  schema={[appSchema, faqSchema]}
   activeNav="converter"
 >
-  <div class="container px-4 max-w-6xl py-4 sm:py-6">
+  <div class="converter-wrapper py-4 sm:py-6">
 
     <!-- Hero Header -->
     <header class="text-center max-w-3xl mx-auto pt-2 pb-6">
@@ -62,342 +85,249 @@ const faqSchema = {
       </p>
     </header>
 
-    <!-- Converter Application Shell -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-sm mb-8 overflow-hidden">
-      
-      <!-- Primary Mode Controls & Formatting Toolbar -->
-      <div class="p-3 sm:p-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] flex flex-wrap items-center justify-between gap-3">
-        
-        <!-- Mode Switcher -->
-        <div class="flex items-center gap-2">
-          <div class="inline-flex p-1 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
-            <button
-              type="button"
-              id="mode-uni-to-preeti"
-              class="mode-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--accent-primary)] text-white shadow-sm"
-              data-mode="toPreeti"
-            >
-              Unicode &rarr; Preeti
-            </button>
-            <button
-              type="button"
-              id="mode-preeti-to-uni"
-              class="mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
-              data-mode="toUnicode"
-            >
-              Preeti &rarr; Unicode
-            </button>
-          </div>
-
+    <!-- Master Converter Toolbar -->
+    <div class="converter-toolbar">
+      <!-- Mode Switcher & Swap Chords -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <div class="inline-flex p-1 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
           <button
             type="button"
-            id="swap-mode-btn"
-            class="p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-neutral-400 transition-colors shadow-sm"
-            title="Swap Input and Output Text"
-            aria-label="Swap Input and Output"
+            id="mode-uni-to-preeti"
+            class="converter-btn converter-btn-primary"
+            data-mode="toPreeti"
           >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
-            </svg>
+            Unicode &rarr; Preeti
+          </button>
+          <button
+            type="button"
+            id="mode-preeti-to-uni"
+            class="converter-btn"
+            data-mode="toUnicode"
+          >
+            Preeti &rarr; Unicode
           </button>
         </div>
 
-        <!-- Rich Text Formatting Actions -->
-        <div class="flex flex-wrap items-center gap-1 bg-[var(--bg-surface)] p-1 rounded-xl border border-[var(--border-subtle)] shadow-sm text-xs">
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="bold"
-            title="Bold (Ctrl+B)"
-            aria-label="Bold"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-              <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="italic"
-            title="Italic (Ctrl+I)"
-            aria-label="Italic"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="4" x2="10" y2="4"></line>
-              <line x1="14" y1="20" x2="5" y2="20"></line>
-              <line x1="15" y1="4" x2="9" y2="20"></line>
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="underline"
-            title="Underline (Ctrl+U)"
-            aria-label="Underline"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
-              <line x1="4" y1="21" x2="20" y2="21"></line>
-            </svg>
-          </button>
-
-          <div class="h-4 w-px bg-[var(--border-subtle)] mx-0.5"></div>
-
-          <button
-            type="button"
-            class="fmt-btn px-2 py-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition font-bold"
-            data-cmd="formatBlock"
-            data-val="h2"
-            title="Heading 2"
-          >
-            H2
-          </button>
-
-          <button
-            type="button"
-            class="fmt-btn px-2 py-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition font-bold"
-            data-cmd="formatBlock"
-            data-val="h3"
-            title="Heading 3"
-          >
-            H3
-          </button>
-
-          <div class="h-4 w-px bg-[var(--border-subtle)] mx-0.5"></div>
-
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="insertUnorderedList"
-            title="Bullet List"
-            aria-label="Bullet List"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="8" y1="6" x2="21" y2="6"></line>
-              <line x1="8" y1="12" x2="21" y2="12"></line>
-              <line x1="8" y1="18" x2="21" y2="18"></line>
-              <line x1="3" y1="6" x2="3.01" y2="6"></line>
-              <line x1="3" y1="12" x2="3.01" y2="12"></line>
-              <line x1="3" y1="18" x2="3.01" y2="18"></line>
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="insertOrderedList"
-            title="Numbered List"
-            aria-label="Numbered List"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="10" y1="6" x2="21" y2="6"></line>
-              <line x1="10" y1="12" x2="21" y2="12"></line>
-              <line x1="10" y1="18" x2="21" y2="18"></line>
-              <path d="M4 6h1v4"></path>
-              <path d="M4 10h2"></path>
-              <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
-            </svg>
-          </button>
-
-          <div class="h-4 w-px bg-[var(--border-subtle)] mx-0.5"></div>
-
-          <button
-            type="button"
-            class="fmt-btn p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-            data-cmd="removeFormat"
-            title="Clear Text Formatting"
-            aria-label="Clear Text Formatting"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-          <div class="h-4 w-px bg-[var(--border-subtle)] mx-0.5"></div>
-
-          <!-- Font Size Scaler -->
-          <div class="flex items-center gap-1">
-            <button
-              type="button"
-              id="btn-font-smaller"
-              class="px-1.5 py-0.5 rounded text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-              title="Decrease text size"
-            >
-              A-
-            </button>
-            <span id="label-font-size" class="text-[10px] font-mono text-[var(--text-muted)] min-w-[28px] text-center">18px</span>
-            <button
-              type="button"
-              id="btn-font-larger"
-              class="px-1.5 py-0.5 rounded text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-              title="Increase text size"
-            >
-              A+
-            </button>
-          </div>
-        </div>
-
+        <button
+          type="button"
+          id="swap-mode-btn"
+          class="converter-btn p-2"
+          title="Swap Input and Output Text"
+          aria-label="Swap Input and Output"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
+          </svg>
+        </button>
       </div>
 
-      <!-- Dual-Pane Workspace Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border-subtle)]">
-        
-        <!-- Input Column -->
-        <div class="flex flex-col h-full bg-[var(--bg-surface)]">
-          <div class="px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/50 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-              <span id="input-label" class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px]">
-                Nepali Unicode Input
-              </span>
-              <span id="input-font-tag" class="px-1.5 py-0.5 rounded font-mono text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
-                UTF-8 UNICODE
-              </span>
-            </div>
-
-            <div class="flex items-center gap-1.5">
-              <button
-                type="button"
-                id="btn-sample-text"
-                class="px-2 py-1 rounded-md text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-              >
-                Insert Sample
-              </button>
-              <button
-                type="button"
-                id="btn-paste-input"
-                class="px-2 py-1 rounded-md text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)] transition"
-              >
-                Paste
-              </button>
-              <button
-                type="button"
-                id="btn-clear-input"
-                class="px-2 py-1 rounded-md text-[11px] font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-
-          <!-- Input Editable Content Area -->
-          <div
-            id="editor-input"
-            contenteditable="true"
-            spellcheck="false"
-            class="flex-1 p-4 min-h-[320px] max-h-[500px] overflow-y-auto focus:outline-none text-base leading-relaxed font-nepali select-text bg-[var(--bg-surface)] text-[var(--text-primary)]"
-            placeholder="Type or paste Nepali Unicode text here..."
-            data-placeholder="Type or paste Nepali Unicode text here..."
-          ></div>
-
-          <!-- Input Footer Counters -->
-          <div class="px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/40 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-            <div class="flex items-center gap-3">
-              <span>Characters: <strong id="input-char-count" class="text-[var(--text-secondary)]">0</strong></span>
-              <span>Words: <strong id="input-word-count" class="text-[var(--text-secondary)]">0</strong></span>
-            </div>
-            <span class="text-[10px] text-[var(--text-muted)]">Real-time conversion active</span>
-          </div>
-        </div>
-
-        <!-- Output Column -->
-        <div class="flex flex-col h-full bg-[var(--bg-surface)]">
-          <div class="px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/50 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-              <span id="output-label" class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px]">
-                Preeti Text Output
-              </span>
-              <button
-                type="button"
-                id="btn-toggle-font-view"
-                class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 hover:opacity-80 transition flex items-center gap-1 shadow-2xs"
-                title="Toggle between Nepali Visual rendering and Raw ASCII keys"
-              >
-                <svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                <span id="output-font-tag">Nepali Visual (Preeti)</span>
-              </button>
-            </div>
-
-            <!-- Output Action Buttons -->
-            <div class="flex items-center gap-1.5">
-              <button
-                type="button"
-                id="btn-copy-rich"
-                class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-sm flex items-center gap-1"
-                title="Copy formatted text with bold, italic, and headings preserved for Word"
-              >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>Copy Formatted</span>
-              </button>
-
-              <button
-                type="button"
-                id="btn-copy-plain"
-                class="px-2 py-1 rounded-md text-[11px] font-medium border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-              >
-                Copy Plain
-              </button>
-
-              <button
-                type="button"
-                id="btn-download-txt"
-                class="px-2 py-1 rounded-md text-[11px] font-medium border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-                title="Download as .txt"
-              >
-                Download
-              </button>
-
-              <button
-                type="button"
-                id="btn-print-doc"
-                class="px-2 py-1 rounded-md text-[11px] font-medium border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-                title="Print Document"
-              >
-                Print
-              </button>
-            </div>
-          </div>
-
-          <!-- Output Display / Editable Area -->
-          <div
-            id="editor-output"
-            contenteditable="true"
-            spellcheck="false"
-            class="flex-1 p-4 min-h-[320px] max-h-[500px] overflow-y-auto focus:outline-none text-base leading-relaxed font-preeti select-text bg-[var(--bg-surface)] text-[var(--text-primary)]"
-            placeholder="Converted output appears here instantly..."
-            data-placeholder="Converted output appears here instantly..."
-          ></div>
-
-          <!-- Output Footer Counters -->
-          <div class="px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/40 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-            <div class="flex items-center gap-3">
-              <span>Characters: <strong id="output-char-count" class="text-[var(--text-secondary)]">0</strong></span>
-              <span>Words: <strong id="output-word-count" class="text-[var(--text-secondary)]">0</strong></span>
-            </div>
-            <div id="copy-status-indicator" class="font-medium text-emerald-600 dark:text-emerald-400 opacity-0 transition-opacity duration-200">
-              Copied to clipboard
-            </div>
-          </div>
-        </div>
-
+      <!-- In-Browser Typing Engine Layout Selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Typing Layout:</span>
+        <select
+          id="select-typing-layout"
+          class="converter-btn text-xs font-medium cursor-pointer bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-lg py-1 px-2 outline-none"
+        >
+          <option value="traditional" selected>Nepali Unicode (Traditional)</option>
+          <option value="romanized">Nepali Unicode (Romanized)</option>
+          <option value="direct">Direct Keyboard / Paste Only</option>
+          <option value="preeti">Preeti Typewriter (ASCII)</option>
+        </select>
       </div>
 
+      <!-- Rich Text Formatting Actions -->
+      <div class="flex items-center gap-1 bg-[var(--bg-surface-subtle)] p-1 rounded-xl border border-[var(--border-subtle)] flex-wrap">
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="bold" title="Bold (Ctrl+B)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path></svg>
+        </button>
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="italic" title="Italic (Ctrl+I)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="4" x2="10" y2="4"></line><line x1="14" y1="20" x2="5" y2="20"></line><line x1="15" y1="4" x2="9" y2="20"></line></svg>
+        </button>
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="underline" title="Underline (Ctrl+U)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
+        </button>
+
+        <div class="converter-divider"></div>
+
+        <button type="button" class="converter-btn fmt-btn px-2 py-1 font-bold text-xs" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
+        <button type="button" class="converter-btn fmt-btn px-2 py-1 font-bold text-xs" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
+
+        <div class="converter-divider"></div>
+
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="insertUnorderedList" title="Bullet List">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="insertOrderedList" title="Numbered List">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg>
+        </button>
+        <button type="button" class="converter-btn fmt-btn p-1.5" data-cmd="removeFormat" title="Clear Formatting">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <div class="converter-divider"></div>
+
+        <!-- Font Size Scaler -->
+        <div class="flex items-center gap-1">
+          <button type="button" id="btn-font-smaller" class="converter-btn px-1.5 py-0.5 text-xs font-bold" title="Decrease font size">A-</button>
+          <span id="label-font-size" class="text-xs font-mono text-[var(--text-muted)] min-w-[32px] text-center font-bold">20px</span>
+          <button type="button" id="btn-font-larger" class="converter-btn px-1.5 py-0.5 text-xs font-bold" title="Increase font size">A+</button>
+        </div>
+      </div>
     </div>
+
+    <!-- Dual-Pane Workspace Grid -->
+    <div class="converter-grid">
+      <!-- Input Pane (Nepali Unicode) -->
+      <div class="converter-pane">
+        <div class="converter-pane-header">
+          <div class="flex items-center gap-2">
+            <span id="input-label" class="font-bold uppercase tracking-wider text-xs text-[var(--text-primary)]">
+              Nepali Unicode Input
+            </span>
+            <button
+              type="button"
+              id="btn-toggle-input-font"
+              class="converter-pill border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 cursor-pointer"
+              title="Input encoding"
+            >
+              <span id="input-font-tag">UTF-8 UNICODE</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-sample-text" class="converter-btn text-xs">Sample</button>
+            <button type="button" id="btn-paste-input" class="converter-btn text-xs">Paste</button>
+            <button type="button" id="btn-clear-input" class="converter-btn text-xs text-rose-600 hover:text-rose-700">Clear</button>
+          </div>
+        </div>
+
+        <!-- Editable Input Content Area -->
+        <div
+          id="editor-input"
+          contenteditable="true"
+          spellcheck="false"
+          class="converter-editor font-nepali select-text"
+          data-placeholder="Type in Nepali Unicode or paste text here..."
+        ></div>
+
+        <div class="converter-pane-footer">
+          <div class="flex items-center gap-4">
+            <span>Characters: <strong id="input-char-count" class="text-[var(--text-primary)]">0</strong></span>
+            <span>Words: <strong id="input-word-count" class="text-[var(--text-primary)]">0</strong></span>
+          </div>
+          <span class="text-xs text-[var(--text-muted)] flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            Real-time active
+          </span>
+        </div>
+      </div>
+
+      <!-- Output Pane (Preeti) -->
+      <div class="converter-pane">
+        <div class="converter-pane-header">
+          <div class="flex items-center gap-2">
+            <span id="output-label" class="font-bold uppercase tracking-wider text-xs text-[var(--text-primary)]">
+              Preeti Text Output
+            </span>
+            <button
+              type="button"
+              id="btn-toggle-output-font"
+              class="converter-pill border border-rose-500/30 text-rose-600 dark:text-rose-400 bg-rose-500/10 cursor-pointer"
+              title="Toggle between authentic Nepali Visual rendering and Raw ASCII characters"
+            >
+              <svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span id="output-font-tag">Nepali Visual</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              id="btn-copy-rich"
+              class="converter-btn converter-btn-success text-xs font-bold"
+              title="Copy formatted text with bold, italic, and headings preserved for Word / Google Docs"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy Formatted</span>
+            </button>
+            <button type="button" id="btn-copy-plain" class="converter-btn text-xs">Copy Plain ASCII</button>
+            <button type="button" id="btn-download-txt" class="converter-btn text-xs">Download</button>
+            <button type="button" id="btn-print-doc" class="converter-btn text-xs">Print</button>
+          </div>
+        </div>
+
+        <!-- Converted Output Area -->
+        <div
+          id="editor-output"
+          contenteditable="true"
+          spellcheck="false"
+          class="converter-editor font-preeti select-text"
+          data-placeholder="Converted Preeti text appears here instantly..."
+        ></div>
+
+        <div class="converter-pane-footer">
+          <div class="flex items-center gap-4">
+            <span>Characters: <strong id="output-char-count" class="text-[var(--text-primary)]">0</strong></span>
+            <span>Words: <strong id="output-word-count" class="text-[var(--text-primary)]">0</strong></span>
+          </div>
+          <div id="copy-status-indicator" class="font-bold text-emerald-600 dark:text-emerald-400 opacity-0 transition-opacity">
+            Copied to clipboard
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frequently Asked Questions -->
+    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
+      <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+        Frequently Asked Questions
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How do I paste Preeti text into InDesign or PageMaker?</h3>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            Click 'Copy Plain ASCII', then paste directly into Adobe InDesign or PageMaker text frames with the font family set to Preeti or Kantipur. All ligatures and raswa ikaar markers align naturally.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I type Nepali without installing any keyboard?</h3>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            Yes. The built-in typing layout engine intercepts keystrokes on standard English keyboards. Select 'Nepali Unicode (Traditional)' or 'Romanized' in the Typing Layout dropdown to type directly.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Does the converter handle halantas and rephs accurately?</h3>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            Yes. Words ending in halanta such as श्रीमान् and महान् map directly to proper Preeti backslash sequences (>Ldfg\, dxfg\), while rephs and ikaars are repositioned contextually.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Are formatting tags preserved?</h3>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            Yes. Bold, italic, headings (H2/H3), and list elements are preserved during conversion so you can copy formatted rich text directly into Microsoft Word or Google Docs.
+          </p>
+        </div>
+      </div>
+    </section>
 
   </div>
 
-  <!-- Client-Side Converter & Formatting Logic (0 external dependencies) -->
-  <script is:inline type="module">
-    import { preetiToUnicode, toPreeti, convertHtml, hasDevanagari } from '/js/utils/preeti-converter.js';
+  <div id="converter-toast" class="converter-toast"></div>
 
-    let currentMode = 'toPreeti'; // Default for unicode-to-preeti page
-    let isPreetiVisual = true; // true = Preeti font renders Nepali glyphs visually, false = raw ASCII keys
-    let currentFontSize = 18;
+  <!-- Client-Side Converter & In-Browser Typing Logic -->
+  <script is:inline type="module">
+    import { preetiToUnicode, toPreeti, convertDom, hasDevanagari } from '/js/utils/preeti-converter.js';
+    import { KEY_CODE_MAP } from '/js/data/keyboards.js';
+
+    let currentMode = 'toPreeti'; // Default on this page: 'toPreeti'
+    let inputPreetiVisual = true;
+    let outputPreetiVisual = true; // true: Font_preeti (Nepali visual), false: Monospace (Raw ASCII)
+    let currentFontSize = 20;
+    let typingLayout = 'traditional'; // 'traditional' | 'romanized' | 'direct' | 'preeti'
     let isConverting = false;
 
     const editorInput = document.getElementById('editor-input');
@@ -412,11 +342,13 @@ const faqSchema = {
     const outputCharCount = document.getElementById('output-char-count');
     const outputWordCount = document.getElementById('output-word-count');
 
-    const modeBtnPreetiToUni = document.getElementById('mode-preeti-to-uni');
     const modeBtnUniToPreeti = document.getElementById('mode-uni-to-preeti');
+    const modeBtnPreetiToUni = document.getElementById('mode-preeti-to-uni');
     const swapModeBtn = document.getElementById('swap-mode-btn');
+    const selectTypingLayout = document.getElementById('select-typing-layout');
 
-    const btnToggleFontView = document.getElementById('btn-toggle-font-view');
+    const btnToggleInputFont = document.getElementById('btn-toggle-input-font');
+    const btnToggleOutputFont = document.getElementById('btn-toggle-output-font');
     const btnFontSmaller = document.getElementById('btn-font-smaller');
     const btnFontLarger = document.getElementById('btn-font-larger');
     const labelFontSize = document.getElementById('label-font-size');
@@ -430,62 +362,85 @@ const faqSchema = {
     const btnDownloadTxt = document.getElementById('btn-download-txt');
     const btnPrintDoc = document.getElementById('btn-print-doc');
     const copyStatusIndicator = document.getElementById('copy-status-indicator');
+    const toastEl = document.getElementById('converter-toast');
 
     const fmtButtons = document.querySelectorAll('.fmt-btn');
 
-    const SAMPLE_PREETI = "<h3>g]kfn ;/sf/</h3><p><b>g]kfn</b> sf7df8f}+df <i>;+ljwfg</i> sfof{Gjog tyf k|zf;g ;'wf/ ;DaGwL k|lqmof k|ljlw dVo g]kfnL 1fg / lzIff k|lzIf0f ;~rfng ePsf] 5 .</p><ul><li>>Ldfg\\ k|wfgdGqLsf] b[li6sf]0f</li><li>ljBfyL{ / k|lt:kwL{x¿sf] nflu ;'ljwf</li></ul>";
-    const SAMPLE_UNICODE = "<h3>नेपाल सरकार</h3><p><b>नेपाल</b> काठमाडौँमा <i>संविधान</i> कार्यान्वयन तथा प्रशासन सुधार सम्बन्धी प्रक्रिया प्रविधि मुख्य नेपाली ज्ञान र शिक्षा प्रशिक्षण सञ्चालन भएको छ ।</p><ul><li>श्रीमान् प्रधानमन्त्रीको दृष्टिकोण</li><li>विद्यार्थी र प्रतिस्पर्धीहरूको लागि सुविधा</li></ul>";
+    const SAMPLE_UNICODE = '<h2>नेपाल सरकार</h2><p><b>नेपाल</b> काठमाडौँमा <i>संविधान</i> कार्यान्वयन तथा प्रशासन सुधार सम्बन्धी प्रक्रिया प्रविधि मुख्य नेपाली ज्ञान र शिक्षा प्रशिक्षण सञ्चालन भएको छ ।</p><ul><li>श्रीमान् प्रधानमन्त्रीको दृष्टिकोण</li><li>विद्यार्थी र प्रतिस्पर्धीहरूको लागि सुविधा</li></ul>';
+    const SAMPLE_PREETI = '<h2>g]kfn ;/sf/</h2><p><b>g]kfn</b> sf7df8f}+df <i>;+ljwfg</i> sfof{Gjog tyf k|zf;g ;\'wf/ ;DaGwL k|lqmof k|ljlw dVo g]kfnL 1fg / lzIff k|lzIf0f ;~rfng ePsf] 5 .</p><ul><li>>Ldfg\\ k|wfgdGqLsf] b[li6sf]0f</li><li>ljBfyL{ / k|lt:kwL{x¿sf] nflu ;\'ljwf</li></ul>';
+
+    function showToast(msg) {
+      if (toastEl) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('is-visible');
+        setTimeout(() => toastEl.classList.remove('is-visible'), 2200);
+      }
+      if (copyStatusIndicator) {
+        copyStatusIndicator.textContent = msg;
+        copyStatusIndicator.style.opacity = '1';
+        setTimeout(() => { copyStatusIndicator.style.opacity = '0'; }, 2200);
+      }
+    }
 
     function setEditorFontSize(size) {
-      currentFontSize = Math.max(13, Math.min(32, size));
+      currentFontSize = Math.max(14, Math.min(36, size));
       if (editorInput) editorInput.style.fontSize = `${currentFontSize}px`;
       if (editorOutput) editorOutput.style.fontSize = `${currentFontSize}px`;
       if (labelFontSize) labelFontSize.textContent = `${currentFontSize}px`;
     }
 
-    function applyPreetiFontView() {
-      if (currentMode === 'toUnicode') {
-        if (isPreetiVisual) {
+    function applyFonts() {
+      if (currentMode === 'toPreeti') {
+        // Left is Unicode, Right is Preeti
+        editorInput.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
+        editorInput.style.letterSpacing = 'normal';
+        if (inputFontTag) inputFontTag.textContent = 'UTF-8 UNICODE';
+
+        if (outputPreetiVisual) {
+          editorOutput.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
+          editorOutput.style.letterSpacing = '0.02em';
+          if (outputFontTag) outputFontTag.textContent = 'Nepali Visual';
+        } else {
+          editorOutput.style.fontFamily = "'JetBrains Mono', monospace";
+          editorOutput.style.letterSpacing = 'normal';
+          if (outputFontTag) outputFontTag.textContent = 'Raw ASCII Keys';
+        }
+      } else {
+        // Left is Preeti, Right is Unicode
+        if (inputPreetiVisual) {
           editorInput.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
           editorInput.style.letterSpacing = '0.02em';
-          if (inputFontTag) inputFontTag.textContent = 'Nepali Visual (Preeti)';
+          if (inputFontTag) inputFontTag.textContent = 'Nepali Visual';
         } else {
           editorInput.style.fontFamily = "'JetBrains Mono', monospace";
           editorInput.style.letterSpacing = 'normal';
           if (inputFontTag) inputFontTag.textContent = 'Raw ASCII Keys';
         }
         editorOutput.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-      } else {
-        editorInput.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
-        if (isPreetiVisual) {
-          editorOutput.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
-          editorOutput.style.letterSpacing = '0.02em';
-          if (outputFontTag) outputFontTag.textContent = 'Nepali Visual (Preeti)';
-        } else {
-          editorOutput.style.fontFamily = "'JetBrains Mono', monospace";
-          editorOutput.style.letterSpacing = 'normal';
-          if (outputFontTag) outputFontTag.textContent = 'Raw ASCII Keys';
-        }
+        editorOutput.style.letterSpacing = 'normal';
+        if (outputFontTag) outputFontTag.textContent = 'UTF-8 UNICODE';
       }
     }
 
     function updateModeUI() {
-      if (currentMode === 'toUnicode') {
-        modeBtnPreetiToUni.className = 'mode-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--accent-primary)] text-white shadow-sm';
-        modeBtnUniToPreeti.className = 'mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all';
-        
+      if (currentMode === 'toPreeti') {
+        modeBtnUniToPreeti.classList.add('converter-btn-primary');
+        modeBtnPreetiToUni.classList.remove('converter-btn-primary');
+
+        inputLabel.textContent = 'Nepali Unicode Input';
+        outputLabel.textContent = 'Preeti Text Output';
+        selectTypingLayout.value = 'traditional';
+        typingLayout = 'traditional';
+      } else {
+        modeBtnPreetiToUni.classList.add('converter-btn-primary');
+        modeBtnUniToPreeti.classList.remove('converter-btn-primary');
+
         inputLabel.textContent = 'Preeti Text Input';
         outputLabel.textContent = 'Nepali Unicode Output';
-        outputFontTag.textContent = 'UTF-8 UNICODE';
-      } else {
-        modeBtnUniToPreeti.className = 'mode-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--accent-primary)] text-white shadow-sm';
-        modeBtnPreetiToUni.className = 'mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all';
-        
-        inputLabel.textContent = 'Nepali Unicode Input';
-        inputFontTag.textContent = 'UTF-8 UNICODE';
-        outputLabel.textContent = 'Preeti Text Output';
+        selectTypingLayout.value = 'preeti';
+        typingLayout = 'preeti';
       }
-      applyPreetiFontView();
+      applyFonts();
     }
 
     function calculateStats(text) {
@@ -500,39 +455,64 @@ const faqSchema = {
       isConverting = true;
 
       try {
-        const inputHtml = editorInput.innerHTML;
         const inputText = editorInput.innerText || '';
-
-        const inputStats = calculateStats(inputText);
-        inputCharCount.textContent = inputStats.chars.toLocaleString();
-        inputWordCount.textContent = inputStats.words.toLocaleString();
+        const inStats = calculateStats(inputText);
+        inputCharCount.textContent = inStats.chars.toLocaleString();
+        inputWordCount.textContent = inStats.words.toLocaleString();
 
         if (!inputText.trim()) {
           editorOutput.innerHTML = '';
           outputCharCount.textContent = '0';
           outputWordCount.textContent = '0';
-          isConverting = false;
           return;
         }
 
-        const convertedHtml = convertHtml(inputHtml, currentMode);
-        editorOutput.innerHTML = convertedHtml;
+        const clone = editorInput.cloneNode(true);
+        convertDom(clone, currentMode);
+        editorOutput.innerHTML = clone.innerHTML;
 
-        const outputText = editorOutput.innerText || '';
-        const outputStats = calculateStats(outputText);
-        outputCharCount.textContent = outputStats.chars.toLocaleString();
-        outputWordCount.textContent = outputStats.words.toLocaleString();
+        const outText = editorOutput.innerText || '';
+        const outStats = calculateStats(outText);
+        outputCharCount.textContent = outStats.chars.toLocaleString();
+        outputWordCount.textContent = outStats.words.toLocaleString();
       } finally {
         isConverting = false;
       }
     }
 
+    // In-Browser Keyboard Interception
+    editorInput.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
+
+      if (typingLayout === 'traditional') {
+        const matched = KEY_CODE_MAP[e.code];
+        if (matched && matched.uni) {
+          e.preventDefault();
+          const ch = e.shiftKey ? matched.uni[1] : matched.uni[0];
+          document.execCommand('insertText', false, ch);
+          runConversion();
+        }
+      } else if (typingLayout === 'romanized') {
+        const matched = KEY_CODE_MAP[e.code];
+        if (matched && matched.rom) {
+          e.preventDefault();
+          let ch = e.shiftKey ? matched.rom[1] : matched.rom[0];
+          if (e.code === 'KeyQ' && !e.shiftKey) ch = '्';
+          if (e.code === 'Slash' && !e.shiftKey) ch = '्';
+          document.execCommand('insertText', false, ch);
+          runConversion();
+        }
+      }
+    });
+
+    // Real-time input listener (debounced 20ms)
     let debounceTimer = null;
     editorInput.addEventListener('input', () => {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(runConversion, 25);
+      debounceTimer = setTimeout(runConversion, 20);
     });
 
+    // Toolbar formatting commands
     fmtButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -544,13 +524,7 @@ const faqSchema = {
       });
     });
 
-    modeBtnPreetiToUni.addEventListener('click', () => {
-      if (currentMode === 'toUnicode') return;
-      currentMode = 'toUnicode';
-      updateModeUI();
-      runConversion();
-    });
-
+    // Mode Switchers
     modeBtnUniToPreeti.addEventListener('click', () => {
       if (currentMode === 'toPreeti') return;
       currentMode = 'toPreeti';
@@ -558,19 +532,62 @@ const faqSchema = {
       runConversion();
     });
 
+    modeBtnPreetiToUni.addEventListener('click', () => {
+      if (currentMode === 'toUnicode') return;
+      currentMode = 'toUnicode';
+      updateModeUI();
+      runConversion();
+    });
+
+    // Swap button
     swapModeBtn.addEventListener('click', () => {
       const tempHtml = editorOutput.innerHTML;
-      currentMode = currentMode === 'toUnicode' ? 'toPreeti' : 'toUnicode';
+      currentMode = currentMode === 'toPreeti' ? 'toUnicode' : 'toPreeti';
       updateModeUI();
       editorInput.innerHTML = tempHtml;
       runConversion();
     });
 
+    // Typing Layout Switcher
+    selectTypingLayout.addEventListener('change', (e) => {
+      typingLayout = e.target.value;
+      showToast(`Active Layout: ${e.target.options[e.target.selectedIndex].text}`);
+    });
+
+    // Font view toggles (Visual vs Raw ASCII)
+    if (btnToggleOutputFont) {
+      btnToggleOutputFont.addEventListener('click', () => {
+        if (currentMode === 'toPreeti') {
+          outputPreetiVisual = !outputPreetiVisual;
+        }
+        applyFonts();
+      });
+    }
+
+    if (btnToggleInputFont) {
+      btnToggleInputFont.addEventListener('click', () => {
+        if (currentMode === 'toUnicode') {
+          inputPreetiVisual = !inputPreetiVisual;
+        }
+        applyFonts();
+      });
+    }
+
+    // Font Size Adjusters
+    if (btnFontSmaller) {
+      btnFontSmaller.addEventListener('click', () => setEditorFontSize(currentFontSize - 2));
+    }
+    if (btnFontLarger) {
+      btnFontLarger.addEventListener('click', () => setEditorFontSize(currentFontSize + 2));
+    }
+
+    // Sample Text
     btnSampleText.addEventListener('click', () => {
-      editorInput.innerHTML = currentMode === 'toUnicode' ? SAMPLE_PREETI : SAMPLE_UNICODE;
+      editorInput.innerHTML = currentMode === 'toPreeti' ? SAMPLE_UNICODE : SAMPLE_PREETI;
       runConversion();
     });
 
+    // Paste Button
     btnPasteInput.addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
@@ -584,6 +601,7 @@ const faqSchema = {
       }
     });
 
+    // Clear Input
     btnClearInput.addEventListener('click', () => {
       editorInput.innerHTML = '';
       editorOutput.innerHTML = '';
@@ -594,18 +612,10 @@ const faqSchema = {
       editorInput.focus();
     });
 
-    function showToast(msg) {
-      copyStatusIndicator.textContent = msg;
-      copyStatusIndicator.classList.remove('opacity-0');
-      setTimeout(() => {
-        copyStatusIndicator.classList.add('opacity-0');
-      }, 2000);
-    }
-
+    // Copy Formatted (Preserves Bold, Italic, Headings, Lists for Word & Docs)
     btnCopyRich.addEventListener('click', async () => {
       const htmlData = editorOutput.innerHTML;
       const textData = editorOutput.innerText || '';
-
       if (!textData.trim()) return;
 
       try {
@@ -618,10 +628,10 @@ const faqSchema = {
               'text/plain': blobText
             })
           ]);
-          showToast('Copied with formatting for Word');
+          showToast('Copied formatted text for Word & Google Docs');
         } else {
           await navigator.clipboard.writeText(textData);
-          showToast('Copied plain text');
+          showToast('Copied to clipboard');
         }
       } catch {
         const range = document.createRange();
@@ -635,12 +645,13 @@ const faqSchema = {
       }
     });
 
+    // Copy Plain
     btnCopyPlain.addEventListener('click', async () => {
       const textData = editorOutput.innerText || '';
       if (!textData.trim()) return;
       try {
         await navigator.clipboard.writeText(textData);
-        showToast('Copied plain text');
+        showToast('Copied plain ASCII text');
       } catch {
         const temp = document.createElement('textarea');
         temp.value = textData;
@@ -648,24 +659,27 @@ const faqSchema = {
         temp.select();
         document.execCommand('copy');
         document.body.removeChild(temp);
-        showToast('Copied plain text');
+        showToast('Copied plain ASCII text');
       }
     });
 
+    // Download Text File
     btnDownloadTxt.addEventListener('click', () => {
       const textData = editorOutput.innerText || '';
       if (!textData.trim()) return;
-      const filename = currentMode === 'toUnicode' ? 'nepali-unicode-document.txt' : 'preeti-document.txt';
+      const filename = currentMode === 'toPreeti' ? 'preeti-text.txt' : 'nepali-unicode.txt';
       const blob = new Blob([textData], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = filename;
       a.click();
       URL.revokeObjectURL(a.href);
+      showToast(`Downloaded ${filename}`);
     });
 
+    // Print Document
     btnPrintDoc.addEventListener('click', () => {
-      const printWin = window.open('', '', 'width=800,height=600');
+      const printWin = window.open('', '', 'width=840,height=640');
       if (!printWin) return;
       printWin.document.write(`
         <!DOCTYPE html>
@@ -673,8 +687,8 @@ const faqSchema = {
           <head>
             <title>TopNepali Document Print</title>
             <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; line-height: 1.6; color: #111; }
-              h1, h2, h3 { color: #000; }
+              body { font-family: 'Font_preeti', 'Preeti', sans-serif; padding: 40px; line-height: 1.8; color: #111; font-size: 18px; }
+              h1, h2, h3 { color: #000; margin-top: 1.5em; margin-bottom: 0.5em; }
             </style>
           </head>
           <body>
@@ -688,25 +702,9 @@ const faqSchema = {
       printWin.close();
     });
 
-    // Font Size Adjusters
-    if (btnFontSmaller) {
-      btnFontSmaller.addEventListener('click', () => setEditorFontSize(currentFontSize - 2));
-    }
-    if (btnFontLarger) {
-      btnFontLarger.addEventListener('click', () => setEditorFontSize(currentFontSize + 2));
-    }
-
-    // Preeti View Mode Toggle (Visual Devanagari vs Raw ASCII Keys)
-    if (btnToggleFontView) {
-      btnToggleFontView.addEventListener('click', () => {
-        isPreetiVisual = !isPreetiVisual;
-        applyPreetiFontView();
-      });
-    }
-
-    // Initialize with sample on first load
-    setEditorFontSize(18);
-    applyPreetiFontView();
+    // Initialize on first load
+    setEditorFontSize(20);
+    updateModeUI();
     editorInput.innerHTML = SAMPLE_UNICODE;
     runConversion();
   </script>
