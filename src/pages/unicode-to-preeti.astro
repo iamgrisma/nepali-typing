@@ -660,9 +660,14 @@ const appSchema = {
         }
       }
 
+      let lastNepaliLayout = 'traditional';
       function toggleTypingLayout() {
-        // Alt+Shift strictly toggles between Nepali Traditional and English QWERTY
-        typingLayout = (typingLayout === 'traditional') ? 'english' : 'traditional';
+        if (typingLayout === 'english') {
+          typingLayout = lastNepaliLayout || 'traditional';
+        } else {
+          lastNepaliLayout = typingLayout;
+          typingLayout = 'english';
+        }
         updateLayoutUI();
         const names = {
           traditional: 'Nepali Traditional',
@@ -675,6 +680,7 @@ const appSchema = {
       if (btnRomanizedToggle) {
         btnRomanizedToggle.addEventListener('click', () => {
           typingLayout = (typingLayout === 'romanized') ? 'traditional' : 'romanized';
+          lastNepaliLayout = typingLayout;
           updateLayoutUI();
           const names = {
             traditional: 'Nepali Traditional',
@@ -686,17 +692,17 @@ const appSchema = {
       }
 
       window.addEventListener('keydown', (e) => {
-        if (e.code === 'AltLeft' || e.key === 'Alt') isAltDown = true;
-        if (e.code === 'ShiftLeft' || e.key === 'Shift') isShiftDown = true;
-        if (isAltDown && isShiftDown) {
+        if (e.repeat) return;
+        if ((e.code === 'AltLeft' || e.key === 'Alt') && e.shiftKey) {
           e.preventDefault();
           toggleTypingLayout();
+          return;
         }
-      });
-
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'AltLeft' || e.key === 'Alt') isAltDown = false;
-        if (e.code === 'ShiftLeft' || e.key === 'Shift') isShiftDown = false;
+        if ((e.code === 'ShiftLeft' || e.key === 'Shift') && e.altKey) {
+          e.preventDefault();
+          toggleTypingLayout();
+          return;
+        }
       });
 
       // Safe insertion helper for Nepali Unicode typing that breaks out of any residual eng-text spans
@@ -707,6 +713,20 @@ const appSchema = {
         let container = range.startContainer;
         let parentEl = container.nodeType === 1 ? container : container.parentElement;
         let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
+
+        if (!engSpan) {
+          if (container.nodeType === 3 && (range.startOffset === 0 || container.nodeValue.length === 0) && container.previousSibling) {
+            const prev = container.previousSibling;
+            if (prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+              engSpan = prev;
+            }
+          } else if (container.nodeType === 1 && range.startOffset > 0) {
+            const prev = container.childNodes[range.startOffset - 1];
+            if (prev && prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+              engSpan = prev;
+            }
+          }
+        }
 
         if (engSpan) {
           let nextNode = engSpan.nextSibling;
@@ -721,7 +741,7 @@ const appSchema = {
             return;
           }
           if (nextNode && nextNode.nodeType === 3) {
-            nextNode.nodeValue = ch + nextNode.nodeValue;
+            nextNode.nodeValue = ch + (nextNode.nodeValue || '');
             const newRange = document.createRange();
             newRange.setStart(nextNode, 1);
             newRange.collapse(true);
@@ -744,7 +764,8 @@ const appSchema = {
 
       // Keydown Transliteration on editorInput
       editorInput.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
+        // Do not block single character keystrokes on altKey alone because thumb release after Alt+Shift may lag by a few milliseconds.
+        if (e.ctrlKey || e.metaKey || e.key.length > 1) return;
 
         if (typingLayout === 'traditional') {
           const matched = KEY_CODE_MAP[e.code];
@@ -815,6 +836,9 @@ const appSchema = {
       if (selectTypingLayout) {
         selectTypingLayout.addEventListener('change', (e) => {
           typingLayout = e.target.value;
+          if (typingLayout !== 'english') {
+            lastNepaliLayout = typingLayout;
+          }
           updateLayoutUI();
           const name = e.target.options[e.target.selectedIndex].text;
           showToast(`Layout: ${name}`);

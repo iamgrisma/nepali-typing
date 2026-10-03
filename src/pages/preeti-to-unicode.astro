@@ -620,9 +620,6 @@ const appSchema = {
       }
 
       // Windows-Style Left Alt + Left Shift Keyboard Shortcut (Preeti vs English)
-      let isAltDown = false;
-      let isShiftDown = false;
-
       function breakOutOfEngSpan() {
         const sel = window.getSelection();
         if (!sel || sel.rangeCount === 0) return;
@@ -632,15 +629,19 @@ const appSchema = {
         let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
         if (engSpan) {
           let nextNode = engSpan.nextSibling;
-          if (!nextNode || nextNode.nodeType !== 3) {
-            nextNode = document.createTextNode('');
-            engSpan.parentNode.insertBefore(nextNode, engSpan.nextSibling);
+          if (nextNode && nextNode.nodeType === 3) {
+            const newRange = document.createRange();
+            newRange.setStart(nextNode, 0);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          } else {
+            const newRange = document.createRange();
+            newRange.setStartAfter(engSpan);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
           }
-          const newRange = document.createRange();
-          newRange.setStart(nextNode, 0);
-          newRange.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(newRange);
         }
       }
 
@@ -655,22 +656,24 @@ const appSchema = {
       }
 
       window.addEventListener('keydown', (e) => {
-        if (e.code === 'AltLeft' || e.key === 'Alt') isAltDown = true;
-        if (e.code === 'ShiftLeft' || e.key === 'Shift') isShiftDown = true;
-        if (isAltDown && isShiftDown) {
+        if (e.repeat) return;
+        if ((e.code === 'AltLeft' || e.key === 'Alt') && e.shiftKey) {
           e.preventDefault();
           toggleTypingLayout();
+          return;
         }
-      });
-
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'AltLeft' || e.key === 'Alt') isAltDown = false;
-        if (e.code === 'ShiftLeft' || e.key === 'Shift') isShiftDown = false;
+        if ((e.code === 'ShiftLeft' || e.key === 'Shift') && e.altKey) {
+          e.preventDefault();
+          toggleTypingLayout();
+          return;
+        }
       });
 
       // Keydown Handling on Preeti editorInput
       editorInput.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
+        // Only ignore modifier combinations with Ctrl or Meta, or non-character navigation keys.
+        // Do not block single character keystrokes on altKey alone because thumb release after Alt+Shift may lag by a few milliseconds.
+        if (e.ctrlKey || e.metaKey || e.key.length > 1) return;
 
         if (typingLayout === 'english') {
           e.preventDefault();
@@ -739,13 +742,31 @@ const appSchema = {
             let parentEl = container.nodeType === 1 ? container : container.parentElement;
             let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
 
+            let isAfterEngSpan = false;
+            if (!engSpan) {
+              if (container.nodeType === 3 && (range.startOffset === 0 || container.nodeValue.length === 0) && container.previousSibling) {
+                const prev = container.previousSibling;
+                if (prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+                  engSpan = prev;
+                  isAfterEngSpan = true;
+                }
+              } else if (container.nodeType === 1 && range.startOffset > 0) {
+                const prev = container.childNodes[range.startOffset - 1];
+                if (prev && prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+                  engSpan = prev;
+                  isAfterEngSpan = true;
+                }
+              }
+            }
+
             // If caret is inside or touching an engSpan, forcefully insert character outside the span as plain Preeti text
             if (engSpan) {
               e.preventDefault();
               let char = e.key;
 
               let isAtStart = (range.startContainer === engSpan.firstChild && range.startOffset === 0);
-              let isAtEnd = (range.startContainer === engSpan.firstChild && range.startOffset >= engSpan.textContent.length) ||
+              let isAtEnd = isAfterEngSpan ||
+                            (range.startContainer === engSpan.firstChild && range.startOffset >= engSpan.textContent.length) ||
                             (range.startContainer === engSpan && range.startOffset >= engSpan.childNodes.length);
 
               if (isAtStart) {
@@ -759,7 +780,7 @@ const appSchema = {
               } else if (isAtEnd) {
                 const nextNode = engSpan.nextSibling;
                 if (nextNode && nextNode.nodeType === 3) {
-                  nextNode.nodeValue = char + nextNode.nodeValue;
+                  nextNode.nodeValue = char + (nextNode.nodeValue || '');
                   const newRange = document.createRange();
                   newRange.setStart(nextNode, 1);
                   newRange.collapse(true);
