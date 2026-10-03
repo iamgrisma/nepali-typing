@@ -417,9 +417,13 @@ const appSchema = {
       function convertNodesRecursively(node) {
         if (!node) return;
         if (node.nodeType === 1) {
-          // If marked as English, LEAVE IT UNTOUCHED!
+          // If marked as English, LEAVE IT UNTOUCHED unless it contains Devanagari
           if (node.getAttribute('data-eng') === 'true' || node.classList.contains('eng-text')) {
-            return;
+            if (!/[\u0900-\u097F]/.test(node.textContent)) {
+              return;
+            }
+            node.removeAttribute('data-eng');
+            node.classList.remove('eng-text');
           }
           const children = Array.from(node.childNodes);
           for (let i = 0; i < children.length; i++) {
@@ -618,9 +622,34 @@ const appSchema = {
       // Windows-Style Left Alt + Left Shift Keyboard Shortcut (Preeti vs English)
       let isAltDown = false;
       let isShiftDown = false;
+
+      function breakOutOfEngSpan() {
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const range = sel.getRangeAt(0);
+        let container = range.startContainer;
+        let parentEl = container.nodeType === 1 ? container : container.parentElement;
+        let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
+        if (engSpan) {
+          let nextNode = engSpan.nextSibling;
+          if (!nextNode || nextNode.nodeType !== 3) {
+            nextNode = document.createTextNode('');
+            engSpan.parentNode.insertBefore(nextNode, engSpan.nextSibling);
+          }
+          const newRange = document.createRange();
+          newRange.setStart(nextNode, 0);
+          newRange.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+        }
+      }
+
       function toggleTypingLayout() {
         typingLayout = (typingLayout === 'preeti') ? 'english' : 'preeti';
         if (selectTypingLayout) selectTypingLayout.value = typingLayout;
+        if (typingLayout === 'preeti') {
+          breakOutOfEngSpan();
+        }
         const name = (typingLayout === 'preeti') ? 'Preeti Typewriter' : 'English QWERTY';
         showToast(`Layout: ${name} (Alt+Shift)`);
       }
@@ -652,15 +681,40 @@ const appSchema = {
             let parentEl = container.nodeType === 1 ? container : container.parentElement;
             let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
 
+            if (!engSpan) {
+              if (container.nodeType === 3 && range.startOffset === 0 && container.previousSibling) {
+                const prev = container.previousSibling;
+                if (prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+                  engSpan = prev;
+                  container = engSpan.lastChild || engSpan;
+                }
+              } else if (container.nodeType === 1 && range.startOffset > 0) {
+                const prev = container.childNodes[range.startOffset - 1];
+                if (prev && prev.nodeType === 1 && (prev.getAttribute('data-eng') === 'true' || prev.classList.contains('eng-text'))) {
+                  engSpan = prev;
+                  container = engSpan.lastChild || engSpan;
+                }
+              }
+            }
+
             if (engSpan && engSpan.contains(container)) {
-              const textNode = document.createTextNode(e.key);
-              range.deleteContents();
-              range.insertNode(textNode);
-              const newRange = document.createRange();
-              newRange.setStartAfter(textNode);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
+              if (container.nodeType === 3) {
+                const offset = range.startOffset;
+                container.nodeValue = container.nodeValue.slice(0, offset) + e.key + container.nodeValue.slice(offset);
+                const newRange = document.createRange();
+                newRange.setStart(container, offset + 1);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+              } else {
+                const textNode = document.createTextNode(e.key);
+                engSpan.appendChild(textNode);
+                const newRange = document.createRange();
+                newRange.setStart(textNode, 1);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+              }
             } else {
               const span = document.createElement('span');
               span.className = 'eng-text';
@@ -676,6 +730,7 @@ const appSchema = {
             }
           }
           runConversion();
+          return;
         } else if (typingLayout === 'preeti') {
           const sel = window.getSelection();
           if (sel && sel.rangeCount > 0) {
@@ -683,12 +738,63 @@ const appSchema = {
             let container = range.startContainer;
             let parentEl = container.nodeType === 1 ? container : container.parentElement;
             let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
-            if (engSpan && engSpan.contains(container)) {
-              const newRange = document.createRange();
-              newRange.setStartAfter(engSpan);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
+
+            // If caret is inside or touching an engSpan, forcefully insert character outside the span as plain Preeti text
+            if (engSpan) {
+              e.preventDefault();
+              let char = e.key;
+
+              let isAtStart = (range.startContainer === engSpan.firstChild && range.startOffset === 0);
+              let isAtEnd = (range.startContainer === engSpan.firstChild && range.startOffset >= engSpan.textContent.length) ||
+                            (range.startContainer === engSpan && range.startOffset >= engSpan.childNodes.length);
+
+              if (isAtStart) {
+                const textNode = document.createTextNode(char);
+                engSpan.parentNode.insertBefore(textNode, engSpan);
+                const newRange = document.createRange();
+                newRange.setStart(textNode, 1);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+              } else if (isAtEnd) {
+                const nextNode = engSpan.nextSibling;
+                if (nextNode && nextNode.nodeType === 3) {
+                  nextNode.nodeValue = char + nextNode.nodeValue;
+                  const newRange = document.createRange();
+                  newRange.setStart(nextNode, 1);
+                  newRange.collapse(true);
+                  sel.removeAllRanges();
+                  sel.addRange(newRange);
+                } else {
+                  const textNode = document.createTextNode(char);
+                  engSpan.parentNode.insertBefore(textNode, engSpan.nextSibling);
+                  const newRange = document.createRange();
+                  newRange.setStart(textNode, 1);
+                  newRange.collapse(true);
+                  sel.removeAllRanges();
+                  sel.addRange(newRange);
+                }
+              } else {
+                const fullText = engSpan.textContent;
+                const offset = (range.startContainer === engSpan.firstChild) ? range.startOffset : fullText.length;
+                const part1 = fullText.slice(0, offset);
+                const part2 = fullText.slice(offset);
+                engSpan.textContent = part1;
+                const textNode = document.createTextNode(char);
+                engSpan.parentNode.insertBefore(textNode, engSpan.nextSibling);
+                if (part2.length > 0) {
+                  const span2 = engSpan.cloneNode(false);
+                  span2.textContent = part2;
+                  engSpan.parentNode.insertBefore(span2, textNode.nextSibling);
+                }
+                const newRange = document.createRange();
+                newRange.setStart(textNode, 1);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+              }
+              runConversion();
+              return;
             }
           }
 
@@ -774,6 +880,9 @@ const appSchema = {
       if (selectTypingLayout) {
         selectTypingLayout.addEventListener('change', (e) => {
           typingLayout = e.target.value;
+          if (typingLayout === 'preeti') {
+            breakOutOfEngSpan();
+          }
           const name = e.target.options[e.target.selectedIndex].text;
           showToast(`Layout: ${name}`);
         });

@@ -467,7 +467,11 @@ const appSchema = {
         if (!node) return;
         if (node.nodeType === 1) {
           if (node.getAttribute('data-eng') === 'true' || node.classList.contains('eng-text')) {
-            return;
+            if (!/[\u0900-\u097F]/.test(node.textContent)) {
+              return;
+            }
+            node.removeAttribute('data-eng');
+            node.classList.remove('eng-text');
           }
           const children = Array.from(node.childNodes);
           for (let i = 0; i < children.length; i++) {
@@ -545,7 +549,7 @@ const appSchema = {
 
       const fmtButtons = document.querySelectorAll('.fmt-btn');
 
-      const SAMPLE_GUIDE_UNICODE = `<h2>नेपाली युनिकोड तथा प्रिती कन्भर्टर प्रयोग निर्देशिका</h2><p>यो नेपालको आधुनिक <b><span class="eng-text" data-eng="true">TopNepali</span></b> अनलाइन टाइपिङ तथा फन्ट रूपान्तरण प्लेटफर्म हो । यसले <i><span class="eng-text" data-eng="true">Microsoft Word</span></i>, <i><span class="eng-text" data-eng="true">Adobe InDesign</span></i>, तथा <i><span class="eng-text" data-eng="true">Google Docs</span></i> को लागि पूर्ण फर्म्याटिङ संरक्षण गर्दछ ।</p><h3>प्रमुख विशेषताहरू <span class="eng-text" data-eng="true">(Key Highlights)</span> :</h3><ul><li><b>द्रुत किबोर्ड सर्टकट <span class="eng-text" data-eng="true">(Keyboard Chord)</span> :</b> किबोर्डमा <u><span class="eng-text" data-eng="true">Left Alt + Left Shift</span></u> थिचेर नेपाली Traditional र <span class="eng-text" data-eng="true">English QWERTY</span> बीच तुरुन्तै अदलबदल गर्न सकिन्छ ।</li><li><b>रोमनाइज्ड लेआउट <span class="eng-text" data-eng="true">(Romanized)</span> :</b> यदि तपाईंलाई अंग्रेजी अक्षरबाट नेपाली लेख्न मन पर्छ भने <u><span class="eng-text" data-eng="true">Romanized?</span></u> बटन थिची सजिलै टाइप गर्न सक्नुहुन्छ ।</li><li><b>द्विभाषी टाइपिङ र अंग्रेजी संरक्षण <span class="eng-text" data-eng="true">(Bilingual Preservation)</span> :</b> युनिकोडबाट प्रिती बनाउँदा अंग्रेजी शब्दहरू जस्तै <b>मकै <span class="eng-text" data-eng="true">(corn)</span></b> वा <b>नेपाल <span class="eng-text" data-eng="true">(Nepal)</span></b> पेस्ट गर्दा पनि स्वतः सुरक्षित रहन्छन् । तर पुरानो प्रिती फन्ट आफैँमा अंग्रेजी किस्ट्रोक <span class="eng-text" data-eng="true">(ASCII)</span> हुने भएकाले प्रिती बक्समा पेस्ट गर्दा कुन अंग्रेजी हो छुट्याउन सकिँदैन र सबै युनिकोड बन्दछ । यदि प्रिती बक्समा अंग्रेजी शब्द राख्नुपरेमा <u><span class="eng-text" data-eng="true">Alt + Shift</span></u> थिची <span class="eng-text" data-eng="true">English QWERTY</span> मा टाइप गर्नुहोस्, त्यो अंग्रेजी युनिकोडमा सुरक्षित रहन्छ ।</li><li><b>पूर्ण फर्म्याटिङ संरक्षण :</b> बोल्ड <span class="eng-text" data-eng="true">(Bold)</span>, इटालिक <span class="eng-text" data-eng="true">(Italic)</span>, हेडिङहरू <span class="eng-text" data-eng="true">(H2, H3)</span>, र बुलेट सूची <span class="eng-text" data-eng="true">(Bullet List)</span> सहित <b><span class="eng-text" data-eng="true">Word (.doc)</span></b> फाइल डाउनलोड गर्न सकिन्छ ।</li><li><b>हलन्त र रेफ शुद्धता :</b> श्रीमान्, महान्, र छन् जस्ता शब्दहरू शुद्ध प्रिती ब्याकस्ल्यासमा रूपान्तरण हुन्छन् ।</li></ul><p>तपाईं आफ्नो पाठ यहाँ सिधै टाइप गर्न वा बाहिरबाट <b><span class="eng-text" data-eng="true">Paste</span></b> गरी तत्काल प्रिती फन्टमा रूपान्तरण गर्न सक्नुहुन्छ ।</p>`;
+      const SAMPLE_GUIDE_UNICODE = `<h2>नेपाली युनिकोड तथा प्रिती कन्भर्टर प्रयोग निर्देशिका</h2><p>यो नेपालको आधुनिक <b>TopNepali</b> अनलाइन टाइपिङ तथा फन्ट रूपान्तरण प्लेटफर्म हो । यसले <i>Microsoft Word</i>, <i>Adobe InDesign</i>, तथा <i>Google Docs</i> को लागि पूर्ण फर्म्याटिङ संरक्षण गर्दछ ।</p><h3>प्रमुख विशेषताहरू (Key Highlights) :</h3><ul><li><b>द्रुत किबोर्ड सर्टकट (Keyboard Chord) :</b> किबोर्डमा <u>Left Alt + Left Shift</u> थिचेर नेपाली Traditional र English QWERTY बीच तुरुन्तै अदलबदल गर्न सकिन्छ ।</li><li><b>रोमनाइज्ड लेआउट (Romanized) :</b> यदि तपाईंलाई अंग्रेजी अक्षरबाट नेपाली लेख्न मन पर्छ भने <u>Romanized?</u> बटन थिची सजिलै टाइप गर्न सक्नुहुन्छ ।</li><li><b>द्विभाषी टाइपिङ र अंग्रेजी संरक्षण (Bilingual Preservation) :</b> युनिकोडबाट प्रिती बनाउँदा अंग्रेजी शब्दहरू जस्तै <b>मकै (corn)</b> वा <b>नेपाल (Nepal)</b> पेस्ट गर्दा पनि स्वतः सुरक्षित रहन्छन् । तर पुरानो प्रिती फन्ट आफैँमा अंग्रेजी किस्ट्रोक (ASCII) हुने भएकाले प्रिती बक्समा पेस्ट गर्दा कुन अंग्रेजी हो छुट्याउन सकिँदैन र सबै युनिकोड बन्दछ । यदि प्रिती बक्समा अंग्रेजी शब्द राख्नुपरेमा <u>Alt + Shift</u> थिची English QWERTY मा टाइप गर्नुहोस्, त्यो अंग्रेजी युनिकोडमा सुरक्षित रहन्छ ।</li><li><b>पूर्ण फर्म्याटिङ संरक्षण :</b> बोल्ड (Bold), इटालिक (Italic), हेडिङहरू (H2, H3), र बुलेट सूची (Bullet List) सहित <b>Word (.doc)</b> फाइल डाउनलोड गर्न सकिन्छ ।</li><li><b>हलन्त र रेफ शुद्धता :</b> श्रीमान्, महान्, र छन् जस्ता शब्दहरू शुद्ध प्रिती ब्याकस्ल्यासमा रूपान्तरण हुन्छन् ।</li></ul><p>तपाईं आफ्नो पाठ यहाँ सिधै टाइप गर्न वा बाहिरबाट <b>Paste</b> गरी तत्काल प्रिती फन्टमा रूपान्तरण गर्न सक्नुहुन्छ ।</p>`;
 
       function showToast(msg) {
         if (toastEl) {
@@ -695,90 +699,74 @@ const appSchema = {
         if (e.code === 'ShiftLeft' || e.key === 'Shift') isShiftDown = false;
       });
 
+      // Safe insertion helper for Nepali Unicode typing that breaks out of any residual eng-text spans
+      function insertNepaliChar(ch) {
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const range = sel.getRangeAt(0);
+        let container = range.startContainer;
+        let parentEl = container.nodeType === 1 ? container : container.parentElement;
+        let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
+
+        if (engSpan) {
+          let nextNode = engSpan.nextSibling;
+          if (range.startOffset === 0 && range.startContainer === engSpan.firstChild) {
+            const textNode = document.createTextNode(ch);
+            engSpan.parentNode.insertBefore(textNode, engSpan);
+            const newRange = document.createRange();
+            newRange.setStart(textNode, 1);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+            return;
+          }
+          if (nextNode && nextNode.nodeType === 3) {
+            nextNode.nodeValue = ch + nextNode.nodeValue;
+            const newRange = document.createRange();
+            newRange.setStart(nextNode, 1);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          } else {
+            const textNode = document.createTextNode(ch);
+            engSpan.parentNode.insertBefore(textNode, engSpan.nextSibling);
+            const newRange = document.createRange();
+            newRange.setStart(textNode, 1);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          }
+          return;
+        }
+
+        document.execCommand('insertText', false, ch);
+      }
+
       // Keydown Transliteration on editorInput
       editorInput.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) return;
 
         if (typingLayout === 'traditional') {
-          const sel = window.getSelection();
-          if (sel && sel.rangeCount > 0) {
-            const range = sel.getRangeAt(0);
-            let container = range.startContainer;
-            let parentEl = container.nodeType === 1 ? container : container.parentElement;
-            let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
-            if (engSpan && engSpan.contains(container)) {
-              const newRange = document.createRange();
-              newRange.setStartAfter(engSpan);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
-            }
-          }
           const matched = KEY_CODE_MAP[e.code];
           if (matched && matched.uni) {
             e.preventDefault();
             const ch = e.shiftKey ? matched.uni[1] : matched.uni[0];
-            document.execCommand('insertText', false, ch);
+            insertNepaliChar(ch);
             normalizeEditorLigatures();
             runConversion();
           }
         } else if (typingLayout === 'romanized') {
-          const sel = window.getSelection();
-          if (sel && sel.rangeCount > 0) {
-            const range = sel.getRangeAt(0);
-            let container = range.startContainer;
-            let parentEl = container.nodeType === 1 ? container : container.parentElement;
-            let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
-            if (engSpan && engSpan.contains(container)) {
-              const newRange = document.createRange();
-              newRange.setStartAfter(engSpan);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
-            }
-          }
           const matched = KEY_CODE_MAP[e.code];
           if (matched && matched.rom) {
             e.preventDefault();
             let ch = e.shiftKey ? matched.rom[1] : matched.rom[0];
-            document.execCommand('insertText', false, ch);
+            insertNepaliChar(ch);
             normalizeEditorLigatures();
             runConversion();
           }
-        } else if (typingLayout === 'english') {
-          e.preventDefault();
-          const sel = window.getSelection();
-          if (sel && sel.rangeCount > 0) {
-            const range = sel.getRangeAt(0);
-            let container = range.startContainer;
-            let parentEl = container.nodeType === 1 ? container : container.parentElement;
-            let engSpan = parentEl ? parentEl.closest('.eng-text, [data-eng="true"]') : null;
-
-            if (engSpan && engSpan.contains(container)) {
-              const textNode = document.createTextNode(e.key);
-              range.deleteContents();
-              range.insertNode(textNode);
-              const newRange = document.createRange();
-              newRange.setStartAfter(textNode);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
-            } else {
-              const span = document.createElement('span');
-              span.className = 'eng-text';
-              span.setAttribute('data-eng', 'true');
-              span.textContent = e.key;
-              range.deleteContents();
-              range.insertNode(span);
-              const newRange = document.createRange();
-              newRange.setStart(span.firstChild, 1);
-              newRange.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(newRange);
-            }
-          }
-          runConversion();
         }
+        // When typingLayout === 'english', allow native browser keystrokes as plain text without spans.
+        // editorInput 'input' listener automatically triggers real-time conversion.
       });
 
       // Keystroke-by-keystroke real-time conversion
