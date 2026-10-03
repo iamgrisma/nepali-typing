@@ -168,10 +168,10 @@
   line-height: 1.75;
 }
 
-.font-ascii,
-.font-ascii *,
-[data-preeti-visual="false"],
-[data-preeti-visual="false"] * {
+.font-ascii:not(.eng-text):not([data-eng="true"]),
+[data-preeti-visual="false"]:not(.eng-text):not([data-eng="true"]),
+.font-ascii *:not(.eng-text):not([data-eng="true"]):not(.eng-text *):not([data-eng="true"] *),
+[data-preeti-visual="false"] *:not(.eng-text):not([data-eng="true"]):not(.eng-text *):not([data-eng="true"] *) {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
   letter-spacing: normal;
 }
@@ -179,8 +179,16 @@
 .eng-text,
 .eng-text *,
 [data-eng="true"],
-[data-eng="true"] * {
-  font-family: var(--font-sans), 'Inter', -apple-system, sans-serif !important;
+[data-eng="true"] *,
+[data-preeti-visual="true"] .eng-text,
+[data-preeti-visual="true"] [data-eng="true"],
+[data-preeti-visual="true"] .eng-text *,
+[data-preeti-visual="true"] [data-eng="true"] *,
+.font-preeti .eng-text,
+.font-preeti [data-eng="true"],
+.font-preeti .eng-text *,
+.font-preeti [data-eng="true"] * {
+  font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   letter-spacing: normal !important;
 }
 
