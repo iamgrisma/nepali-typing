@@ -96,28 +96,37 @@ const appSchema = {
 
     <!-- Master Converter Toolbar -->
     <div class="converter-toolbar">
-      <div class="flex items-center gap-2 flex-wrap">
-        <!-- Switch Converter Destination -->
-        <a
-          href="/preeti-to-unicode/"
-          class="converter-btn flex items-center gap-1.5 font-semibold text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          title="Switch to Preeti to Unicode Converter"
-        >
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
-          </svg>
-          <span>Preeti &rarr; Unicode</span>
-        </a>
+      <!-- Mode Switcher & Swap Chords -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <div class="inline-flex p-1 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+          <button
+            type="button"
+            id="mode-preeti-to-uni"
+            class="converter-btn hover:bg-[var(--bg-surface)] cursor-pointer"
+            title="Switch to Preeti to Unicode Converter (swaps text automatically)"
+          >
+            Preeti &rarr; Unicode
+          </button>
+          <button
+            type="button"
+            id="mode-uni-to-preeti"
+            class="converter-btn converter-btn-primary font-bold cursor-default pointer-events-none"
+            title="Currently on Unicode to Preeti Converter"
+          >
+            Unicode &rarr; Preeti
+          </button>
+        </div>
 
-        <!-- Manual Convert Action Button -->
         <button
           type="button"
-          id="btn-convert-now"
-          class="converter-btn converter-btn-primary font-bold px-3 py-1.5 flex items-center gap-1 cursor-pointer"
-          title="Convert text immediately"
+          id="swap-mode-btn"
+          class="converter-btn p-2 hover:bg-[var(--bg-surface)] cursor-pointer"
+          title="Switch Converter and Swap Text"
+          aria-label="Switch Converter and Swap Text"
         >
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          <span>Convert Now</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
+          </svg>
         </button>
       </div>
 
@@ -190,7 +199,7 @@ const appSchema = {
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button type="button" id="btn-sample-text" class="converter-btn text-xs">Sample</button>
+            <button type="button" id="btn-sample-text" class="converter-btn text-xs">Sample Guide</button>
             <button type="button" id="btn-paste-input" class="converter-btn text-xs">Paste</button>
             <button type="button" id="btn-clear-input" class="converter-btn text-xs text-rose-600 hover:text-rose-700">Clear</button>
           </div>
@@ -445,21 +454,54 @@ const appSchema = {
         return s;
       }
 
+      // Universal text node recursion with bilingual English word isolation
       function convertNodesRecursively(node) {
         if (!node) return;
-        if (node.nodeType === 3) {
-          if (node.nodeValue && node.nodeValue.length > 0) {
-            node.nodeValue = toPreeti(node.nodeValue);
+        if (node.nodeType === 1) {
+          if (node.getAttribute('data-eng') === 'true' || node.classList.contains('eng-text')) {
+            return;
           }
-        } else if (node.nodeType === 1) {
-          for (let i = 0; i < node.childNodes.length; i++) {
-            convertNodesRecursively(node.childNodes[i]);
+          const children = Array.from(node.childNodes);
+          for (let i = 0; i < children.length; i++) {
+            convertNodesRecursively(children[i]);
+          }
+        } else if (node.nodeType === 3) {
+          const text = node.nodeValue;
+          if (!text || !text.length) return;
+
+          const regex = /([A-Za-z][A-Za-z0-9_-]*)/g;
+          if (!regex.test(text)) {
+            node.nodeValue = toPreeti(text);
+          } else {
+            regex.lastIndex = 0;
+            const frag = document.createDocumentFragment();
+            let lastIdx = 0;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+              if (match.index > lastIdx) {
+                const nepaliPart = toPreeti(text.slice(lastIdx, match.index));
+                if (nepaliPart) frag.appendChild(document.createTextNode(nepaliPart));
+              }
+              const engSpan = document.createElement('span');
+              engSpan.className = 'eng-text';
+              engSpan.setAttribute('data-eng', 'true');
+              engSpan.textContent = match[0];
+              frag.appendChild(engSpan);
+              lastIdx = regex.lastIndex;
+            }
+            if (lastIdx < text.length) {
+              const remaining = toPreeti(text.slice(lastIdx));
+              if (remaining) frag.appendChild(document.createTextNode(remaining));
+            }
+            if (node.parentNode) {
+              node.parentNode.replaceChild(frag, node);
+            }
           }
         }
       }
 
       // 3. UI State
-      let outputPreetiVisual = true; // true: Font_preeti (Nepali visual), false: Monospace (Raw ASCII)
+      let outputPreetiVisual = true;
       let currentFontSize = 20;
       let typingLayout = 'traditional'; // 'traditional' | 'romanized' | 'english'
 
@@ -472,7 +514,8 @@ const appSchema = {
       const outputCharCount = document.getElementById('output-char-count');
       const outputWordCount = document.getElementById('output-word-count');
 
-      const btnConvertNow = document.getElementById('btn-convert-now');
+      const modeBtnPreetiToUni = document.getElementById('mode-preeti-to-uni');
+      const swapModeBtn = document.getElementById('swap-mode-btn');
       const selectTypingLayout = document.getElementById('select-typing-layout');
       const btnToggleOutputFont = document.getElementById('btn-toggle-output-font');
 
@@ -494,7 +537,7 @@ const appSchema = {
 
       const fmtButtons = document.querySelectorAll('.fmt-btn');
 
-      const SAMPLE_UNICODE = '<h2>नेपाल सरकार</h2><p><b>नेपाल</b> काठमाडौँमा <i>संविधान</i> कार्यान्वयन तथा प्रशासन सुधार सम्बन्धी प्रक्रिया प्रविधि मुख्य नेपाली ज्ञान र शिक्षा (Education) प्रशिक्षण सञ्चालन भएको छ ।</p><ul><li>श्रीमान् प्रधानमन्त्रीको दृष्टिकोण</li><li>विद्यार्थी र प्रतिस्पर्धीहरूको लागि सुविधा</li></ul>';
+      const SAMPLE_GUIDE_UNICODE = `<h2>नेपाली युनिकोड तथा प्रिती कन्भर्टर प्रयोग निर्देशिका</h2><p>यो नेपालको आधिकारिक <b>TopNepali</b> अनलाइन टाइपिंग तथा फन्ट रूपान्तरण प्रणाली हो । यसले <i>Microsoft Word</i>, <i>Adobe InDesign</i>, तथा <i>Google Docs</i> को लागि पूर्ण फर्म्याटिङ संरक्षण गर्दछ ।</p><h3>प्रमुख विशेषताहरू (Key Highlights) :</h3><ul><li><b>द्रुत किबोर्ड सर्टकट (Keyboard Chord):</b> किबोर्डमा <u>Left Alt + Left Shift</u> थिचेर नेपाली Traditional, Romanized, र English QWERTY बीच तुरुन्तै अदलबदल गर्न सकिन्छ ।</li><li><b>द्विभाषी टाइपिंग (Bilingual Typing):</b> नेपाली लेख्दालेख्दै अंग्रेजी शब्दहरू जस्तै <b>मकै (corn)</b> वा <b>नेपाल (Nepal)</b> टाइप गर्दा अक्षरहरू बिग्रिँदैनन् ।</li><li><b>पूर्ण फर्म्याटिङ संरक्षण:</b> बोल्ड (Bold), इटालिक (Italic), हेडिङहरू (H2, H3), र बुलेट सूची (Bullet List) सिधै <b>Word (.doc)</b> फाइलमा डाउनलोड गर्न सकिन्छ ।</li><li><b>हलन्त र रेफ शुद्धता:</b> श्रीमान्, महान्, र छन् जस्ता शब्दहरू शुद्ध प्रिती ब्याकस्ल्यास (&gt;Ldfg\\, dxfg\\) मा रूपान्तरण हुन्छन् ।</li></ul><p>तपाईं आफ्नो पाठ यहाँ सिधै टाइप गर्न वा बाहिरबाट <b>Paste</b> गरी तत्काल प्रिती फन्टमा रूपान्तरण गर्न सक्नुहुन्छ ।</p>`;
 
       function showToast(msg) {
         if (toastEl) {
@@ -640,8 +683,11 @@ const appSchema = {
             normalizeEditorLigatures();
             runConversion();
           }
+        } else if (typingLayout === 'english') {
+          e.preventDefault();
+          document.execCommand('insertHTML', false, `<span class="eng-text" data-eng="true">${e.key}</span>`);
+          runConversion();
         }
-        // In 'english' layout, physical keys insert directly without interception.
       });
 
       // Keystroke-by-keystroke real-time conversion
@@ -652,8 +698,7 @@ const appSchema = {
       });
 
       // Paste handling
-      editorInput.addEventListener('paste', (e) => {
-        // Allow standard paste into contenteditable and trigger conversion
+      editorInput.addEventListener('paste', () => {
         setTimeout(runConversion, 10);
       });
 
@@ -669,12 +714,22 @@ const appSchema = {
         });
       });
 
-      // Explicit Manual Convert Button
-      if (btnConvertNow) {
-        btnConvertNow.addEventListener('click', () => {
-          runConversion();
-          showToast('Converted Unicode to Preeti successfully');
-        });
+      // Mode Switch & Text Swap to Preeti to Unicode
+      function switchAndSwapToPreetiToUnicode() {
+        const textToCarry = (editorOutput && editorOutput.innerHTML.trim())
+          ? editorOutput.innerHTML
+          : (editorInput ? editorInput.innerHTML : '');
+        if (textToCarry) {
+          sessionStorage.setItem('tn_converter_swap_text', textToCarry);
+        }
+        window.location.href = '/preeti-to-unicode/';
+      }
+
+      if (modeBtnPreetiToUni) {
+        modeBtnPreetiToUni.addEventListener('click', switchAndSwapToPreetiToUnicode);
+      }
+      if (swapModeBtn) {
+        swapModeBtn.addEventListener('click', switchAndSwapToPreetiToUnicode);
       }
 
       // Typing Layout Switcher Dropdown (Inside Input Pane)
@@ -704,8 +759,9 @@ const appSchema = {
 
       // Sample Text
       btnSampleText.addEventListener('click', () => {
-        editorInput.innerHTML = SAMPLE_UNICODE;
+        editorInput.innerHTML = SAMPLE_GUIDE_UNICODE;
         runConversion();
+        showToast('Loaded complete usage guide');
       });
 
       // Paste Button
@@ -784,7 +840,7 @@ const appSchema = {
         }
       });
 
-      // Download Word Document (.doc with full formatting preserved)
+      // Download Word Document (.doc with full formatting and bilingual font preserved)
       if (btnDownloadDoc) {
         btnDownloadDoc.addEventListener('click', () => {
           const htmlContent = editorOutput.innerHTML;
@@ -810,6 +866,9 @@ const appSchema = {
     font-size: 14pt;
     line-height: 1.6;
     color: #000000;
+  }
+  .eng-text {
+    font-family: Arial, Calibri, sans-serif !important;
   }
   h1, h2, h3, h4 {
     font-family: 'Preeti', 'Kantipur', sans-serif;
@@ -843,10 +902,10 @@ const appSchema = {
         if (!textData.trim()) return;
         const blob = new Blob([textData], { type: 'text/plain;charset=utf-8' });
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
+        a.href = url = URL.createObjectURL(blob);
         a.download = 'preeti-text.txt';
         a.click();
-        URL.revokeObjectURL(a.href);
+        URL.revokeObjectURL(url);
         showToast('Downloaded preeti-text.txt');
       });
 
@@ -861,6 +920,7 @@ const appSchema = {
               <title>TopNepali Document Print</title>
               <style>
                 body { font-family: 'Font_preeti', 'Preeti', sans-serif; padding: 40px; line-height: 1.8; color: #111; font-size: 18px; }
+                .eng-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important; }
                 h1, h2, h3 { color: #000; margin-top: 1.5em; margin-bottom: 0.5em; }
               </style>
             </head>
@@ -875,11 +935,20 @@ const appSchema = {
         printWin.close();
       });
 
-      // Initial execution
+      // Initial execution (respecting swapped carryover text from sessionStorage)
       setEditorFontSize(20);
       applyPreetiVisualState();
-      editorInput.innerHTML = SAMPLE_UNICODE;
-      runConversion();
+
+      const carriedSwapText = sessionStorage.getItem('tn_converter_swap_text');
+      if (carriedSwapText) {
+        sessionStorage.removeItem('tn_converter_swap_text');
+        editorInput.innerHTML = carriedSwapText;
+        runConversion();
+        showToast('Swapped text successfully');
+      } else {
+        editorInput.innerHTML = SAMPLE_GUIDE_UNICODE;
+        runConversion();
+      }
     })();
   </script>
 </Layout>
