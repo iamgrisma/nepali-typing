@@ -32,6 +32,14 @@ const { activeNav = 'test' } = Astro.props;
       </a>
 
       <a 
+        href="/preeti-to-unicode" 
+        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'converter' ? 'bg-[var(--bg-surface-subtle)] text-rose-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+        <span>Preeti Converter</span>
+      </a>
+
+      <a 
         href="/keyboard-layout" 
         class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
@@ -173,6 +181,17 @@ const { activeNav = 'test' } = Astro.props;
         class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
         Keyboard Layouts
+      </a>
+
+      <a 
+        href="/preeti-to-unicode" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'converter' ? 'bg-[var(--bg-surface-subtle)] text-rose-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          <span>Preeti Converter</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">Unicode & Rich Text</span>
       </a>
 
       <a 

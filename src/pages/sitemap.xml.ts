@@ -43,6 +43,18 @@ export const GET: APIRoute = async () => {
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://typing.topnepali.com/preeti-to-unicode</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typing.topnepali.com/unicode-to-preeti</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://typing.topnepali.com/keyboard-layout</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>

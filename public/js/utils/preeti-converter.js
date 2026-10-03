@@ -1,10 +1,9 @@
 /**
- * Comprehensive Unicode <-> Preeti Converter
+ * Comprehensive Bidirectional Preeti <-> Unicode Converter
  * Handles:
- * 1. Word-final halanta (e.g. 'श्रीमान्' -> '>Ldfg\', 'छन्' -> '5g\')
- * 2. Proper connecting half-consonants (e.g. 'कन्म' -> 'sGd', 'सज्जन' -> ';Hhg')
- * 3. Raswa Ikaar (ि) contextual reordering before consonant cluster
- * 4. Reph (र्) contextual placement as '{' after consonant cluster
+ * 1. Preeti to Unicode (95%+ of user demand) with contextual reph '{' and raswa ikaar 'l' reordering
+ * 2. Unicode to Preeti with word-final halanta handling (श्रीमान् -> >Ldfg\) and conjunct mappings
+ * 3. HTML / Rich Text formatting preservation (preserves <b>, <i>, <u>, <h1>, <p>, <ul>, etc.)
  */
 
 export const CONTEXTUAL_RULES = [
@@ -84,16 +83,142 @@ export const PREETI_CHAR_MAP = [
   ["ः", "M"], ["ो", "f]"], ["ौ", "f}"]
 ];
 
+// Preeti-to-Unicode master mapping table
+const PREETI_TO_UNICODE_MAP = [
+  // 3+ Character Compounds & Ligatures
+  ["k|m", "फ्र"],
+  ["cf}F", "औँ"],
+  ["cf}+", "औँ"],
+  ["cf}", "औ"],
+  ["cf]", "ओ"],
+  ["cf", "आ"],
+  ["pm", "ऊ"],
+  ["P]", "ऐ"],
+  ["8Þ", "ड़"],
+  ["9Þ", "ढ़"],
+  ["6«", "ट्र"],
+  ["7«", "ठ्र"],
+  ["8«", "ड्र"],
+  ["9«", "ढ्र"],
+  ["6|", "ट्र"],
+  ["7|", "ठ्र"],
+  ["8|", "ड्र"],
+  ["9|", "ढ्र"],
+  ["If", "क्ष"],
+  ["0f", "ण"],
+  ["if", "ष"],
+  ["f}F", "ौँ"],
+  ["f}+", "ौँ"],
+  ["f]F", "ों"],
+  ["f]+", "ों"],
+  ["f}", "ौ"],
+  ["f]", "ो"],
+  ["k|", "प्र"],
+  ["km", "फ"],
+  ["Qm", "क्त"],
+  ["qm", "क्र"],
+  ["em", "झ"],
+
+  // Special Conjuncts & Ligatures
+  ["1", "ज्ञ"],
+  ["2", "द्द"],
+  ["4", "द्ध"],
+  ["Q", "त्त"],
+  [">", "श्र"],
+  ["?", "रु"],
+  ["¿", "रू"],
+  ["B", "द्य"],
+  ["I", "क्ष्"],
+  ["q", "त्र"],
+  ["å", "द्व"],
+  ["§", "ट्ट"],
+  ["•", "ड्ड"],
+  ["°", "ड्ढ"],
+  ["¶", "ठ्ठ"],
+  ["Ý", "ट्ठ"],
+  ["ß", "द्म"],
+  ["¡", "ज्ञ्"],
+  ["¢", "द्घ"],
+  ["„", "ध्र"],
+  ["›", "द्र"],
+  ["‹", "ङ्घ"],
+  ["Ë", "ङ्ग"],
+  ["Í", "ङ्क"],
+  ["Î", "ङ्ख"],
+  ["Å", "हृ"],
+
+  // Numerals
+  ["!", "१"], ["@", "२"], ["#", "३"], ["$", "४"], ["%", "५"],
+  ["^", "६"], ["&", "७"], ["*", "८"], ["(", "९"], [")", "०"],
+
+  // Punctuation & Classical Symbols
+  ["ç", "ॐ"], ["˜", "ऽ"], [".", "।"], ["<", "?"],
+
+  // Independent Vowels
+  ["c", "अ"], ["O", "इ"], ["p", "उ"], ["P", "ए"], ["C", "ऋ"],
+
+  // Consonants (Half consonants & full consonants)
+  ["S", "क्"], ["s", "क"],
+  ["V", "ख्"], ["v", "ख"],
+  ["U", "ग्"], ["u", "ग"],
+  ["£", "घ्"], ["3", "घ"],
+  ["ª", "ङ"],
+  ["R", "च्"], ["r", "च"],
+  ["5", "छ"],
+  ["H", "ज्"], ["h", "ज"],
+  ["‰", "झ्"], ["´", "झ"],
+  ["~", "ञ्"], ["`", "ञ"],
+  ["6", "ट"], ["7", "ठ"], ["8", "ड"], ["9", "ढ"],
+  ["0", "ण्"],
+  ["T", "त्"], ["t", "त"],
+  ["Y", "थ्"], ["y", "थ"],
+  ["b", "द"],
+  ["W", "ध्"], ["w", "ध"],
+  ["G", "न्"], ["g", "न"],
+  ["K", "प्"], ["k", "प"],
+  ["ˆ", "फ्"], ["m", "फ"],
+  ["A", "ब्"], ["a", "ब"],
+  ["E", "भ्"], ["e", "भ"],
+  ["D", "म्"], ["d", "म"],
+  ["o", "य"],
+  ["/", "र"],
+  ["N", "ल्"], ["n", "ल"],
+  ["J", "व्"], ["j", "व"],
+  ["Z", "श्"], ["z", "श"],
+  ["i", "ष्"],
+  [":", "स्"], [";", "स"],
+  ["X", "ह्"], ["x", "ह"],
+
+  // Matras & Diacritics
+  ["f", "ा"],
+  ["l", "ि"],
+  ["L", "ी"],
+  ["]", "े"],
+  ["}", "ै"],
+  ["'", "ु"],
+  ['"', "ू"],
+  ["[", "ृ"],
+  ["+", "ं"],
+  ["F", "ँ"],
+  ["M", "ः"],
+  ["\\", "्"],
+  ["|", "्र"],
+  ["Ø", "्य"],
+  ["{", "र्"]
+];
+
+const PREETI_HALF_CONS = '(?:[SVU£R~TYWGKˆAEDNJZ:X]|i(?![fF])|[svu3r5h´`67890tybwgkmaedonjzx]\\\\)';
+const PREETI_FULL_CONS = '(?:k\\|m|k\\||km|Qm|qm|em|If|if|6«|7«|8«|9«|6\\||7\\||8\\||9\\||8Þ|9Þ|1|2|4|Q|>|\\?|¿|B|I|q|å|§|•|°|¶|Ý|ß|¡|¢|„|›|‹|Ë|Í|Î|Å|[svu3r5h´`67890tybwgkmaedonjzx0cOpPC])';
+const PREETI_MATRAS = '[fL\\]}\'\"\\[+FM]';
+
 /**
- * Converts Unicode Devanagari text to Preeti ASCII characters
- * Preserves proper word-final halantas (e.g. श्रीमान् -> >Ldfg\) and conjunct half-letters (कन्म -> sGd)
+ * Converts standard Unicode Devanagari text to Preeti ASCII characters.
  */
 export function toPreeti(text) {
   if (!text) return '';
   let s = text;
 
   // Step 1: Word-final halanta handling
-  // Consonants followed by halanta ् at the end of a word or before non-devanagari characters
   for (const [c, p] of END_HALANT_CONSONANTS) {
     const re = new RegExp(`${c}्(?=$|[^\\u0900-\\u097F])`, 'g');
     s = s.replace(re, `${p}\\`);
@@ -110,4 +235,64 @@ export function toPreeti(text) {
   }
 
   return s;
+}
+
+/**
+ * Converts Preeti ASCII text to standard Unicode Devanagari.
+ */
+export function preetiToUnicode(input) {
+  if (!input) return '';
+
+  let text = input;
+
+  // Pre-pass: Handle independent vowels with composite reph/shapes
+  text = text.replaceAll('O{', 'ई');
+
+  // Step 1: Reph '{' handling (Preeti places reph after consonant/matra, Unicode requires र् before consonant cluster)
+  const rephPattern = new RegExp(`(${PREETI_HALF_CONS}*${PREETI_FULL_CONS}${PREETI_MATRAS}*)\\{`, 'g');
+  text = text.replace(rephPattern, '{$1');
+
+  // Step 2: Raswa Ikaar 'l' handling (Preeti places 'l' before consonant cluster, Unicode requires ि after)
+  const ikaarPattern = new RegExp(`l(${PREETI_HALF_CONS}*${PREETI_FULL_CONS})`, 'g');
+  text = text.replace(ikaarPattern, '$1l');
+
+  // Step 3: Master Character & Ligature Replacements
+  for (const [p, u] of PREETI_TO_UNICODE_MAP) {
+    text = text.replaceAll(p, u);
+  }
+
+  return text;
+}
+
+/**
+ * Bidirectional conversion function.
+ * @param {string} text - Input text
+ * @param {'toUnicode' | 'toPreeti'} direction - Conversion mode
+ */
+export function convertText(text, direction = 'toUnicode') {
+  if (!text) return '';
+  return direction === 'toPreeti' ? toPreeti(text) : preetiToUnicode(text);
+}
+
+/**
+ * Formatted HTML converter. Preserves all markup (<b>, <i>, <u>, <h1>, <p>, <ul>, etc.)
+ * and converts only inner text nodes.
+ * @param {string} html - HTML string
+ * @param {'toUnicode' | 'toPreeti'} direction - Conversion mode
+ */
+export function convertHtml(html, direction = 'toUnicode') {
+  if (!html) return '';
+  const converterFn = direction === 'toPreeti' ? toPreeti : preetiToUnicode;
+  return html.replace(/(<[^>]+>|&[a-zA-Z0-9#]+;)|([^<>&]+)/g, (match, tagOrEntity, text) => {
+    if (tagOrEntity) return tagOrEntity;
+    if (text) return converterFn(text);
+    return match;
+  });
+}
+
+/**
+ * Detects whether the given string contains Devanagari Unicode characters.
+ */
+export function hasDevanagari(text) {
+  return /[\u0900-\u097F]/.test(text);
 }
