@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../styles/preeti-font.css';
 
 const pageTitle = "Preeti to Unicode Converter — Fast, Accurate Nepali Typing Tool";
 const pageDesc = "Convert legacy Preeti font text into standard Nepali Unicode instantly. Fully compatible with Word, Google Docs, social media, and websites. Free in-browser tool.";
@@ -517,11 +518,13 @@ const appSchema = {
           editorInput.setAttribute('data-preeti-visual', 'true');
           editorInput.classList.add('font-preeti');
           editorInput.classList.remove('font-ascii');
+          editorInput.style.fontFamily = "'Font_preeti', 'Preeti'";
           if (inputFontTag) inputFontTag.textContent = 'Nepali Visual';
         } else {
           editorInput.setAttribute('data-preeti-visual', 'false');
           editorInput.classList.remove('font-preeti');
           editorInput.classList.add('font-ascii');
+          editorInput.style.fontFamily = "'JetBrains Mono', monospace";
           if (inputFontTag) inputFontTag.textContent = 'Raw ASCII Keys';
         }
       }

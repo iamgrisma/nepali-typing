@@ -3,11 +3,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
-/* Font Face: Preeti (Legacy ASCII) — Full Weight and Style Coverage */
+/* Font Face: Preeti (Legacy ASCII) */
 @font-face {
   font-family: 'Font_preeti';
   src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
-  font-weight: 100 900;
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
@@ -15,15 +15,7 @@
 @font-face {
   font-family: 'Font_preeti';
   src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Font_preeti';
-  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
-  font-weight: 700;
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
@@ -31,8 +23,32 @@
 @font-face {
   font-family: 'Font_preeti';
   src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
-  font-weight: 700;
+  font-weight: normal;
   font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Font_preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Preeti';
+  src: local('Preeti'), url('/fonts/preeti.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -40,7 +56,15 @@
 @font-face {
   font-family: 'Font_kokila';
   src: url('/fonts/kokila.ttf') format('truetype');
-  font-weight: 100 900;
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Font_kokila';
+  src: url('/fonts/kokila.ttf') format('truetype');
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
@@ -132,7 +156,7 @@
 .font-preeti *,
 [data-preeti-visual="true"],
 [data-preeti-visual="true"] * {
-  font-family: 'Font_preeti', 'Preeti', local('Preeti'), sans-serif !important;
+  font-family: 'Font_preeti', 'Preeti' !important;
   letter-spacing: 0.02em;
 }
 

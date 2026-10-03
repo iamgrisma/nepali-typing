@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../styles/preeti-font.css';
 
 const pageTitle = "Unicode to Preeti Converter — Instant Nepali Unicode to Preeti Font";
 const pageDesc = "Free online Unicode to Preeti font converter. Transform standard Nepali Unicode into legacy Preeti ASCII text with rich text formatting, Word export, and instant clipboard copying.";
@@ -520,11 +521,13 @@ const appSchema = {
           editorOutput.setAttribute('data-preeti-visual', 'true');
           editorOutput.classList.add('font-preeti');
           editorOutput.classList.remove('font-ascii');
+          editorOutput.style.fontFamily = "'Font_preeti', 'Preeti'";
           if (outputFontTag) outputFontTag.textContent = 'Nepali Visual';
         } else {
           editorOutput.setAttribute('data-preeti-visual', 'false');
           editorOutput.classList.remove('font-preeti');
           editorOutput.classList.add('font-ascii');
+          editorOutput.style.fontFamily = "'JetBrains Mono', monospace";
           if (outputFontTag) outputFontTag.textContent = 'Raw ASCII Keys';
         }
       }
