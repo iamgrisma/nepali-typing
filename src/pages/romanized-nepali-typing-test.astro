@@ -1,0 +1,180 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+
+const pageTitle = "Nepali Romanized Typing Test & Speed Practice — TopNepali Typing";
+const pageDesc = "Take the free online Nepali Romanized typing speed test. Practice phonetic Devanagari transliteration, benchmark WPM and accuracy, and earn official typing credentials.";
+const canonicalUrl = "https://typing.topnepali.com/romanized-nepali-typing-test";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/romanized-svg.webp";
+const keywords = "Nepali Romanized typing test, Romanized Nepali typing practice, type Nepali in English letters, MPP Romanized keyboard layout, Nepali typing test online, phonetic Devanagari typing, WPM test Nepal";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does Nepali Romanized typing work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nepali Romanized uses phonetic mapping where English keys correspond to their Devanagari phonetic equivalents. For example, typing 'k' produces 'क', 'ka' or 'kaa'/'A' produces 'का', and 'nepal' produces 'नेपाल'."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Nepali Romanized accepted for official typing certifications?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, our official typing certification program supports Nepali Romanized layout alongside Traditional and Preeti. Achieving &ge; 21 Net WPM with 85% accuracy earns a verifiable digital certificate."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I type retroflex and aspirated sounds in Romanized?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Capital letters (Shift) are generally used for retroflex or aspirated counterparts. For instance, 't' produces 'त' (dental), while 'T' produces 'ट' (retroflex). Similarly, 'th' produces 'थ', and 'Th' produces 'ठ'."
+      }
+    }
+  ]
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  schema={faqSchema}
+  activeNav="test"
+>
+  <div class="container px-4">
+    
+    <!-- Hero Introduction Header -->
+    <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span>PHONETIC TRANSLITERATION ENGINE</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Nepali Romanized Typing Test
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+        Type Nepali as you pronounce it. Benchmark your Romanized typing velocity with instant phonetic feedback, interactive keycap highlights, and certified speed tests.
+      </p>
+    </header>
+
+    <!-- Preconfigured Mode Selector Toolbar -->
+    <ModeSelector defaultLang="nepali_romanized" defaultMode="time" defaultDuration={60} />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine defaultLang="nepali_romanized" defaultMode="time" defaultDuration={60} />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- Educational & SEO Guide for Romanized Layout -->
+    <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">
+      
+      <!-- Key Highlights Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Instant Intuitive Typing</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Zero memorization curve for English QWERTY typists. Write emails, search queries, and articles in natural Nepali without re-learning keycaps.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Custom Timers & Goals</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Practice with 15s bursts, 60s standard tests, or 300s endurance drills. Track real-time gross WPM, net WPM, and word submission accuracy.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Cloudflare D1 Verified</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Complete the official examination at &ge; 21 WPM to receive an authentic digital certificate registered permanently on Cloudflare edge D1.
+          </p>
+        </div>
+      </div>
+
+      <!-- Phonetic Mapping Reference Article -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Nepali Romanized Phonetic Transliteration Rules
+        </h2>
+        
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          The Madan Puraskar Pustakalaya (MPP) Romanized specification organizes Devanagari characters according to their closest phonetic English alphabet values. Follow these essential patterns for rapid fluency:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Consonant Aspirations & Retroflex Keys</h3>
+            <ul class="space-y-2 text-[var(--text-secondary)]">
+              <li><strong>क / ख:</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">k</kbd> for क and <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">kh</kbd> for ख</li>
+              <li><strong>त / थ:</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">t</kbd> for त and <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">th</kbd> for थ</li>
+              <li><strong>ट / ठ:</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">T (Shift+T)</kbd> for ट and <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Th</kbd> for ठ</li>
+              <li><strong>ड / ढ:</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">D (Shift+D)</kbd> for ड and <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Dh</kbd> for ढ</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Vowels & Special Punctuation</h3>
+            <ul class="space-y-2 text-[var(--text-secondary)]">
+              <li><strong>Matra (ा, ि, ी, ु, ू):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">a / aa</kbd> for ा, <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">i</kbd> for ि, <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">ee / I</kbd> for ी</li>
+              <li><strong>Purnabiram (।):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">.</kbd> (Period)</li>
+              <li><strong>Chandrabindu (ँ):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + V</kbd> or <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">~</kbd></li>
+              <li><strong>Shirbindu / Anusvara (ं):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + M</kbd></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Section -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Frequently Asked Questions (FAQ)
+        </h2>
+        
+        <div class="space-y-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How does Romanized differ from Traditional?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Traditional layout assigns fixed keys regardless of English names (e.g. S is क). Romanized maps sounds phonetically (e.g. K is क). Romanized is much easier for beginners who already know English typing.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I use Alt+Shift to switch to Romanized?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes, in our web application, pressing Left Alt + Left Shift cycles instantly between English, Unicode Traditional, Romanized, and Preeti ASCII modes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>

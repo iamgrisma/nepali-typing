@@ -1,0 +1,181 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+
+const pageTitle = "English Typing Speed Test (WPM) — TopNepali Typing";
+const pageDesc = "Take the official English typing speed test online. Benchmark Net Words Per Minute (WPM), track keystroke accuracy, train with adaptive drills, and qualify for digital typing certificates.";
+const canonicalUrl = "https://typing.topnepali.com/english-typing-test";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/english-svg.webp";
+const keywords = "English typing test, typing speed test WPM, 1 minute typing test, 5 minute typing test, touch typing test online, typing speed test Nepal, typing certificate English, WPM typing test";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is Words Per Minute (WPM) calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gross WPM is calculated as (Total Keystrokes / 5) / Time in Minutes. Net WPM subtracts uncorrected errors: Net WPM = Gross WPM - (Uncorrected Errors / Time in Minutes). Standard international tests standardize 1 word as 5 keystrokes including spaces."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a good English typing speed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Average typing speed is between 35 and 45 WPM. Professional office typists average 60 to 75 WPM, while competitive typists exceed 90 to 120+ WPM with >98% accuracy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What score is required to pass the English typing certificate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Candidates must achieve a Net Speed strictly exceeding 25 Words Per Minute (≥ 26 WPM) with at least 85% accuracy in the official timed examination."
+      }
+    }
+  ]
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  schema={faqSchema}
+  activeNav="test"
+>
+  <div class="container px-4">
+    
+    <!-- Hero Introduction Header -->
+    <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-2.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>INTERNATIONAL WPM BENCHMARK</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        English Typing Speed Test
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+        Measure your raw keystroke accuracy, burst velocity, and Net WPM. Practice with 15s to 300s timed tests, full paragraphs, and verified certification exams.
+      </p>
+    </header>
+
+    <!-- Preconfigured Mode Selector Toolbar -->
+    <ModeSelector defaultLang="english" defaultMode="time" defaultDuration={60} />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine defaultLang="english" defaultMode="time" defaultDuration={60} />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- English Typing Specific Educational & SEO Guide -->
+    <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">
+      
+      <!-- Key Benchmarks Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Standard Word Math</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Follows the international standard of 5 characters per word. Differentiates between raw keystroke accuracy and final submitted word accuracy.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Adaptive Neuromotor Drills</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Diagnoses key hesitation times and stroke delays. Generates targeted drill corpora that systematically eliminate typing bottlenecks.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Verifiable Credentials</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Passing candidates earning &ge; 26 Net WPM receive an official tamper-evident digital certificate with unique QR code verification.
+          </p>
+        </div>
+      </div>
+
+      <!-- Touch Typing Technique Guide -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Touch Typing Best Practices & Speed Tiers
+        </h2>
+        
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          Touch typing relies on motor memory rather than sight. Keep your eyes on the screen text rather than your hands, and always return your fingers to the home row:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Home Row Assignment</h3>
+            <ul class="space-y-1.5 text-[var(--text-secondary)]">
+              <li><strong>Left Hand:</strong> A (Pinky), S (Ring), D (Middle), F (Index)</li>
+              <li><strong>Right Hand:</strong> J (Index), K (Middle), L (Ring), ; (Pinky)</li>
+              <li><strong>Thumbs:</strong> Rest gently on the Space bar</li>
+              <li><strong>F & J Anchors:</strong> Raised tactile bumps ensure you re-center without glancing down.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Speed Benchmarks & Rank Honors</h3>
+            <ul class="space-y-1.5 text-[var(--text-secondary)]">
+              <li><strong>Certified Typist (Bronze):</strong> 26 - 39 Net WPM</li>
+              <li><strong>Professional Typist (Silver):</strong> 40 - 54 Net WPM</li>
+              <li><strong>Advanced Typist (Gold):</strong> 55 - 69 Net WPM</li>
+              <li><strong>Master Typist (Platinum):</strong> 70 - 89 Net WPM</li>
+              <li><strong>Speed Demon (Diamond):</strong> 90+ Net WPM</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Section -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Frequently Asked Questions (FAQ)
+        </h2>
+        
+        <div class="space-y-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">What is the difference between Gross WPM and Net WPM?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Gross WPM measures your total typing speed without error penalties. Net WPM penalizes mistakes, giving an accurate picture of usable, production-ready typing speed.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How often should I practice to improve?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Consistent 15-minute daily sessions yield faster neuromuscular adaptations than infrequent long sessions. Use our <a href="/drills" class="text-indigo-500 hover:underline">Adaptive Drills</a> to target specific key delays.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>

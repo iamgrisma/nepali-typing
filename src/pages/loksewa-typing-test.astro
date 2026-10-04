@@ -1,0 +1,180 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+
+const pageTitle = "Loksewa Nepali Typing Test Simulator (5 Minutes) — TopNepali Typing";
+const pageDesc = "Simulate the official Public Service Commission (Loksewa Aayog) 5-minute Nepali typing test for Computer Operator and Assistant Computer Operator exams. Practice marking formulas and error penalties.";
+const canonicalUrl = "https://typing.topnepali.com/loksewa-typing-test";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/loksewa-svg.webp";
+const keywords = "Loksewa typing test, Loksewa computer operator typing test, Loksewa 5 minute typing test, Nepali typing test for Loksewa, Loksewa typing marking scheme, Kharidar typing test, Nayab Subba computer practical exam, PSC typing syllabus";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the Loksewa Aayog Computer Operator typing test format?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Loksewa Aayog computer practical exam includes a 5-minute Nepali typing test and a 5-minute English typing test. Candidates must type a printed passage on a computer terminal under strict invigilation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Loksewa calculate marks for typing tests?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Loksewa uses a Net Word formula: Net Words = Total Words Typed - (Errors × Penalty Factor). The Net Words are divided by 5 to find Net Words Per Minute (WPM). Minimum qualification is 20 Net WPM for Nepali and 25 Net WPM for English."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which keyboard layout is used in Loksewa exams?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Loksewa exam centers generally provide standard MPP Nepali Unicode Traditional layout or Preeti ASCII font on Windows desktop PCs. Candidates can verify the specific layout designated in their exam admission card."
+      }
+    }
+  ]
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  schema={faqSchema}
+  activeNav="test"
+>
+  <div class="container px-4">
+    
+    <!-- Hero Introduction Header -->
+    <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-2.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+        <span>PSC / LOKSEWA 5-MINUTE EXAM SIMULATOR</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Loksewa Nepali Typing Test Simulator
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+        Realistic 300-second timed simulation matching Public Service Commission standards. Prepare for Computer Operator, Assistant Computer Operator, Kharidar, and Bank recruitment practicals.
+      </p>
+    </header>
+
+    <!-- Preconfigured Mode Selector Toolbar (5 Minutes / 300 Seconds) -->
+    <ModeSelector defaultLang="nepali_unicode" defaultMode="time" defaultDuration={300} />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine defaultLang="nepali_unicode" defaultMode="time" defaultDuration={300} />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- Loksewa Exam Specific Syllabus & Guide -->
+    <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">
+      
+      <!-- Key Exam Standards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">300 Seconds (5 Min) Duration</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Exactly replicates the standard 5-minute timed exam window stipulated in Loksewa Aayog computer practical syllabus.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Minimum Net Speed: >20 WPM</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            You must type at least 100 net correct words in 5 minutes (average &ge; 21 WPM) with &ge; 85% accuracy to qualify.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">UN & Civic Corpora</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Practice with official civic, administrative, and parliamentary texts including Mayor Balen Shah's historic UN General Assembly address.
+          </p>
+        </div>
+      </div>
+
+      <!-- Loksewa Evaluation Formula & Marking Breakdown -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Public Service Commission (Loksewa) Typing Test Protocol & Marking System
+        </h2>
+        
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          In Public Service Commission practical examinations, speed alone does not guarantee a passing grade. Every mistyped letter, missing punctuation, or skipped word penalizes your final score:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Official Marking Formula</h3>
+            <div class="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[11px] mb-3">
+              Net Words = Total Words Typed - (Errors &times; Penalty)<br />
+              Net Speed (WPM) = Net Words / 5 Minutes
+            </div>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              If a candidate types 150 words with 10 uncorrected errors, their Net Words drop to 140, yielding a Net Speed of 28 WPM (Pass). However, excessive errors can easily drop an otherwise fast typist below the 20 WPM threshold.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Exam Day Strategies</h3>
+            <ul class="space-y-2 text-[var(--text-secondary)]">
+              <li><strong>Prioritize Accuracy:</strong> Rushing leads to compounding errors that take twice as long to backspace and correct.</li>
+              <li><strong>Watch Punctuation:</strong> Ensure Devanagari full stops (।), commas (,), and hyphens match the source passage exactly.</li>
+              <li><strong>Keep Rythm Steady:</strong> Avoid sprinting during easy words and hesitating on difficult conjuncts. Maintain an even metronome cadence.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Section -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Frequently Asked Questions (FAQ)
+        </h2>
+        
+        <div class="space-y-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I take the official certification test on this site?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes, navigate to our <a href="/test" class="text-purple-600 dark:text-purple-400 hover:underline">Certification Exam</a> page to take the standardized UN speech test and obtain a permanent, verifiable digital certificate.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How can I switch to 5-minute Preeti mode for Loksewa?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Click the "Preeti (ASCII)" tab in the toolbar above, or visit our dedicated <a href="/preeti-typing-test" class="text-purple-600 dark:text-purple-400 hover:underline">Preeti Font Typing Test</a> page.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>

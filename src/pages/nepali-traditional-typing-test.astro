@@ -1,0 +1,192 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+
+const pageTitle = "Nepali Unicode Traditional Typing Test & Speed Practice — TopNepali Typing";
+const pageDesc = "Practice Nepali Unicode Traditional typing online with MPP standard hardware mapping. Benchmark Words Per Minute (WPM), test accuracy, and prepare for Loksewa examinations.";
+const canonicalUrl = "https://typing.topnepali.com/nepali-traditional-typing-test";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/traditional-svg.webp";
+const keywords = "Nepali Unicode typing test, Nepali traditional typing test, MPP Nepali Unicode traditional, Nepali typing practice online, Loksewa Nepali typing test, Devanagari typing test 5 minutes, Nepali keyboard layout";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Nepali Unicode Traditional (MPP)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nepali Unicode Traditional is the official national Devanagari keyboard standard developed by Madan Puraskar Pustakalaya (MPP) and standardized by the Nepal Government. Unlike phonetic Romanized typing, Traditional layout maps specific Devanagari consonants and matras directly to physical keycaps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What typing speed is required for Nepal Loksewa exams?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For Public Service Commission (Loksewa Aayog) Computer Operator and Assistant Computer Operator examinations, candidates must achieve a minimum Net Speed of 20 Words Per Minute (WPM) with at least 85% accuracy in a 5-minute timed test."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How are half-letters and conjunct characters typed in Nepali Traditional Unicode?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Half-letters are formed by typing the consonant followed by the Halant (Virama ्), which is located on the Backslash key (\\). For example, typing क + ् + ष produces the conjunct क्ष."
+      }
+    }
+  ]
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  schema={faqSchema}
+  activeNav="test"
+>
+  <div class="container px-4">
+    
+    <!-- Hero Introduction Header -->
+    <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 mb-2.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+        <span>OFFICIAL MPP SPECIFICATION</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Nepali Unicode Traditional Typing Test
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+        Test your Devanagari typing velocity and accuracy with the official MPP Traditional layout. Built-in interactive keyboard visualizer, real-time WPM calculation, and Loksewa PSC exam standard timers.
+      </p>
+    </header>
+
+    <!-- Preconfigured Mode Selector Toolbar -->
+    <ModeSelector defaultLang="nepali_unicode" defaultMode="time" defaultDuration={60} />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine defaultLang="nepali_unicode" defaultMode="time" defaultDuration={60} />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- Comprehensive Educational & SEO Guide for Traditional Unicode -->
+    <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">
+      
+      <!-- Key Features & Benchmarks Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">National Standard Layout</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Standardized by Madan Puraskar Pustakalaya and Nepal Government. The required layout for government administration, banking examinations, and official state records.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Loksewa Benchmark (>20 WPM)</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Meets the strict Public Service Commission standard requiring candidates to maintain &ge; 21 WPM with &ge; 85% accuracy over 5 consecutive minutes.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Zero-Lag Biomechanics</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Captures flight times, hesitation latency, and conjunct digraph fluency with client-side microsecond precision and zero network latency.
+          </p>
+        </div>
+      </div>
+
+      <!-- Traditional Layout Typing Rules & Key Mapping Guide -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Mastering the Nepali Unicode Traditional Keyboard Layout
+        </h2>
+        
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          Unlike legacy ASCII typewriter fonts such as Preeti and Kantipur, Nepali Unicode encodes characters using ISO/IEC 10646 standards. This guarantees that your typed documents render identically across Windows, macOS, Android, iOS, and Linux without requiring font installation.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Home Row Finger Placement</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed mb-3">
+              Rest your index fingers on the tactile home keys (<strong>F</strong> and <strong>J</strong>). In Nepali Unicode Traditional:
+            </p>
+            <ul class="space-y-1.5 text-[var(--text-secondary)]">
+              <li><strong>Left Hand:</strong> A (ब), S (क), D (म), F (ा - Aa Matra)</li>
+              <li><strong>Right Hand:</strong> J (व), K (प), L (ि - Hraswa I), ; (स)</li>
+              <li><strong>Center Reach:</strong> G (न), H (ज)</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Complex Conjuncts & Halant Combinations</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed mb-3">
+              Conjunct characters are created logically by adding Halant (्) using the <strong>Backslash (\)</strong> key:
+            </p>
+            <ul class="space-y-1.5 text-[var(--text-secondary)]">
+              <li><strong>क्ष (Kshya):</strong> Type <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + I</kbd> or क + ् + ष</li>
+              <li><strong>त्र (Tra):</strong> Type <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Q</kbd> (direct key)</li>
+              <li><strong>ज्ञ (Gya):</strong> Type <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 1</kbd> (direct key)</li>
+              <li><strong>श्र (Shra):</strong> Type <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + .</kbd> (Period)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Section -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Frequently Asked Questions (FAQ)
+        </h2>
+        
+        <div class="space-y-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How do I switch to Nepali Unicode on Windows?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Press <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Alt + Shift</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Win + Space</kbd> to toggle between English and Nepali input locales once the language pack is installed.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I practice on mobile phones or tablets?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes, our platform works on mobile devices with an on-screen keyboard, though a physical USB or Bluetooth keyboard is strongly recommended for standard WPM benchmarking and official certification examinations.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How does the platform verify my typing certificate?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Each certificate is cryptographically recorded in Cloudflare D1 with a unique 12-character ID and QR code. Employers or institutions can verify the authentic WPM score and date at <a href="/verify" class="text-sky-500 hover:underline">typing.topnepali.com/verify</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>

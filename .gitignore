@@ -13,3 +13,7 @@ package-lock.json
 .env
 .env.*
 !.env.example
+scripts/
+public/og/
+scratch/
+*.tmp

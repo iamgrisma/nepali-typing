@@ -1,0 +1,182 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModeSelector from '../components/ModeSelector.astro';
+import TypingEngine from '../components/TypingEngine.astro';
+import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
+import DetailedStatsModal from '../components/DetailedStatsModal.astro';
+import HistoryDrawer from '../components/HistoryDrawer.astro';
+
+const pageTitle = "Preeti Font Typing Test & Speed Practice — TopNepali Typing";
+const pageDesc = "Practice Preeti font typing online. Measure Words Per Minute (WPM), learn ASCII typewriter keyboard mapping, master complex conjuncts, and qualify for Nepal government exams.";
+const canonicalUrl = "https://typing.topnepali.com/preeti-typing-test";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/preeti-svg.webp";
+const keywords = "Preeti typing test, Preeti font typing test online, Preeti typing practice 5 minutes, Preeti keyboard layout, Preeti to Unicode, Loksewa Preeti typing test, Nepal government typing test, Preeti speed test";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why is Preeti font typing still widely used in Nepal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Preeti is the historical typewriter font introduced in the 1990s. Many Nepal government ministries, Supreme Court deed registries, public schools, and publication houses maintain extensive legacy archives and forms originally formatted in Preeti."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the platform let me practice Preeti without installing the font?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our typing engine natively embeds high-fidelity webfont glyphs and includes a real-time bilingual converter that renders authentic Preeti typewriter strokes directly in any modern browser without requiring local font installations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the most challenging Preeti key combinations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Conjuncts like द्ध (Shift+4), द्ब (Shift+R), ज्ञ (Shift+1), and post-consonant vowels like 'ि' (l key typed before the consonant) are the most common error sources for beginners."
+      }
+    }
+  ]
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  schema={faqSchema}
+  activeNav="test"
+>
+  <div class="container px-4">
+    
+    <!-- Hero Introduction Header -->
+    <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 mb-2.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>LEGACY TYPEWRITER ASCII STANDARD</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Preeti Font Typing Test & Practice
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+        Test your Preeti typing velocity and accuracy online. Prepare for government office job interviews, court documentation examinations, and Loksewa computer operator practicals.
+      </p>
+    </header>
+
+    <!-- Preconfigured Mode Selector Toolbar -->
+    <ModeSelector defaultLang="nepali_preeti" defaultMode="time" defaultDuration={60} />
+
+    <!-- Core Interactive Typing Workbench -->
+    <TypingEngine defaultLang="nepali_preeti" defaultMode="time" defaultDuration={60} />
+
+    <!-- Interactive Hardware Keyboard Visualizer -->
+    <KeyboardVisualizer />
+
+    <!-- Preeti Specific Educational & SEO Guide -->
+    <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">
+      
+      <!-- Key Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Zero Font Setup Required</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Practice Preeti from any smartphone, Chromebook, or Linux machine without installing TTF fonts. Renders authentic Devanagari typography on the fly.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">5-Minute Exam Timers</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Simulate realistic civil service and banking exam test durations. Monitor your real-time net speed and penalty deduction rates accurately.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Visual Key Matrix</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Our visual keycap matrix shows both the physical English key on your keyboard and the corresponding Devanagari output in real time.
+          </p>
+        </div>
+      </div>
+
+      <!-- Preeti Keyboard Reference Guide -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Preeti Keyboard Mapping & Essential Conjuncts
+        </h2>
+        
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          Preeti reassigns ASCII characters from 0x20 to 0x7E to Devanagari glyphs. The sequence of typing letters follows traditional mechanical typewriter conventions, where vowel signs like <strong>ि</strong> (l) are typed <em>before</em> the consonant:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Most Frequent Preeti Keys</h3>
+            <ul class="space-y-2 text-[var(--text-secondary)]">
+              <li><strong>क (Ka):</strong> Physical key <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">s</kbd> (Shift+S for क्)</li>
+              <li><strong>म (Ma):</strong> Physical key <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">d</kbd> (Shift+D for म्)</li>
+              <li><strong>न (Na):</strong> Physical key <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">g</kbd> (Shift+G for न्)</li>
+              <li><strong>र (Ra):</strong> Physical key <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">/</kbd> (Slash)</li>
+              <li><strong>ा (Aa Matra):</strong> Physical key <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">f</kbd></li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Special Number Row Conjuncts</h3>
+            <ul class="space-y-2 text-[var(--text-secondary)]">
+              <li><strong>ज्ञ (Gya):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 1</kbd></li>
+              <li><strong>द्द (Dda):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 2</kbd></li>
+              <li><strong>घ (Gha):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 3</kbd></li>
+              <li><strong>द्ध (Dhdha):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 4</kbd></li>
+              <li><strong>छ (Chha):</strong> Type <kbd class="px-1 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)]">Shift + 5</kbd></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- FAQ Section -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
+          Frequently Asked Questions (FAQ)
+        </h2>
+        
+        <div class="space-y-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">What is the difference between Preeti and Unicode?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Preeti is an ASCII font that replaces English letters with Nepali shapes on screen. Unicode is an international standard that assigns universal digital codes to each Devanagari letter, ensuring your text is readable anywhere.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I convert Preeti text to Unicode?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes, our companion network utilities at <a href="https://topnepali.com/tools" class="text-amber-500 hover:underline">topnepali.com/tools</a> provide instant bidirectional Preeti to Unicode conversion.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Modals & Drawers -->
+    <DetailedStatsModal />
+    <HistoryDrawer />
+
+  </div>
+</Layout>
