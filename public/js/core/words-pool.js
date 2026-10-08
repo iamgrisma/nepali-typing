@@ -1,5 +1,6 @@
 /**
  * TopNepali Typing PRO — Word Pool, Content Generation & Grapheme Segmenter
+ * Enriched with dynamic master corpora from UN speeches, literary passages, and curated lexicon.
  */
 
 import { state } from './state.js';
@@ -10,7 +11,9 @@ import {
   getWeakKeysAnalysis, 
   generateAdaptiveWords, 
   generateDiagnosticWords,
-  calculateTargetGoal 
+  calculateTargetGoal,
+  MASTER_NEPALI_WORDS,
+  MASTER_ENGLISH_WORDS
 } from '../utils/adaptive-engine.js';
 
 // Intl.Segmenter instances for authentic Devanagari ligature splitting
@@ -27,6 +30,35 @@ export function getGraphemes(text, lang) {
     return Array.from(text);
   }
   return Array.from(seg.segment(text), s => s.segment);
+}
+
+/**
+ * Returns an enriched word pool combining curated vocabulary with words scrambled
+ * from the UN speech and sentences according to the chosen difficulty level.
+ */
+export function getEnrichedDifficultyPool(lang, difficulty) {
+  const isEng = (lang === 'english');
+  const masterList = isEng ? MASTER_ENGLISH_WORDS : MASTER_NEPALI_WORDS;
+  const langData = isEng ? DATA.english : DATA.nepali;
+  const diffData = langData[difficulty] || langData.medium;
+
+  let pool = [...diffData.words];
+
+  if (difficulty === 'easy') {
+    // Add shorter words from master corpus
+    const easyExtras = masterList.filter(w => w.length <= 4 && !pool.includes(w));
+    pool.push(...easyExtras.slice(0, 150));
+  } else if (difficulty === 'medium') {
+    // Add medium words from master corpus
+    const medExtras = masterList.filter(w => w.length >= 4 && w.length <= 8 && !pool.includes(w));
+    pool.push(...medExtras.slice(0, 200));
+  } else {
+    // Hard: add longer, conjunct-heavy and advanced words
+    const hardExtras = masterList.filter(w => w.length >= 6 && !pool.includes(w));
+    pool.push(...hardExtras.slice(0, 200));
+  }
+
+  return pool;
 }
 
 export function getWordsPool() {
@@ -103,7 +135,8 @@ export function getWordsPool() {
   const diffObj = langObj[state.difficulty] || langObj.medium;
 
   if (state.mode === 'words' || state.mode === 'time') {
-    const baseWords = diffObj.words;
+    // Rich enriched pool combining curated difficulty vocabulary with speech & sentence words
+    const baseWords = getEnrichedDifficultyPool(state.lang, state.difficulty);
     const targetCount = state.mode === 'words' ? state.wordCount : 150;
     while (list.length < targetCount) {
       const sh = [...baseWords].sort(() => 0.5 - Math.random());
@@ -135,7 +168,7 @@ export function getWordsPool() {
     const text = chosen.join(' ');
     list = text.split(/\s+/).filter(Boolean);
   } else {
-    list = diffObj.words;
+    list = getEnrichedDifficultyPool(state.lang, state.difficulty);
   }
 
   if (state.lang === 'nepali_preeti') {
@@ -148,10 +181,8 @@ export function getWordsPool() {
 export function refillWords() {
   if (state.mode === 'exam') return; // Sequential speech text
 
-  const isEng = state.lang === 'english';
-  const langObj = isEng ? DATA.english : DATA.nepali;
-  const diffObj = langObj[state.difficulty] || langObj.medium;
-  let extra = [...diffObj.words].sort(() => 0.5 - Math.random()).slice(0, 50);
+  const baseWords = getEnrichedDifficultyPool(state.lang, state.difficulty);
+  let extra = [...baseWords].sort(() => 0.5 - Math.random()).slice(0, 50);
   if (state.lang === 'nepali_preeti') {
     extra = extra.map(w => toPreeti(w));
   }
