@@ -124,9 +124,8 @@ export function computeCurrentStats() {
   const m = elapsed / 60;
 
   if (state.mode === 'freestyle') {
-    const chars = state.freestyleChars || 0;
     const words = state.freestyleWords || 0;
-    const rawWpm = Math.round((chars / 5) / m);
+    const rawWpm = Math.round(words / m);
     const wpm = rawWpm;
     const strokeAcc = state.totalKeystrokes > 0
       ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
@@ -135,8 +134,13 @@ export function computeCurrentStats() {
     return { wpm, rawWpm, acc: wordAcc, wordAcc, strokeAcc, elapsed };
   }
 
-  const wpm = Math.max(0, Math.round((state.correctKeystrokes / 5) / m));
-  const rawWpm = Math.round((state.totalKeystrokes / 5) / m);
+  // Actual words completed minus incorrect words
+  const completedWords = state.cleanWords + state.correctedWords;
+  const netWords = Math.max(0, completedWords - state.incorrectWords);
+  const totalSubmittedWords = completedWords + state.incorrectWords;
+
+  const wpm = Math.max(0, Math.round(netWords / m));
+  const rawWpm = Math.max(wpm, Math.round(totalSubmittedWords / m));
 
   // Two-Level Accuracy Calculations:
   // Level 1: Keystroke / Stroke Accuracy (includes mistypes, backspaces and corrections)
@@ -145,10 +149,8 @@ export function computeCurrentStats() {
     : 100;
 
   // Level 2: Word Accuracy (all successfully submitted words including corrected ones)
-  const totalSubmittedWords = state.cleanWords + state.correctedWords + state.incorrectWords;
-  const correctSubmittedWords = state.cleanWords + state.correctedWords;
   const wordAcc = totalSubmittedWords > 0 
-    ? Math.max(0, Math.min(100, Math.round((correctSubmittedWords / totalSubmittedWords) * 1000) / 10)) 
+    ? Math.max(0, Math.min(100, Math.round((completedWords / totalSubmittedWords) * 1000) / 10)) 
     : 100;
 
   return { wpm, rawWpm, acc: wordAcc, wordAcc, strokeAcc, elapsed };

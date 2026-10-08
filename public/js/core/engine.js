@@ -687,9 +687,7 @@ export function finishFreestyleTest() {
   const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
   const m = elapsed / 60;
   const words = val.trim().split(/\s+/).filter(Boolean);
-  const totalChars = val.length;
-
-  const rawWpm = Math.round((totalChars / 5) / m);
+  const rawWpm = Math.round(words.length / m);
   const netWpm = rawWpm;
   const strokeAcc = state.totalKeystrokes > 0
     ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))

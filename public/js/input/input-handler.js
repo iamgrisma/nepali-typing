@@ -20,7 +20,6 @@ import {
   updateLiveStats 
 } from '../ui/workbench-view.js';
 import { renderKeyboard, highlightTargetKey } from '../ui/keyboard-view.js';
-import { cycleNextLayout, layoutShortcutState } from '../core/layout-switcher.js';
 
 export function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
@@ -487,33 +486,6 @@ export function bindInputEvents() {
     finishFreestyleTest();
   });
 
-  // Windows-style Left Alt + Left Shift layout switch capture listener
-  window.addEventListener('keydown', (e) => {
-    if (document.querySelector('.modal-backdrop.is-open, #stats-modal.is-open')) return;
-
-    const isAlt = (e.code === 'AltLeft' || e.key === 'Alt');
-    const isShift = (e.code === 'ShiftLeft' || e.key === 'Shift');
-    const isRightMod = (e.code === 'AltRight' || e.code === 'ShiftRight' || e.code === 'AltGraph');
-
-    if (isShift && !isRightMod) layoutShortcutState.leftShiftDown = true;
-    if (isAlt && !isRightMod) layoutShortcutState.leftAltDown = true;
-
-    if (!isRightMod && (
-      (layoutShortcutState.leftShiftDown && layoutShortcutState.leftAltDown) ||
-      (isShift && (e.altKey || layoutShortcutState.leftAltDown)) ||
-      (isAlt && (e.shiftKey || layoutShortcutState.leftShiftDown)) ||
-      (e.altKey && e.shiftKey && (isAlt || isShift))
-    )) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!layoutShortcutState.layoutSwitchTriggered) {
-        layoutShortcutState.layoutSwitchTriggered = true;
-        cycleNextLayout(() => setupTest());
-      }
-      return;
-    }
-  }, true);
-
   window.addEventListener('keydown', (e) => {
     // Don't steal focus from modal inputs (e.g., certificate name)
     const modalOpen = document.querySelector('.modal-backdrop.is-open, #stats-modal.is-open');
@@ -549,14 +521,6 @@ export function bindInputEvents() {
   });
 
   window.addEventListener('keyup', (e) => {
-    const isAlt = (e.code === 'AltLeft' || e.key === 'Alt');
-    const isShift = (e.code === 'ShiftLeft' || e.key === 'Shift');
-    if (isShift) layoutShortcutState.leftShiftDown = false;
-    if (isAlt) layoutShortcutState.leftAltDown = false;
-    if (isShift || isAlt) {
-      layoutShortcutState.layoutSwitchTriggered = false;
-    }
-
     if (e.key === 'Shift') {
       if (state.isShift) {
         state.isShift = false;
