@@ -82,9 +82,10 @@ export function bindInputEvents() {
       const hadCorrections = (state.currentWordErrors > 0 || state.currentWordBackspaces > 0);
       const wordDuration = Math.round(now - (state.currentWordStartTime || now));
 
+      state.totalKeystrokes++;
       if (isCorrect) {
         playBeep(480, 'sine', 0.05, 0.08);
-        state.correctKeystrokes += curWord.length + 1;
+        state.correctKeystrokes++;
         if (hadCorrections) {
           state.correctedWords++;
         } else {
@@ -95,7 +96,6 @@ export function bindInputEvents() {
         state.errorKeystrokes++;
         state.incorrectWords++;
       }
-      state.totalKeystrokes += (typed.length || 1) + 1;
 
       // Detailed word-by-word audit logging
       state.wordsLog.push({
@@ -212,6 +212,20 @@ export function bindInputEvents() {
         latencyMs: deltaMs
       });
 
+      if (inputField.value.length > 0) {
+        const curPos = inputField.selectionStart ?? inputField.value.length;
+        if (curPos > 0) {
+          const charToDelete = inputField.value[curPos - 1];
+          const expectedCharToDelete = curWord ? curWord[curPos - 1] : '';
+          if (charToDelete === expectedCharToDelete) {
+            state.correctKeystrokes = Math.max(0, state.correctKeystrokes - 1);
+          } else {
+            state.errorKeystrokes = Math.max(0, state.errorKeystrokes - 1);
+            state.currentWordErrors = Math.max(0, state.currentWordErrors - 1);
+          }
+        }
+      }
+
       if (inputField.value.length === 0 && state.wordIdx > 0) {
         e.preventDefault();
 
@@ -224,8 +238,10 @@ export function bindInputEvents() {
             } else {
               state.cleanWords = Math.max(0, state.cleanWords - 1);
             }
+            state.correctKeystrokes = Math.max(0, state.correctKeystrokes - 1);
           } else {
             state.incorrectWords = Math.max(0, state.incorrectWords - 1);
+            state.errorKeystrokes = Math.max(0, state.errorKeystrokes - 1);
           }
           state.currentWordErrors = lastLogged.errorsCount || 0;
           state.currentWordBackspaces = lastLogged.backspacesCount || 0;
@@ -282,7 +298,8 @@ export function bindInputEvents() {
         if (matched && matched.uni) {
           e.preventDefault();
           const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
-          const isCharCorrect = (ch === expectedChar);
+          const expectedSlice = curWord ? curWord.slice(curPos, curPos + ch.length) : '';
+          const isCharCorrect = (ch === expectedSlice);
 
           state.totalKeystrokes++;
           if (isCharCorrect) {
@@ -290,18 +307,18 @@ export function bindInputEvents() {
           } else {
             state.errorKeystrokes++;
             state.currentWordErrors++;
-            state.errorMap[expectedChar || ch] = (state.errorMap[expectedChar || ch] || 0) + 1;
+            state.errorMap[expectedSlice || ch] = (state.errorMap[expectedSlice || ch] || 0) + 1;
           }
 
           state.keystrokeLogs.push({
             timestamp: now,
-            charExpected: expectedChar,
+            charExpected: expectedSlice,
             charTyped: ch,
             isCorrect: isCharCorrect,
             code: e.code,
             latencyMs: deltaMs
           });
-          recordStrokeData(expectedChar, isCharCorrect, deltaMs);
+          recordStrokeData(expectedSlice || ch, isCharCorrect, deltaMs);
 
           const start = inputField.selectionStart ?? inputField.value.length;
           const end = inputField.selectionEnd ?? inputField.value.length;
