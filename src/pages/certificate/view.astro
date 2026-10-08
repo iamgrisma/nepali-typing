@@ -65,7 +65,7 @@ import { Icon } from 'astro-icon/components';
     <div id="certificate-print-area" class="w-full relative bg-[#fffdf9] text-[#1c1917] rounded-3xl p-6 sm:p-12 shadow-2xl border-8 border-[#d4af37] overflow-hidden select-none">
       
       <!-- Inner Security Filigree Border -->
-      <div class="border-2 border-[#b45309] rounded-2xl p-6 sm:p-10 relative">
+      <div class="inner-border border-2 border-[#b45309] rounded-2xl p-6 sm:p-10 relative">
         <div class="absolute inset-1 border border-[#d4af37]/40 pointer-events-none rounded-xl"></div>
         
         <!-- Corner Flourishes -->
@@ -74,9 +74,8 @@ import { Icon } from 'astro-icon/components';
         <div class="absolute bottom-2 left-2 text-[#d4af37] text-2xl font-serif">❖</div>
         <div class="absolute bottom-2 right-2 text-[#d4af37] text-2xl font-serif">❖</div>
 
-
         <!-- Certificate Header -->
-        <div class="text-center relative z-10 space-y-1 mb-8">
+        <div class="cert-header text-center relative z-10 space-y-1 mb-8">
           <div class="flex items-center justify-center gap-2 mb-2">
             <div class="w-8 h-8 rounded-lg bg-red-600 text-white font-bold flex items-center justify-center text-sm shadow" style="font-family: var(--font-nepali);">
               ने
@@ -95,7 +94,7 @@ import { Icon } from 'astro-icon/components';
         </div>
 
         <!-- Recipient Statement -->
-        <div class="text-center relative z-10 space-y-3 mb-8">
+        <div class="cert-recipient text-center relative z-10 space-y-3 mb-8">
           <p class="text-xs uppercase tracking-widest text-[#a8a29e] font-semibold">
             This is officially awarded to
           </p>
@@ -114,7 +113,7 @@ import { Icon } from 'astro-icon/components';
         </div>
 
         <!-- Center Emblems: Speed Rank, Gold Seal, and Controller Signature -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 items-center justify-between gap-6 py-6 border-t border-b border-[#e7e5e4] my-6 relative z-10 text-center">
+        <div class="cert-emblems grid grid-cols-1 sm:grid-cols-3 items-center justify-between gap-6 py-6 border-t border-b border-[#e7e5e4] my-6 relative z-10 text-center">
           
           <!-- Speed Tier Honor -->
           <div class="space-y-1">
@@ -152,26 +151,43 @@ import { Icon } from 'astro-icon/components';
 
         </div>
 
-        <!-- HORIZONTAL BOTTOM FOOTNOTE WITH COMPLETE TYPING STATS -->
-        <div class="relative z-10 mt-6 pt-4 border-t-2 border-[#b45309]/30">
-          <div class="bg-[#f5f5f4] border border-[#e7e5e4] rounded-xl p-3 text-[10px] sm:text-[11px] font-mono text-[#44403c] text-center overflow-x-auto whitespace-nowrap">
-            <span class="font-bold text-[#b91c1c]">NET SPEED: <span id="foot-net-wpm">48 WPM</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>RAW SPEED: <span id="foot-raw-wpm">52 WPM</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span class="font-bold text-[#047857]">ACCURACY: <span id="foot-accuracy">98.4%</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>TOTAL STROKES: <span id="foot-total-strokes">1,420</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>ERRORS: <span id="foot-errors">8</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>RHYTHM: <span id="foot-consistency">96%</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>DURATION: <span id="foot-duration">5 MIN</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span class="font-bold text-[#1c1917]">ID: <span id="foot-cert-id">TN-2026-X8K9M2</span></span>
-            <span class="text-[#d6d3d1] mx-2">|</span>
-            <span>VERIFIED: <span id="foot-verify-url">typing.topnepali.com/verify</span></span>
+        <!-- VERIFICATION & TELEMETRY AUDIT LEDGER (NO SCROLL, CLEAN WRAP) -->
+        <div class="cert-footnote relative z-10 mt-5 pt-3 border-t-2 border-[#b45309]/30">
+          <div class="bg-[#f5f5f4] border border-[#e7e5e4] rounded-xl p-2.5 sm:p-3 text-[10px] sm:text-[11px] font-mono text-[#44403c]">
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center items-center">
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Net Speed</span>
+                <span class="font-bold text-[#b91c1c] text-xs" id="foot-net-wpm">48 WPM</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Gross Speed</span>
+                <span class="font-semibold text-[#1c1917] text-xs" id="foot-raw-wpm">52 WPM</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Accuracy</span>
+                <span class="font-bold text-[#047857] text-xs" id="foot-accuracy">98.4%</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Keystrokes</span>
+                <span class="font-semibold text-[#1c1917] text-xs" id="foot-total-strokes">1,420</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Errors</span>
+                <span class="font-semibold text-[#b91c1c] text-xs" id="foot-errors">8</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Rhythm</span>
+                <span class="font-semibold text-[#1c1917] text-xs" id="foot-consistency">96%</span>
+              </div>
+              <div class="bg-white/90 rounded-lg p-1.5 border border-stone-200 shadow-2xs">
+                <span class="text-[9px] uppercase font-bold text-[#78716c] block">Duration</span>
+                <span class="font-semibold text-[#1c1917] text-xs" id="foot-duration">5 MIN</span>
+              </div>
+            </div>
+            <div class="mt-2 pt-1.5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-1 text-[9px] sm:text-[10px] text-[#78716c] px-1">
+              <span>Security Hash ID: <strong class="text-[#1c1917] font-bold" id="foot-cert-id">TN-2026-X8K9M2</strong></span>
+              <span>Verification URL: <strong class="text-[#1c1917] font-bold" id="foot-verify-url">typing.topnepali.com/verify</strong></span>
+            </div>
           </div>
         </div>
 
@@ -180,28 +196,120 @@ import { Icon } from 'astro-icon/components';
 
   </div>
 
-  <style>
+  <style is:global>
     @media print {
-      body {
+      /* Suppress browser default margins & header/footer stamps */
+      @page {
+        size: A4 landscape;
+        margin: 0.5cm;
+      }
+
+      /* Clean reset of global layout */
+      html, body {
         background: #ffffff !important;
-        color: #000000 !important;
+        color: #1c1917 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Strictly eliminate header, footer, navigation and interactive chrome across the entire DOM */
+      header, 
+      footer, 
+      nav, 
+      aside, 
+      .no-print,
+      #theme-toggle-btn,
+      .theme-toggle-btn {
+        display: none !important;
+        height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
       }
-      header, footer, nav, .no-print {
-        display: none !important;
+
+      main {
+        padding: 0 !important;
+        margin: 0 !important;
+        flex: none !important;
       }
+
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Certificate canvas strictly constrained to a single landscape page */
       #certificate-print-area {
+        position: relative !important;
         box-shadow: none !important;
         border: 4px solid #d4af37 !important;
+        border-radius: 1rem !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding: 1.5rem !important;
+        margin: 0 auto !important;
+        padding: 0.75rem 1.25rem !important;
+        background: #fffdf9 !important;
         page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        break-inside: avoid !important;
+        break-after: avoid !important;
+        break-before: avoid !important;
       }
-      @page {
-        size: A4 landscape;
-        margin: 1cm;
+
+      #certificate-print-area .inner-border {
+        padding: 0.75rem 1rem !important;
+        border-width: 2px !important;
+      }
+
+      #certificate-print-area .cert-header {
+        margin-bottom: 0.5rem !important;
+      }
+
+      #certificate-print-area .cert-header h1 {
+        font-size: 1.5rem !important;
+        line-height: 1.75rem !important;
+      }
+
+      #certificate-print-area .cert-recipient {
+        margin-bottom: 0.5rem !important;
+      }
+
+      #certificate-print-area .cert-recipient h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.75rem !important;
+      }
+
+      #certificate-print-area .cert-recipient p {
+        font-size: 0.75rem !important;
+        line-height: 1.15rem !important;
+        padding-top: 0.25rem !important;
+      }
+
+      #certificate-print-area .cert-emblems {
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.35rem !important;
+        margin-top: 0.35rem !important;
+        margin-bottom: 0.35rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+
+      #certificate-print-area .cert-footnote {
+        margin-top: 0.35rem !important;
+        padding-top: 0.35rem !important;
+      }
+
+      #certificate-print-area .cert-footnote .grid {
+        display: grid !important;
+        grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+        gap: 0.35rem !important;
       }
     }
   </style>

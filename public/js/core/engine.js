@@ -652,8 +652,11 @@ export function finishTest() {
       wpm: netWpm,
       rawWpm: rawWpm,
       acc: acc,
-      wordAcc: wordAccuracy,
-      strokeAcc: strokeAccuracy,
+      wordAcc: stats.wordAcc,
+      strokeAcc: stats.strokeAcc,
+      totalKeystrokes: state.totalKeystrokes,
+      correctKeystrokes: state.correctKeystrokes,
+      errorKeystrokes: state.errorKeystrokes,
       duration: Math.round(stats.elapsed),
       analytics: {
         peakBurstWpm: strokeAnalytics.peakBurstWpm,
@@ -671,7 +674,9 @@ export function finishTest() {
     localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
     updatePersonalBestsCards();
     updateHeaderTelemetryBadge();
-  } catch (e) {}
+  } catch (e) {
+    console.error('Failed to save typing history:', e);
+  }
 }
 
 export function finishFreestyleTest() {
@@ -693,6 +698,7 @@ export function finishFreestyleTest() {
     ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
     : 100;
   const wordAcc = 100;
+  const totalChars = val.length;
   const cpm = Math.round(totalChars / m);
 
   const strokeAnalytics = analyzeTypingRun(state.keystrokeLogs, elapsed, netWpm, rawWpm, strokeAcc);
@@ -822,10 +828,15 @@ export function finishFreestyleTest() {
       acc: strokeAcc,
       wordAcc: 100,
       strokeAcc: strokeAcc,
+      totalKeystrokes: state.totalKeystrokes,
+      correctKeystrokes: Math.max(0, state.totalKeystrokes - state.freestyleBackspaces),
+      errorKeystrokes: state.freestyleBackspaces,
       duration: Math.round(elapsed)
     });
     localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
     updatePersonalBestsCards();
     updateHeaderTelemetryBadge();
-  } catch (e) {}
+  } catch (e) {
+    console.error('Failed to save freestyle typing history:', e);
+  }
 }
