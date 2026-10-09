@@ -5,7 +5,6 @@
  * Modular Architecture:
  * - core/state.js: Application state & Web Audio synthesizer
  * - core/words-pool.js: Text corpora generation & Intl.Segmenter ligatures
- * - core/layout-switcher.js: Windows Alt+Shift chord & layout switching
  * - core/engine.js: Typing session lifecycle, timer & adaptive mastery
  * - ui/workbench-view.js: 2-line sliding scroll, caret position & live HUD
  * - ui/keyboard-view.js: Hardware keyboard visualizer & active keycap targets

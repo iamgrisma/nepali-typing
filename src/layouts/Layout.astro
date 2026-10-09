@@ -94,9 +94,16 @@ const breadcrumbSchema = {
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
 
-    <!-- Preload Fonts -->
+    <!-- High-Performance Google Fonts (Preconnect + Swap) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Mukta:wght@500;700&family=Outfit:wght@600;800&display=swap" 
+    />
+
+    <!-- Local Font Preload (Only Primary Devanagari Font) -->
     <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/preeti.ttf" as="font" type="font/ttf" crossorigin />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
