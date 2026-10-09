@@ -30,6 +30,11 @@ export function setupTest() {
   clearInterval(state.timer);
   state.timer = null;
   state.isRunning = false;
+  state.isPaused = false;
+  state.pauseStartTime = 0;
+  state.isResetModalOpen = false;
+  const resetModalEl = document.getElementById('reset-confirm-modal');
+  if (resetModalEl) resetModalEl.classList.remove('is-open');
   state.isFinished = false;
   state.wordIdx = 0;
   state.typedWords = [];
@@ -378,6 +383,56 @@ export function startTimer() {
 
     if (state.mode === 'exam' && state.examType === 'full') {
       // FULL UN SPEECH: count upwards with format MM:SS
+      if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
+    } else if (state.mode === 'freestyle') {
+      if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
+    } else if (state.mode === 'time' || state.mode === 'exam') {
+      state.secsLeft = Math.max(0, state.duration - elapsed);
+      if (tDisp) tDisp.textContent = `${state.secsLeft}s`;
+      if (state.secsLeft <= 0) {
+        finishTest();
+        return;
+      }
+    } else {
+      if (tDisp) tDisp.textContent = `${elapsed}s`;
+    }
+
+    updateLiveStats();
+
+    const cur = computeCurrentStats();
+    state.timeline.push({
+      second: elapsed,
+      wpm: cur.wpm,
+      rawWpm: cur.rawWpm,
+      errors: state.errorKeystrokes
+    });
+  }, 1000);
+}
+
+export function pauseTimer() {
+  if (!state.isRunning || state.isPaused) return;
+  state.isPaused = true;
+  state.pauseStartTime = performance.now();
+  if (state.timer) {
+    clearInterval(state.timer);
+    state.timer = null;
+  }
+}
+
+export function resumeTimer() {
+  if (!state.isRunning || !state.isPaused) return;
+  if (state.pauseStartTime) {
+    state.startTime += (performance.now() - state.pauseStartTime);
+    state.pauseStartTime = 0;
+  }
+  state.isPaused = false;
+
+  state.timer = setInterval(() => {
+    const now = performance.now();
+    const elapsed = Math.floor((now - state.startTime) / 1000);
+    const tDisp = document.getElementById('live-timer-display');
+
+    if (state.mode === 'exam' && state.examType === 'full') {
       if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);
     } else if (state.mode === 'freestyle') {
       if (tDisp) tDisp.textContent = formatMinutesSeconds(elapsed);

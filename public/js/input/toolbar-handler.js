@@ -4,6 +4,7 @@
 
 import { state } from '../core/state.js';
 import { setupTest, getLastFinishedResult } from '../core/engine.js';
+import { requestReset } from './input-handler.js';
 import { saveCertificate } from '../utils/certificate-db.js';
 import { resetStrokeProfile } from '../utils/adaptive-engine.js';
 import { renderKeyboard } from '../ui/keyboard-view.js';
@@ -192,7 +193,7 @@ export function bindToolbarEvents() {
   });
 
   // Restart buttons
-  document.getElementById('manual-restart-btn')?.addEventListener('click', setupTest);
+  document.getElementById('manual-restart-btn')?.addEventListener('click', requestReset);
   document.getElementById('restart-from-modal-btn')?.addEventListener('click', () => {
     document.getElementById('stats-modal')?.classList.remove('is-open');
     setupTest();

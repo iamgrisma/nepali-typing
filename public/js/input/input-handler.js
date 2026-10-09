@@ -9,6 +9,8 @@ import { refillWords } from '../core/words-pool.js';
 import { 
   setupTest, 
   startTimer, 
+  pauseTimer, 
+  resumeTimer, 
   finishTest, 
   finishFreestyleTest, 
   triggerAdaptiveMastery 
@@ -21,9 +23,74 @@ import {
 } from '../ui/workbench-view.js';
 import { renderKeyboard, highlightTargetKey } from '../ui/keyboard-view.js';
 
+export function requestReset() {
+  const resetModal = document.getElementById('reset-confirm-modal');
+  if (!state.isRunning) {
+    // Session not started: instant direct reset without popup
+    setupTest();
+    return;
+  }
+
+  // Active session in progress: open in-app confirmation modal and pause timer
+  if (resetModal) {
+    pauseTimer();
+    state.isResetModalOpen = true;
+    resetModal.classList.add('is-open');
+  } else {
+    setupTest();
+  }
+}
+
+export function cancelReset() {
+  const resetModal = document.getElementById('reset-confirm-modal');
+  if (resetModal) {
+    resetModal.classList.remove('is-open');
+  }
+  state.isResetModalOpen = false;
+  resumeTimer();
+
+  // Restore focus to typing input
+  if (state.mode === 'freestyle') {
+    document.getElementById('freestyle-input')?.focus();
+  } else {
+    document.getElementById('typing-input')?.focus();
+  }
+}
+
+export function confirmReset() {
+  const resetModal = document.getElementById('reset-confirm-modal');
+  if (resetModal) {
+    resetModal.classList.remove('is-open');
+  }
+  state.isResetModalOpen = false;
+  setupTest();
+}
+
 export function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
   const workbench = document.getElementById('typing-workbench');
+
+  // Reset confirmation modal action bindings
+  const resetModal = document.getElementById('reset-confirm-modal');
+  const yesBtn = document.getElementById('confirm-reset-yes-btn');
+  const noBtn = document.getElementById('confirm-reset-no-btn');
+
+  yesBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    confirmReset();
+  });
+
+  noBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    cancelReset();
+  });
+
+  resetModal?.addEventListener('click', (e) => {
+    // Backdrop click cancels reset and resumes
+    if (e.target === resetModal) {
+      cancelReset();
+    }
+  });
 
   workbench?.addEventListener('click', () => {
     inputField?.focus();
@@ -272,14 +339,16 @@ export function bindInputEvents() {
 
     if (e.key === 'Tab') {
       e.preventDefault();
-      setupTest();
+      e.stopPropagation();
+      requestReset();
       return;
     }
 
     if (e.key === 'Escape') {
+      // Do NOT restart test on Escape (prevents accidental keystroke reset during typing)
+      e.preventDefault();
       document.getElementById('stats-modal')?.classList.remove('is-open');
       document.getElementById('history-modal')?.classList.remove('is-open');
-      setupTest();
       return;
     }
 
@@ -456,6 +525,13 @@ export function bindInputEvents() {
     state.lastStrokeTime = now;
     state.totalKeystrokes++;
 
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      e.stopPropagation();
+      requestReset();
+      return;
+    }
+
     if (e.key === 'Backspace') {
       state.freestyleBackspaces++;
       state.keystrokeLogs.push({
@@ -487,8 +563,45 @@ export function bindInputEvents() {
   });
 
   window.addEventListener('keydown', (e) => {
+    // 1. Strict Reset Confirmation Modal Key Handling
+    if (state.isResetModalOpen) {
+      if (e.key === 'Tab' || e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelReset();
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        confirmReset();
+        return;
+      }
+      // Suppress any background keystrokes while reset confirmation is active
+      return;
+    }
+
+    // 2. Global Tab key handling for restarting tests
+    if (e.key === 'Tab') {
+      const activeEl = document.activeElement;
+      const isOtherModalInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.closest('.modal-backdrop:not(#reset-confirm-modal), #stats-modal');
+      if (!isOtherModalInput) {
+        e.preventDefault();
+        e.stopPropagation();
+        requestReset();
+        return;
+      }
+    }
+
+    // 3. Global Escape key handling (strictly closes overlay modals, NEVER restarts tests)
+    if (e.key === 'Escape') {
+      document.getElementById('stats-modal')?.classList.remove('is-open');
+      document.getElementById('history-modal')?.classList.remove('is-open');
+      return;
+    }
+
     // Don't steal focus from modal inputs (e.g., certificate name)
-    const modalOpen = document.querySelector('.modal-backdrop.is-open, #stats-modal.is-open');
+    const modalOpen = document.querySelector('.modal-backdrop.is-open:not(#reset-confirm-modal), #stats-modal.is-open');
     const activeEl = document.activeElement;
     const isModalInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.closest('.modal-backdrop, #stats-modal');
     
