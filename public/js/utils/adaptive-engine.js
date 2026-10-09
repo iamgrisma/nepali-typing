@@ -119,60 +119,11 @@ export const DIAGNOSTIC_NEPALI_WORDS = [
   'धर्म', 'शान्ति', 'समय', 'समाज', 'ज्ञान', 'शिक्षा', 'मित्र', 'कार्य'
 ];
 
-function extractUniqueCleanWords(text, isNepali = true) {
-  if (!text) return [];
-  const regex = isNepali 
-    ? /[।,\.?!;:«»“”‘’—–\(\)\[\]\{\}\/\\\"\'0-9०-९]/g 
-    : /[\.,?!;:«»“”‘’—–\(\)\[\]\{\}\/\\\"\'0-9]/g;
-  return Array.from(new Set(
-    text.replace(regex, ' ')
-      .split(/\s+/)
-      .map(w => isNepali ? w.trim() : w.trim().toLowerCase())
-      .filter(w => w.length > 1)
-  ));
-}
+import { ALL_NEPALI_WORDS, ALL_ENGLISH_WORDS } from '../data/text-library.js';
 
-// Extract speech vocabulary
-const speechWordsNe = extractUniqueCleanWords(EXAM_SPEECH_NEPALI, true);
-const speechWordsEn = extractUniqueCleanWords(EXAM_SPEECH_ENGLISH, false);
-
-// Extract sentence & quote vocabulary from typing words data
-const sentenceWordsNe = extractUniqueCleanWords([
-  ...DATA.nepali.easy.sentences,
-  ...DATA.nepali.medium.sentences,
-  ...DATA.nepali.hard.sentences,
-  ...DATA.nepali.easy.quotes,
-  ...DATA.nepali.medium.quotes,
-  ...DATA.nepali.hard.quotes
-].join(' '), true);
-
-const sentenceWordsEn = extractUniqueCleanWords([
-  ...DATA.english.easy.sentences,
-  ...DATA.english.medium.sentences,
-  ...DATA.english.hard.sentences,
-  ...DATA.english.easy.quotes,
-  ...DATA.english.medium.quotes,
-  ...DATA.english.hard.quotes
-].join(' '), false);
-
-// Comprehensive Master Lexicon for Adaptive Drill Training (1,300+ NE, 1,100+ EN)
-export const MASTER_NEPALI_WORDS = Array.from(new Set([
-  ...ADAPTIVE_NEPALI_WORDS,
-  ...DATA.nepali.easy.words,
-  ...DATA.nepali.medium.words,
-  ...DATA.nepali.hard.words,
-  ...speechWordsNe,
-  ...sentenceWordsNe
-]));
-
-export const MASTER_ENGLISH_WORDS = Array.from(new Set([
-  ...ADAPTIVE_ENGLISH_WORDS,
-  ...DATA.english.easy.words,
-  ...DATA.english.medium.words,
-  ...DATA.english.hard.words,
-  ...speechWordsEn,
-  ...sentenceWordsEn
-]));
+// Comprehensive Master Lexicon for Adaptive Drill Training (2,100+ NE, 1,600+ EN)
+export const MASTER_NEPALI_WORDS = ALL_NEPALI_WORDS;
+export const MASTER_ENGLISH_WORDS = ALL_ENGLISH_WORDS;
 
 function buildInvertedIndex(wordList) {
   const index = {};

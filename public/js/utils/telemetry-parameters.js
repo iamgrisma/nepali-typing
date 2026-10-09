@@ -21,7 +21,7 @@ export const TELEMETRY_METRICS_SPEC = [
     description: 'Actual productive word output per minute after all error penalties and deductions.',
     minRequirements: { minTests: 1 },
     calculate: (agg) => agg.latestTest ? agg.latestTest.wpm : agg.bestWpm,
-    format: (v) => `${v}`,
+    format: (v) => `${v} WPM`,
     insight: (v) => v >= 40 ? 'Professional tier throughput.' : 'Solid baseline typing velocity.'
   },
   {
@@ -32,7 +32,7 @@ export const TELEMETRY_METRICS_SPEC = [
     description: 'Raw physical finger strikes converted to words per minute before error deductions.',
     minRequirements: { minTests: 1 },
     calculate: (agg) => agg.latestTest ? (agg.latestTest.rawWpm || agg.latestTest.wpm) : agg.bestRawWpm,
-    format: (v) => `${v}`,
+    format: (v) => `${v} WPM`,
     insight: (v) => 'Raw motor velocity potential.'
   },
   {
@@ -43,7 +43,7 @@ export const TELEMETRY_METRICS_SPEC = [
     description: 'Fine-grained character output speed across all valid inputs.',
     minRequirements: { minTests: 1 },
     calculate: (agg) => Math.round((agg.latestTest?.wpm || agg.bestWpm) * 5),
-    format: (v) => `${v}`,
+    format: (v) => `${v} CPM`,
     insight: (v) => 'Standard international measurement.'
   },
   {
@@ -54,7 +54,7 @@ export const TELEMETRY_METRICS_SPEC = [
     description: 'Maximum transient speed achieved during fluent muscle-memory word bursts.',
     minRequirements: { minKeystrokes: 40 },
     calculate: (agg) => agg.latestTest?.analytics?.peakBurstWpm || Math.round((agg.bestWpm || 30) * 1.35),
-    format: (v) => `${v}`,
+    format: (v) => `${v} WPM`,
     insight: (v) => 'Demonstrates subconscious neuromuscular muscle memory.'
   },
   {
@@ -65,7 +65,7 @@ export const TELEMETRY_METRICS_SPEC = [
     description: 'Steady-state pacing achieved during the middle 60% of test sessions.',
     minRequirements: { minTests: 1, minDurationSecs: 30 },
     calculate: (agg) => Math.round((agg.latestTest?.wpm || agg.bestWpm || 28) * 0.96),
-    format: (v) => `${v}`,
+    format: (v) => `${v} WPM`,
     insight: (v) => 'Sustainable pacing for long-form document work.'
   },
   {
@@ -540,6 +540,8 @@ export function aggregateTelemetryData(filter = null) {
   totalErrors = Math.max(totalErrors, profileErrors);
 
   const latestTest = tests[0] || null;
+  const avgWpm = tests.length > 0 ? Math.round(tests.reduce((acc, t) => acc + (Number(t.wpm) || 0), 0) / tests.length) : 0;
+  const avgAcc = tests.length > 0 ? Math.round((tests.reduce((acc, t) => acc + (Number(t.acc) || 100), 0) / tests.length) * 10) / 10 : 100;
 
   return {
     tests,
@@ -553,6 +555,8 @@ export function aggregateTelemetryData(filter = null) {
     totalDurationSecs,
     bestWpm,
     bestRawWpm,
+    avgWpm,
+    avgAcc,
     preetiWpm,
     unicodeWpm,
     romanizedWpm,

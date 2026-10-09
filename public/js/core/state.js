@@ -47,7 +47,11 @@ export const state = {
   freestyleText: '',
   freestyleWords: 0,
   freestyleChars: 0,
-  freestyleBackspaces: 0
+  freestyleBackspaces: 0,
+
+  // Story & Fact Chaining State
+  currentStoryId: null,
+  currentStoryTitle: ''
 };
 
 // Web Audio Context for audio feedback

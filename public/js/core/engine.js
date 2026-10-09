@@ -561,29 +561,6 @@ export function finishTest() {
   if (elTimeLost) elTimeLost.textContent = `${strokeAnalytics.estimatedSecondsLost} sec lost`;
   if (elStrokeRatio) elStrokeRatio.textContent = `${state.correctKeystrokes} / ${state.errorKeystrokes}`;
 
-  // Populate Certification Banner
-  const certBanner = document.getElementById('modal-cert-banner');
-  const certTitle = document.getElementById('modal-cert-status-title');
-  const certDesc = document.getElementById('modal-cert-status-desc');
-  const certNameInput = document.getElementById('modal-candidate-name-input');
-
-  if (certBanner) {
-    if (certPass.passed) {
-      certBanner.classList.remove('hidden');
-      if (certTitle) certTitle.textContent = `Certified Benchmark Passed: ${rank.title}!`;
-      if (certDesc) certDesc.textContent = `Net Speed: ${netWpm} WPM (Exceeds >${certPass.minWpm} WPM requirement with ${acc}% accuracy). Enter your name to generate your verifiable certificate:`;
-      if (certNameInput) {
-        certNameInput.value = localStorage.getItem('topnepali_candidate_name') || '';
-      }
-    } else if (state.mode === 'exam') {
-      certBanner.classList.remove('hidden');
-      if (certTitle) certTitle.textContent = `Official Typing Benchmark: Did Not Yet Qualify`;
-      if (certDesc) certDesc.textContent = `Required: >${certPass.minWpm} WPM (Your speed: ${netWpm} WPM). Practice weak-stroke drills below to qualify!`;
-    } else {
-      certBanner.classList.add('hidden');
-    }
-  }
-
   // Populate Adaptive Recommendation Callout
   const adaptiveCallout = document.getElementById('modal-adaptive-callout');
   const adaptiveKeysLbl = document.getElementById('modal-adaptive-keys-label');
@@ -629,17 +606,6 @@ export function finishTest() {
   // Defocus workbench background inputs so typing is not stolen by workbench
   document.getElementById('typing-input')?.blur();
   document.getElementById('freestyle-input')?.blur();
-
-  // If candidate benchmark achieved, smoothly focus the candidate name field
-  if (certPass.passed) {
-    setTimeout(() => {
-      const nameInput = document.getElementById('modal-candidate-name-input');
-      if (nameInput) {
-        nameInput.focus();
-        nameInput.select();
-      }
-    }, 150);
-  }
 
   // Save record to LocalStorage
   try {
@@ -785,9 +751,7 @@ export function finishFreestyleTest() {
   if (elTimeLost) elTimeLost.textContent = `${strokeAnalytics.estimatedSecondsLost} sec lost`;
   if (elStrokeRatio) elStrokeRatio.textContent = `${state.totalKeystrokes - state.freestyleBackspaces} / ${state.freestyleBackspaces}`;
 
-  // Hide cert banner & adaptive callout for free style
-  const certBanner = document.getElementById('modal-cert-banner');
-  if (certBanner) certBanner.classList.add('hidden');
+  // Hide adaptive callout for free style
   const adaptiveCallout = document.getElementById('modal-adaptive-callout');
   if (adaptiveCallout) adaptiveCallout.classList.add('hidden');
 

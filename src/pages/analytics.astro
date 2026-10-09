@@ -4,8 +4,8 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <Layout 
-  title="Biometric Typing Telemetry & Keystroke Analytics — TopNepali Typing"
-  description="Explore deep keystroke biomechanics: 36 scientifically calibrated neuromotor parameters measuring velocity dynamics, error recovery cost, temporal rhythm stability, hand ergonomics, and Devanagari ligature fluency."
+  title="Typeshala Analytics — Speed Records, Net WPM & Keystroke Biomechanics"
+  description="View your real-time typing speed records on Typeshala Bench: Net WPM, Peak WPM, Lifetime Average, Accuracy, and 36 calibrated biometric neuromotor telemetry parameters across Nepali and English."
   canonicalUrl="https://typing.topnepali.com/analytics"
   ogImage="https://img.topnepali.com/typing.tn/og/default-svg.webp"
   activeNav="analytics"
@@ -22,13 +22,13 @@ import { Icon } from 'astro-icon/components';
               <line x1="12" y1="20" x2="12" y2="4"></line>
               <line x1="6" y1="20" x2="6" y2="14"></line>
             </svg>
-            <span>BIOMETRIC MOTOR TELEMETRY • PROGRESSIVE CALIBRATION</span>
+            <span>TYPESHALA BENCH • VELOCITY &amp; BIOMETRIC MOTOR TELEMETRY</span>
           </div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
-            Keystroke Biomechanics & Analytics
+            Typeshala Analytics &amp; Keystroke Biomechanics
           </h1>
           <p class="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl mt-1.5 leading-relaxed">
-            Move beyond superficial WPM numbers. TopNepali's progressive telemetry engine analyzes 36 distinct neuromotor parameters—from inter-key jitter and lateral hand load to Devanagari Halanta ligature fluency. Metrics unlock strictly once statistically meaningful sample sizes are recorded.
+            Monitor headline typing velocity alongside deep neuromotor telemetry. Typeshala Bench tracks your Net WPM, peak speed records, accuracy, and 36 progressive biomechanical parameters across Nepali (Traditional, Romanized, Preeti) and English QWERTY.
           </p>
         </div>
 
@@ -44,6 +44,89 @@ import { Icon } from 'astro-icon/components';
           <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)]">
             <span id="stat-total-tests">0 Tests Recorded</span>
             <span id="stat-total-strokes">0 Strokes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typeshala Core Performance & Velocity Ledger -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
+          <Icon name="lucide:gauge" class="w-4 h-4 text-blue-500" />
+          <span>Core Velocity &amp; Performance Ledger</span>
+        </h2>
+        <span class="text-[11px] text-[var(--text-muted)] font-medium" id="dash-hero-filter-status">Viewing All Sessions</span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+        <!-- Headline Recent Net WPM -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-500/10 via-[var(--bg-surface)] to-[var(--bg-surface)] border border-blue-500/30 shadow-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Recent Net Speed</span>
+            <span id="dash-hero-recent-layout" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-400">Latest</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold font-display text-[var(--accent-primary)] mt-1.5" id="dash-hero-recent-wpm">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Accuracy: <b id="dash-hero-recent-acc" class="text-emerald-500">-</b></span>
+          </div>
+        </div>
+
+        <!-- All-Time Peak WPM -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">All-Time Peak</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400">Record</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold font-display text-amber-500 mt-1.5" id="dash-hero-peak-wpm">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Fastest burst across runs</span>
+          </div>
+        </div>
+
+        <!-- Lifetime Average WPM -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Average Speed</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-600 dark:text-purple-400">Mean</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold font-display text-purple-600 dark:text-purple-400 mt-1.5" id="dash-hero-avg-wpm">
+            0 WPM
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Aggregated across tests</span>
+          </div>
+        </div>
+
+        <!-- Lifetime Average Accuracy -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Overall Accuracy</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">Precision</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold font-display text-emerald-500 mt-1.5" id="dash-hero-avg-acc">
+            0%
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span>Word precision rate</span>
+          </div>
+        </div>
+
+        <!-- Practice Volume -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs col-span-2 sm:col-span-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">Total Volume</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">Workload</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-cyan-600 dark:text-cyan-400 mt-1.5" id="dash-hero-volume-words">
+            0 Words
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] mt-1">
+            <span id="dash-hero-volume-time">0m time spent</span>
           </div>
         </div>
       </div>
@@ -503,6 +586,49 @@ import { Icon } from 'astro-icon/components';
       if (totalStrokesEl) totalStrokesEl.textContent = `${agg.totalKeystrokes.toLocaleString()} Strokes`;
       if (tabReadyBadge) tabReadyBadge.textContent = `${evalData.readyCount}`;
       if (tabCalibratingBadge) tabCalibratingBadge.textContent = `${evalData.calibratingCount}`;
+
+      // 3.5 Update Core Velocity & Volume Card
+      const recentWpmEl = document.getElementById('dash-hero-recent-wpm');
+      const recentAccEl = document.getElementById('dash-hero-recent-acc');
+      const recentLayoutEl = document.getElementById('dash-hero-recent-layout');
+      const peakWpmEl = document.getElementById('dash-hero-peak-wpm');
+      const avgWpmEl = document.getElementById('dash-hero-avg-wpm');
+      const avgAccEl = document.getElementById('dash-hero-avg-acc');
+      const volumeWordsEl = document.getElementById('dash-hero-volume-words');
+      const volumeTimeEl = document.getElementById('dash-hero-volume-time');
+      const heroFilterStatusEl = document.getElementById('dash-hero-filter-status');
+
+      if (agg.latestTest) {
+        if (recentWpmEl) recentWpmEl.textContent = `${agg.latestTest.wpm} WPM`;
+        if (recentAccEl) recentAccEl.textContent = `${agg.latestTest.acc}%`;
+        if (recentLayoutEl) {
+          recentLayoutEl.textContent = (agg.latestTest.layout || 'Latest').replace('nepali_', '').toUpperCase();
+        }
+      } else {
+        if (recentWpmEl) recentWpmEl.textContent = '0 WPM';
+        if (recentAccEl) recentAccEl.textContent = '-';
+        if (recentLayoutEl) recentLayoutEl.textContent = 'No Tests';
+      }
+
+      let allTimePeak = 0;
+      agg.tests.forEach(t => {
+        const w = Number(t.wpm) || 0;
+        if (w > allTimePeak) allTimePeak = w;
+      });
+      if (peakWpmEl) peakWpmEl.textContent = `${allTimePeak} WPM`;
+      if (avgWpmEl) avgWpmEl.textContent = `${agg.avgWpm} WPM`;
+      if (avgAccEl) avgAccEl.textContent = `${agg.avgAcc}%`;
+      if (volumeWordsEl) volumeWordsEl.textContent = `${agg.totalWords.toLocaleString()} Words`;
+      if (volumeTimeEl) {
+        const mins = Math.floor(agg.totalDurationSecs / 60);
+        const secs = Math.round(agg.totalDurationSecs % 60);
+        volumeTimeEl.textContent = `${mins}m ${secs}s time spent`;
+      }
+      if (heroFilterStatusEl) {
+        heroFilterStatusEl.textContent = dashboardState.layoutFilter
+          ? `Filtered: ${layoutNames[dashboardState.layoutFilter.value] || dashboardState.layoutFilter.value}`
+          : 'Viewing All Sessions';
+      }
 
       // 4. Update Personal Bests
       let pbEng = 0, pbUni = 0, pbRom = 0, pbPre = 0;
