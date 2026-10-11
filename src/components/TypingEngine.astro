@@ -35,13 +35,6 @@ const initialWords = defaultLang === 'english' ? [
         <span id="live-timer-display">{defaultDuration}s</span>
       </div>
       <div class="text-[11px] text-[var(--text-muted)]" id="live-progress-display">0 / 25 words</div>
-      
-      <!-- Input Mode Indicator Pill (Traditional / QWERTY Alt+Shift / Ctrl+Alt) -->
-      <div id="workbench-input-mode-pill" class={`hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[10px] text-[var(--text-muted)] cursor-pointer hover:border-[var(--accent-primary)] transition-all ${defaultLang === 'english' ? 'hidden' : ''}`} title="Click or press Alt+Shift (or Ctrl+Alt) to toggle between website layout and QWERTY input mode">
-        <span id="workbench-input-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-        <span id="workbench-input-text">{defaultLang === 'nepali_romanized' ? 'Romanized' : (defaultLang === 'nepali_preeti' ? 'Preeti' : 'Traditional')}</span>
-        <kbd class="px-1 py-0.2 rounded bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[9px] text-[var(--text-muted)]">Alt+Shift</kbd>
-      </div>
     </div>
 
     <!-- Right: Live WPM, Two-Level Accuracy & Restart -->

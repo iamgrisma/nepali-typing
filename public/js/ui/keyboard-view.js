@@ -17,7 +17,7 @@ export function renderKeyboard() {
       rowEl.innerHTML = '';
     }
 
-    const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+    const currentMode = state.activeInputMode;
 
     row.forEach((k, kI) => {
       let topLbl = '';
@@ -92,80 +92,71 @@ export function renderKeyboard() {
 
   const titleEl = document.getElementById('kb-current-layout-name');
   const pillEl = document.getElementById('kb-layout-pill');
-  const titles = {
-    english: 'English QWERTY Layout',
-    nepali_unicode: 'Nepali Unicode (Traditional MPP) Layout',
-    nepali_romanized: 'Nepali Unicode (Romanized Phonetic) Layout',
-    nepali_preeti: 'Preeti (ASCII Typewriter) Layout'
-  };
-  const pills = {
-    english: 'QWERTY',
-    nepali_unicode: 'MPP TRADITIONAL',
-    nepali_romanized: 'PHONETIC QWERTY',
-    nepali_preeti: 'PREETI TYPEWRITER'
+
+  const LAYOUT_META = {
+    english: {
+      title: 'English QWERTY Layout',
+      pill: 'QWERTY',
+      label: 'QWERTY',
+      canToggle: false
+    },
+    nepali_unicode: {
+      title: 'Nepali Unicode (Traditional MPP) Layout',
+      pill: 'MPP TRADITIONAL',
+      label: 'Traditional (MPP)',
+      canToggle: true
+    },
+    nepali_romanized: {
+      title: 'Nepali Unicode (Romanized Phonetic) Layout',
+      pill: 'PHONETIC QWERTY',
+      label: 'Romanized',
+      canToggle: true
+    },
+    nepali_preeti: {
+      title: 'Preeti (ASCII Typewriter) Layout',
+      pill: 'PREETI TYPEWRITER',
+      label: 'Preeti',
+      canToggle: true
+    }
   };
 
-  const isQwertySwitched = (state.activeInputMode === 'qwerty' && state.lang !== 'english');
+  const meta = LAYOUT_META[state.lang] || LAYOUT_META.english;
+  const isQwertySwitched = (state.activeInputMode === 'qwerty' && meta.canToggle);
 
   if (titleEl) {
     titleEl.textContent = isQwertySwitched 
-      ? `${titles[state.lang] || ''} ➔ [QWERTY Passthrough]` 
-      : (titles[state.lang] || '');
+      ? `${meta.title} ➔ [QWERTY Passthrough]` 
+      : meta.title;
   }
   if (pillEl) {
     if (isQwertySwitched) {
       pillEl.textContent = 'QWERTY ACTIVE (Alt+Shift)';
       pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 animate-pulse';
     } else {
-      pillEl.textContent = pills[state.lang] || '';
+      pillEl.textContent = meta.pill;
       pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400';
     }
   }
 
   // Update input mode toggle button in visualizer
+  const kbModeBtn = document.getElementById('kb-input-mode-btn');
   const kbModeLabel = document.getElementById('kb-input-mode-label');
   const kbModeDot = document.getElementById('kb-input-mode-dot');
-  if (kbModeLabel) {
-    if (state.lang === 'english') {
-      kbModeLabel.textContent = 'QWERTY (Fixed)';
-    } else if (isQwertySwitched) {
-      kbModeLabel.textContent = 'QWERTY Active';
-    } else if (state.lang === 'nepali_unicode') {
-      kbModeLabel.textContent = 'Traditional';
-    } else if (state.lang === 'nepali_romanized') {
-      kbModeLabel.textContent = 'Romanized';
-    } else if (state.lang === 'nepali_preeti') {
-      kbModeLabel.textContent = 'Preeti';
+  if (kbModeBtn) {
+    // English is fixed QWERTY: hide toggle button
+    if (!meta.canToggle) {
+      kbModeBtn.classList.add('hidden');
+    } else {
+      kbModeBtn.classList.remove('hidden');
+      if (kbModeLabel) {
+        kbModeLabel.textContent = isQwertySwitched ? 'QWERTY Passthrough' : meta.label;
+      }
+      if (kbModeDot) {
+        kbModeDot.className = isQwertySwitched 
+          ? 'w-2 h-2 rounded-full bg-amber-500 inline-block animate-pulse' 
+          : 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
+      }
     }
-  }
-  if (kbModeDot) {
-    kbModeDot.className = isQwertySwitched 
-      ? 'w-2 h-2 rounded-full bg-amber-500 inline-block animate-pulse' 
-      : 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
-  }
-
-  // Update workbench pill
-  const wbInputText = document.getElementById('workbench-input-text');
-  const wbInputDot = document.getElementById('workbench-input-dot');
-  const wbInputPill = document.getElementById('workbench-input-mode-pill');
-  if (wbInputPill) {
-    wbInputPill.classList.toggle('hidden', state.lang === 'english');
-  }
-  if (wbInputText) {
-    if (isQwertySwitched) {
-      wbInputText.textContent = 'QWERTY Passthrough';
-    } else if (state.lang === 'nepali_unicode') {
-      wbInputText.textContent = 'Traditional';
-    } else if (state.lang === 'nepali_romanized') {
-      wbInputText.textContent = 'Romanized';
-    } else if (state.lang === 'nepali_preeti') {
-      wbInputText.textContent = 'Preeti';
-    }
-  }
-  if (wbInputDot) {
-    wbInputDot.className = isQwertySwitched 
-      ? 'w-1.5 h-1.5 rounded-full bg-amber-500 inline-block animate-pulse' 
-      : 'w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block';
   }
 
   highlightTargetKey();
@@ -185,7 +176,7 @@ export function highlightTargetKey() {
     targetCh = ' ';
   }
 
-  const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+  const currentMode = state.activeInputMode;
 
   const isAsciiSymbol = targetCh && targetCh !== ' ' && targetCh.charCodeAt(0) < 128 && !/[0-9a-zA-Z]/.test(targetCh);
 

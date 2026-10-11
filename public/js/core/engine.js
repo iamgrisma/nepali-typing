@@ -36,6 +36,7 @@ export function setupTest() {
   const resetModalEl = document.getElementById('reset-confirm-modal');
   if (resetModalEl) resetModalEl.classList.remove('is-open');
   state.isFinished = false;
+  state.isQwertyPassthrough = false;
   state.wordIdx = 0;
   state.typedWords = [];
   state.timeline = [];
@@ -167,6 +168,16 @@ export function setupTest() {
   if (inputField) {
     inputField.value = '';
     inputField.removeAttribute('placeholder');
+    if (state.lang === 'nepali_preeti') {
+      inputField.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
+      inputField.style.fontSize = "1.35rem";
+    } else if (state.lang === 'english') {
+      inputField.style.fontFamily = "'Inter', sans-serif";
+      inputField.style.fontSize = "1.2rem";
+    } else {
+      inputField.style.fontFamily = "'Font_kokila', 'Mukta', 'Kalimati', sans-serif";
+      inputField.style.fontSize = "1.25rem";
+    }
     inputField.focus();
   }
 
@@ -233,17 +244,7 @@ export function setupTestWithWords(words) {
 
   // Use provided words
   state.words = [...words];
-
-  // Reset hardware input mode to natural mode of selected language bench
-  if (state.lang === 'nepali_unicode') {
-    state.activeInputMode = 'traditional';
-  } else if (state.lang === 'nepali_romanized') {
-    state.activeInputMode = 'romanized';
-  } else if (state.lang === 'nepali_preeti') {
-    state.activeInputMode = 'preeti';
-  } else {
-    state.activeInputMode = 'qwerty';
-  }
+  state.isQwertyPassthrough = false;
 
   const timerDisp = document.getElementById('live-timer-display');
   const progDisp = document.getElementById('live-progress-display');

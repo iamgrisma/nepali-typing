@@ -73,31 +73,61 @@ export function toggleInputMode() {
     return;
   }
 
-  if (state.activeInputMode === 'qwerty') {
-    // Return to the bench's native input mode
-    if (state.lang === 'nepali_unicode') {
-      state.activeInputMode = 'traditional';
-    } else if (state.lang === 'nepali_romanized') {
-      state.activeInputMode = 'romanized';
-    } else if (state.lang === 'nepali_preeti') {
-      state.activeInputMode = 'preeti';
-    }
-  } else {
-    // Switch to QWERTY passthrough input mode
-    state.activeInputMode = 'qwerty';
-  }
+  state.isQwertyPassthrough = !state.isQwertyPassthrough;
 
   // If in freestyle mode and Preeti bench, adjust textarea font dynamically
   if (state.mode === 'freestyle' && state.lang === 'nepali_preeti') {
     const freestyleInput = document.getElementById('freestyle-input');
     if (freestyleInput) {
-      freestyleInput.style.fontFamily = state.activeInputMode === 'qwerty' ? 'inherit' : 'Preeti, sans-serif';
+      freestyleInput.style.fontFamily = state.isQwertyPassthrough ? 'inherit' : 'Preeti, sans-serif';
     }
   }
 
   playBeep(520, 'sine', 0.04, 0.05);
   renderKeyboard();
   updateLiveStats();
+}
+
+export function getMappedChar(code, isShift, currentMode, expectedChar = '') {
+  const matched = KEY_CODE_MAP[code];
+  if (!matched) return '';
+
+  if (currentMode === 'qwerty' || state.lang === 'english') {
+    return matched.eng ? (isShift ? matched.eng[1] : matched.eng[0]) : '';
+  }
+
+  if (currentMode === 'traditional') {
+    return matched.uni ? (isShift ? matched.uni[1] : matched.uni[0]) : '';
+  }
+
+  if (currentMode === 'romanized') {
+    if (!matched.rom) return '';
+    let ch = isShift ? matched.rom[1] : matched.rom[0];
+    if (code === 'KeyQ' && !isShift) {
+      ch = (expectedChar === '्' || expectedChar !== 'ट') ? '्' : 'ट';
+    } else if (code === 'Slash' && !isShift) {
+      ch = '्';
+    } else if (code === 'KeyA' && !isShift && expectedChar === 'अ') {
+      ch = 'अ';
+    }
+    return ch;
+  }
+
+  if (currentMode === 'preeti') {
+    return matched.pre ? (isShift ? matched.pre[1] : matched.pre[0]) : (matched.eng ? (isShift ? matched.eng[1] : matched.eng[0]) : '');
+  }
+
+  return '';
+}
+
+export function normalizeLigatures(val) {
+  if (!val) return '';
+  return val
+    .replace(/अा/g, 'आ')
+    .replace(/ाे/g, 'ो')
+    .replace(/ाै/g, 'ौ')
+    .replace(/अो/g, 'ओ')
+    .replace(/अौ/g, 'औ');
 }
 
 export function checkAndHandleAltShift(e) {
@@ -126,15 +156,8 @@ export function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
   const workbench = document.getElementById('typing-workbench');
 
-  // Input mode switcher button bindings (Visualizer and Workbench)
+  // Input mode switcher button binding (Visualizer Header)
   document.getElementById('kb-input-mode-btn')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleInputMode();
-    inputField?.focus();
-  });
-
-  document.getElementById('workbench-input-mode-pill')?.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     toggleInputMode();
@@ -182,12 +205,7 @@ export function bindInputEvents() {
     // Auto-normalize traditional ligatures
     if (state.lang === 'nepali_unicode' || state.lang === 'nepali_romanized') {
       const val = inputField.value;
-      const normalized = val
-        .replace(/अा/g, 'आ')
-        .replace(/ाे/g, 'ो')
-        .replace(/ाै/g, 'ौ')
-        .replace(/अो/g, 'ओ')
-        .replace(/अौ/g, 'औ');
+      const normalized = normalizeLigatures(val);
       if (normalized !== val) {
         inputField.value = normalized;
       }
@@ -424,20 +442,23 @@ export function bindInputEvents() {
       return;
     }
 
-    // Hardware layout keystroke mapping on US physical keyboard
-    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-      if (state.isFinished) return;
-      if (!state.isRunning) startTimer();
+    // True Hardware-Level Sandbox: map physical US keyboard scan code (e.code)
+    // completely ignoring device OS input method or installed language layout!
+    if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+      if (e.key.length === 1 || KEY_CODE_MAP[e.code]) {
+        if (state.isFinished) return;
+        if (!state.isRunning) startTimer();
 
-      const isAscii = e.key.charCodeAt(0) < 128;
-      const curPos = inputField.selectionStart ?? inputField.value.length;
-      const expectedChar = curWord ? (curWord[curPos] || '') : '';
-      const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+        const curPos = inputField.selectionStart ?? inputField.value.length;
+        const expectedChar = curWord ? (curWord[curPos] || '') : '';
+        const currentMode = state.activeInputMode;
+        const isShift = (e.shiftKey || state.isShift);
 
-      // A. QWERTY Passthrough Mode (when toggled via Alt+Shift on any bench, or on English bench)
-      if (currentMode === 'qwerty') {
-        const ch = e.key;
+        const ch = getMappedChar(e.code, isShift, currentMode, expectedChar) || (e.key.length === 1 ? e.key : '');
+        if (!ch) return;
+
         e.preventDefault();
+
         const expectedSlice = curWord ? curWord.slice(curPos, curPos + ch.length) : '';
         const isCharCorrect = (ch === expectedSlice || ch === expectedChar);
 
@@ -463,133 +484,17 @@ export function bindInputEvents() {
         const start = inputField.selectionStart ?? inputField.value.length;
         const end = inputField.selectionEnd ?? inputField.value.length;
         inputField.setRangeText(ch, start, end, 'end');
+
+        if (currentMode === 'traditional' || currentMode === 'romanized') {
+          const val = inputField.value;
+          const norm = normalizeLigatures(val);
+          if (norm !== val) {
+            inputField.value = norm;
+          }
+        }
+
         inputField.dispatchEvent(new Event('input'));
         return;
-      }
-
-      // B. Traditional Devanagari Mapping
-      if (currentMode === 'traditional' && isAscii) {
-        const matched = KEY_CODE_MAP[e.code];
-        if (matched && matched.uni) {
-          e.preventDefault();
-          const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
-          const expectedSlice = curWord ? curWord.slice(curPos, curPos + ch.length) : '';
-          const isCharCorrect = (ch === expectedSlice);
-
-          state.totalKeystrokes++;
-          if (isCharCorrect) {
-            state.correctKeystrokes++;
-          } else {
-            state.errorKeystrokes++;
-            state.currentWordErrors++;
-            state.errorMap[expectedSlice || ch] = (state.errorMap[expectedSlice || ch] || 0) + 1;
-          }
-
-          state.keystrokeLogs.push({
-            timestamp: now,
-            charExpected: expectedSlice,
-            charTyped: ch,
-            isCorrect: isCharCorrect,
-            code: e.code,
-            latencyMs: deltaMs
-          });
-          recordStrokeData(expectedSlice || ch, isCharCorrect, deltaMs);
-
-          const start = inputField.selectionStart ?? inputField.value.length;
-          const end = inputField.selectionEnd ?? inputField.value.length;
-          inputField.setRangeText(ch, start, end, 'end');
-
-          let val = inputField.value;
-          val = val
-            .replace(/अा/g, 'आ')
-            .replace(/ाे/g, 'ो')
-            .replace(/ाै/g, 'ौ')
-            .replace(/अो/g, 'ओ')
-            .replace(/अौ/g, 'औ');
-          inputField.value = val;
-
-          inputField.dispatchEvent(new Event('input'));
-          return;
-        }
-      } else if (currentMode === 'romanized' && isAscii) {
-        const matched = KEY_CODE_MAP[e.code];
-        if (matched && matched.rom) {
-          e.preventDefault();
-          let ch = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
-
-          if (e.code === 'KeyQ' && !e.shiftKey && !state.isShift) {
-            if (expectedChar === '्' || expectedChar !== 'ट') {
-              ch = '्';
-            } else {
-              ch = 'ट';
-            }
-          } else if (e.code === 'Slash' && !e.shiftKey && !state.isShift) {
-            ch = '्';
-          }
-
-          if (e.code === 'KeyA' && !e.shiftKey && !state.isShift) {
-            if (expectedChar === 'अ') {
-              ch = 'अ';
-            }
-          }
-
-          const isCharCorrect = (ch === expectedChar);
-          state.totalKeystrokes++;
-          if (isCharCorrect) {
-            state.correctKeystrokes++;
-          } else {
-            state.errorKeystrokes++;
-            state.currentWordErrors++;
-            state.errorMap[expectedChar || ch] = (state.errorMap[expectedChar || ch] || 0) + 1;
-          }
-
-          state.keystrokeLogs.push({
-            timestamp: now,
-            charExpected: expectedChar,
-            charTyped: ch,
-            isCorrect: isCharCorrect,
-            code: e.code,
-            latencyMs: deltaMs
-          });
-          recordStrokeData(expectedChar, isCharCorrect, deltaMs);
-
-          const start = inputField.selectionStart ?? inputField.value.length;
-          const end = inputField.selectionEnd ?? inputField.value.length;
-          inputField.setRangeText(ch, start, end, 'end');
-
-          let val = inputField.value;
-          val = val
-            .replace(/अा/g, 'आ')
-            .replace(/ाे/g, 'ो')
-            .replace(/ाै/g, 'ौ')
-            .replace(/अो/g, 'ओ')
-            .replace(/अौ/g, 'औ');
-          inputField.value = val;
-
-          inputField.dispatchEvent(new Event('input'));
-          return;
-        }
-      } else {
-        // English or Preeti native input
-        const isCharCorrect = (e.key === expectedChar);
-        state.totalKeystrokes++;
-        if (isCharCorrect) {
-          state.correctKeystrokes++;
-        } else {
-          state.errorKeystrokes++;
-          state.currentWordErrors++;
-          state.errorMap[expectedChar || e.key] = (state.errorMap[expectedChar || e.key] || 0) + 1;
-        }
-
-        state.keystrokeLogs.push({
-          timestamp: now,
-          charExpected: expectedChar,
-          charTyped: e.key,
-          isCorrect: isCharCorrect,
-          code: e.code,
-          latencyMs: deltaMs
-        });
-        recordStrokeData(expectedChar, isCharCorrect, deltaMs);
       }
     }
   });
@@ -675,130 +580,52 @@ export function bindInputEvents() {
       return;
     }
 
-    // Website native language layout logic for US keyboard keystrokes
-    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-      const isAscii = e.key.charCodeAt(0) < 128;
-      const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+    // True Hardware-Level Sandbox for Free Style
+    if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+      if (e.key.length === 1 || KEY_CODE_MAP[e.code]) {
+        const currentMode = state.activeInputMode;
+        const isShift = (e.shiftKey || state.isShift);
 
-      // A. QWERTY Mode or English Layout
-      if (currentMode === 'qwerty' || state.lang === 'english') {
+        const ch = getMappedChar(e.code, isShift, currentMode) || (e.key.length === 1 ? e.key : '');
+        if (!ch) return;
+
+        e.preventDefault();
+
         state.totalKeystrokes++;
         state.correctKeystrokes++;
         state.keystrokeLogs.push({
           timestamp: now,
-          charExpected: e.key,
-          charTyped: e.key,
+          charExpected: ch,
+          charTyped: ch,
           isCorrect: true,
           code: e.code,
           latencyMs: deltaMs
         });
-        return; // let native textarea insert character
-      }
 
-      // B. Traditional Devanagari Mapping
-      if (currentMode === 'traditional' && isAscii) {
-        const matched = KEY_CODE_MAP[e.code];
-        if (matched && matched.uni) {
-          e.preventDefault();
-          const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
-          state.totalKeystrokes++;
-          state.correctKeystrokes++;
-          state.keystrokeLogs.push({
-            timestamp: now,
-            charExpected: ch,
-            charTyped: ch,
-            isCorrect: true,
-            code: e.code,
-            latencyMs: deltaMs
-          });
+        const start = freestyleInput.selectionStart;
+        const end = freestyleInput.selectionEnd;
+        freestyleInput.setRangeText(ch, start, end, 'end');
 
-          const start = freestyleInput.selectionStart;
-          const end = freestyleInput.selectionEnd;
-          freestyleInput.setRangeText(ch, start, end, 'end');
-
-          let val = freestyleInput.value;
-          const norm = val
-            .replace(/अा/g, 'आ')
-            .replace(/ाे/g, 'ो')
-            .replace(/ाै/g, 'ौ')
-            .replace(/अो/g, 'ओ')
-            .replace(/अौ/g, 'औ');
+        if (currentMode === 'traditional' || currentMode === 'romanized') {
+          const val = freestyleInput.value;
+          const norm = normalizeLigatures(val);
           if (norm !== val) {
             freestyleInput.value = norm;
           }
-          freestyleInput.dispatchEvent(new Event('input'));
-          return;
         }
+
+        freestyleInput.dispatchEvent(new Event('input'));
+        return;
       }
-
-      // C. Romanized Phonetic Mapping
-      if (currentMode === 'romanized' && isAscii) {
-        const matched = KEY_CODE_MAP[e.code];
-        if (matched && matched.rom) {
-          e.preventDefault();
-          let ch = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
-          if (e.code === 'KeyQ' && !e.shiftKey && !state.isShift) {
-            ch = '्';
-          } else if (e.code === 'Slash' && !e.shiftKey && !state.isShift) {
-            ch = '्';
-          }
-          state.totalKeystrokes++;
-          state.correctKeystrokes++;
-          state.keystrokeLogs.push({
-            timestamp: now,
-            charExpected: ch,
-            charTyped: ch,
-            isCorrect: true,
-            code: e.code,
-            latencyMs: deltaMs
-          });
-
-          const start = freestyleInput.selectionStart;
-          const end = freestyleInput.selectionEnd;
-          freestyleInput.setRangeText(ch, start, end, 'end');
-
-          let val = freestyleInput.value;
-          const norm = val
-            .replace(/अा/g, 'आ')
-            .replace(/ाे/g, 'ो')
-            .replace(/ाै/g, 'ौ')
-            .replace(/अो/g, 'ओ')
-            .replace(/अौ/g, 'औ');
-          if (norm !== val) {
-            freestyleInput.value = norm;
-          }
-          freestyleInput.dispatchEvent(new Event('input'));
-          return;
-        }
-      }
-
-      // D. Preeti layout (rendered via Preeti font)
-      if (currentMode === 'preeti') {
-        state.totalKeystrokes++;
-        state.correctKeystrokes++;
-        state.keystrokeLogs.push({
-          timestamp: now,
-          charExpected: e.key,
-          charTyped: e.key,
-          isCorrect: true,
-          code: e.code,
-          latencyMs: deltaMs
-        });
-        return; // native key in Preeti font renders Devanagari
-      }
-
-      // Fallback
-      state.totalKeystrokes++;
-      state.correctKeystrokes++;
-      state.keystrokeLogs.push({
-        timestamp: now,
-        charExpected: e.key,
-        charTyped: e.key,
-        isCorrect: true,
-        code: e.code,
-        latencyMs: deltaMs
-      });
     }
+  });
+
+  // Block native IME composition events so device language doesn't hijack sandbox
+  inputField?.addEventListener('compositionstart', (e) => {
+    e.preventDefault();
+  });
+  freestyleInput?.addEventListener('compositionstart', (e) => {
+    e.preventDefault();
   });
 
   finishFreestyleBtn?.addEventListener('click', () => {
