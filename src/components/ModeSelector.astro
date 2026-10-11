@@ -13,163 +13,259 @@ const {
 } = Astro.props;
 ---
 
-<div class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-2.5 sm:p-3 shadow-sm mb-3">
-  <div class="flex flex-wrap items-center justify-between gap-2.5">
+<div class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-2 sm:p-2.5 shadow-sm mb-3">
+  <div class="flex flex-col gap-2">
     
-    <!-- Group 1: Language / Layout Selection -->
-    <div id="lang-selector-group" class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto max-w-full">
-      <button 
-        type="button"
-        class={`lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_unicode' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
-        data-lang="nepali_unicode"
-      >
-        Nepali Traditional
-      </button>
+    <!-- Row 1: Languages (Left) & Controls: Difficulty + Keyboard Toggle (Right) -->
+    <div class="flex items-center justify-between gap-2 flex-wrap">
+      <!-- Group 1: Languages / Layouts -->
+      <div id="lang-selector-group" class="flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto text-xs">
+        <button 
+          type="button"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_unicode' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+          data-lang="nepali_unicode"
+        >
+          Traditional
+        </button>
 
-      <button 
-        type="button"
-        class={`lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_romanized' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
-        data-lang="nepali_romanized"
-      >
-        Nepali Romanized
-      </button>
+        <button 
+          type="button"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_romanized' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+          data-lang="nepali_romanized"
+        >
+          Romanized
+        </button>
 
-      <button 
-        type="button"
-        class={`lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_preeti' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
-        data-lang="nepali_preeti"
-      >
-        Preeti (ASCII)
-      </button>
+        <button 
+          type="button"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_preeti' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+          data-lang="nepali_preeti"
+        >
+          Preeti
+        </button>
 
+        <button 
+          type="button"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'english' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+          data-lang="english"
+        >
+          English
+        </button>
+      </div>
+
+      <!-- Right: Difficulty Level & Keyboard Toggle -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div id="diff-options" class="flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <button type="button" class="diff-btn px-2 py-0.5 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="easy">Easy</button>
+          <button type="button" class="diff-btn active px-2 py-0.5 rounded-lg font-medium font-bold text-amber-500 bg-[var(--bg-surface)]" data-diff="medium">Medium</button>
+          <button type="button" class="diff-btn px-2 py-0.5 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="hard">Hard</button>
+        </div>
+
+        <button 
+          type="button" 
+          id="toggle-keyboard-btn" 
+          class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+          title="Toggle Hardware Keyboard Layout Reference"
+        >
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+            <line x1="6" y1="8" x2="6.01" y2="8"></line>
+            <line x1="10" y1="8" x2="10.01" y2="8"></line>
+            <line x1="14" y1="8" x2="14.01" y2="8"></line>
+            <line x1="18" y1="8" x2="18.01" y2="8"></line>
+            <line x1="6" y1="12" x2="6.01" y2="12"></line>
+            <line x1="18" y1="12" x2="18.01" y2="12"></line>
+            <line x1="7" y1="16" x2="17" y2="16"></line>
+          </svg>
+          <span id="toggle-keyboard-text">Hide Keys</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: Modes (Left) & Mode Sub-Options (Right) -->
+    <div class="flex items-center justify-between gap-2 flex-wrap pt-1.5 border-t border-[var(--border-subtle)]">
+      <!-- Content Modes -->
+      <div class="flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs overflow-x-auto">
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'time' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="time">
+          Time
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'words' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="words">
+          Words
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'sentences' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="sentences">
+          Sentences
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'quotes' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="quotes">
+          Prose
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'exam' ? 'active bg-[var(--bg-surface)] font-bold text-purple-600 dark:text-purple-400' : 'text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="exam">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+          <span>Exam</span>
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'adaptive' ? 'active bg-[var(--bg-surface)] font-bold text-amber-500' : 'text-amber-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="adaptive">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>Drills</span>
+        </button>
+        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'freestyle' ? 'active bg-[var(--bg-surface)] font-bold text-teal-500' : 'text-teal-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="freestyle">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          <span>Free</span>
+        </button>
+      </div>
+
+      <!-- Mode-Specific Sub-Options -->
+      <div class="flex items-center gap-1">
+        <!-- Time Duration Options (Shown when mode == 'time') -->
+        <div id="time-options" class={`flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs ${defaultMode !== 'time' ? 'hidden' : ''}`}>
+          <button type="button" class={`time-btn px-2 py-0.5 rounded-lg font-mono ${defaultDuration === 15 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="15">15s</button>
+          <button type="button" class={`time-btn px-2 py-0.5 rounded-lg font-mono ${defaultDuration === 30 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="30">30s</button>
+          <button type="button" class={`time-btn px-2 py-0.5 rounded-lg font-mono ${defaultDuration === 60 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="60">60s</button>
+          <button type="button" class={`time-btn px-2 py-0.5 rounded-lg font-mono ${defaultDuration === 120 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="120">120s</button>
+          <button type="button" class={`time-btn px-2 py-0.5 rounded-lg font-mono ${defaultDuration === 300 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="300">300s</button>
+          <button type="button" id="time-custom-btn" class="time-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
+        </div>
+
+        <!-- Word Count Options (Shown when mode == 'words') -->
+        <div id="words-options" class="hidden flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <button type="button" class="word-count-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="10">10</button>
+          <button type="button" class="word-count-btn active px-2 py-0.5 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-words="25">25</button>
+          <button type="button" class="word-count-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="50">50</button>
+          <button type="button" class="word-count-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="100">100</button>
+          <button type="button" class="word-count-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="200">200</button>
+          <button type="button" id="word-custom-btn" class="word-count-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
+        </div>
+
+        <!-- Paragraphs Options (Shown when mode == 'sentences' or 'quotes') -->
+        <div id="paragraphs-options" class="hidden flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <button type="button" class="para-btn active px-2 py-0.5 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-paras="1">1 Para</button>
+          <button type="button" class="para-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="2">2 Paras</button>
+          <button type="button" class="para-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="3">3 Paras</button>
+          <button type="button" class="para-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="5">5 Paras</button>
+          <button type="button" class="para-btn px-2 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="999">Full</button>
+        </div>
+
+        <!-- Exam Duration Options (Shown when mode == 'exam') -->
+        <div id="exam-options" class="hidden flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <button type="button" class="exam-btn active px-2.5 py-0.5 rounded-lg font-mono font-bold text-purple-600 bg-[var(--bg-surface)]" data-mode-type="full">Full UN Speech</button>
+          <button type="button" class="exam-btn px-2.5 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="5m" data-seconds="300">5 Min (Official)</button>
+          <button type="button" class="exam-btn px-2.5 py-0.5 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="10m" data-seconds="600">10 Min</button>
+        </div>
+
+        <!-- Adaptive Mode Indicators (Shown when mode == 'adaptive') -->
+        <div id="adaptive-options" class="hidden flex items-center gap-1.5 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
+          <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-[var(--bg-surface)] border border-amber-500/30 text-amber-500 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="adaptive-target-tags">Detecting Weak Keys...</span>
+          </div>
+          <button type="button" id="adaptive-reset-btn" class="px-2 py-0.5 text-[10px] text-[var(--text-muted)] hover:text-red-400 hover:bg-[var(--bg-surface)] rounded-md transition-colors cursor-pointer" title="Reset stroke error history to rediagnose from scratch">
+            Reset
+          </button>
+        </div>
+
+        <!-- Free Style Info Pill (Shown when mode == 'freestyle') -->
+        <div id="freestyle-options" class="hidden flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
+          <span class="text-[11px] text-teal-500 font-medium px-2 py-0.5">Free Thought Benchmark</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- In-App Custom Input Modal for Time (Seconds/Minutes) & Words -->
+<div id="custom-input-modal" class="modal-backdrop">
+  <div class="modal-content max-w-sm p-5 sm:p-6 mx-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-subtle)]">
+      <div class="flex items-center gap-2">
+        <svg id="custom-modal-icon-time" class="w-4 h-4 text-[var(--accent-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <svg id="custom-modal-icon-words" class="w-4 h-4 text-[var(--accent-primary)] hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <h3 id="custom-modal-title" class="font-bold font-display text-base text-[var(--text-primary)]">
+          Custom Duration
+        </h3>
+      </div>
       <button 
-        type="button"
-        class={`lang-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'english' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
-        data-lang="english"
+        type="button" 
+        id="custom-modal-close-btn"
+        class="p-1 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+        aria-label="Close"
       >
-        English QWERTY
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
       </button>
     </div>
 
-    <!-- Group 2: Mode & Content Types -->
-    <div class="flex items-center gap-2 flex-wrap">
-      <!-- Content Mode (Time / Words / Sentences / Quotes / Exam / Adaptive / Free Style) -->
-      <div class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'time' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="time">
-          Time
+    <!-- Body -->
+    <div class="space-y-4">
+      <!-- Unit Selector for Time (Seconds vs Minutes) -->
+      <div id="custom-time-unit-group" class="flex items-center justify-center p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs gap-1">
+        <button type="button" id="unit-seconds-btn" class="flex-1 py-1 px-3 rounded-lg font-semibold active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-xs transition-all cursor-pointer">
+          Seconds (सेकेन्ड)
         </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'words' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="words">
-          Words
-        </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'sentences' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="sentences">
-          Sentences
-        </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'quotes' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="quotes">
-          Prose
-        </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'exam' ? 'active bg-[var(--bg-surface)] font-bold text-purple-600 dark:text-purple-400' : 'text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="exam">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-          <span>Exam Test</span>
-        </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'adaptive' ? 'active bg-[var(--bg-surface)] font-bold text-amber-500' : 'text-amber-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="adaptive">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span>Adaptive Drill</span>
-        </button>
-        <button type="button" class={`mode-tab-btn px-2.5 py-1 rounded-lg font-medium ${defaultMode === 'freestyle' ? 'active bg-[var(--bg-surface)] font-bold text-teal-500' : 'text-teal-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="freestyle">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-          <span>Free Style</span>
+        <button type="button" id="unit-minutes-btn" class="flex-1 py-1 px-3 rounded-lg font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all cursor-pointer">
+          Minutes (मिनेट)
         </button>
       </div>
 
-      <!-- Time Duration Options (Shown when mode == 'time') -->
-      <div id="time-options" class={`flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs ${defaultMode !== 'time' ? 'hidden' : ''}`}>
-        <button type="button" class={`time-btn px-2 py-1 rounded-lg font-mono ${defaultDuration === 15 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="15">15s</button>
-        <button type="button" class={`time-btn px-2 py-1 rounded-lg font-mono ${defaultDuration === 30 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="30">30s</button>
-        <button type="button" class={`time-btn px-2 py-1 rounded-lg font-mono ${defaultDuration === 60 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="60">60s</button>
-        <button type="button" class={`time-btn px-2 py-1 rounded-lg font-mono ${defaultDuration === 120 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="120">120s</button>
-        <button type="button" class={`time-btn px-2 py-1 rounded-lg font-mono ${defaultDuration === 300 ? 'active font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-seconds="300">300s</button>
-        <button type="button" id="time-custom-btn" class="time-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
-      </div>
-
-      <!-- Word Count Options (Shown when mode == 'words') -->
-      <div id="words-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="10">10</button>
-        <button type="button" class="word-count-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-words="25">25</button>
-        <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="50">50</button>
-        <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="100">100</button>
-        <button type="button" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-words="200">200</button>
-        <button type="button" id="word-custom-btn" class="word-count-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]">Custom</button>
-      </div>
-
-      <!-- Paragraphs Options (Shown when mode == 'sentences' or 'quotes') -->
-      <div id="paragraphs-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <button type="button" class="para-btn active px-2 py-1 rounded-lg font-mono font-bold text-[var(--accent-primary)] bg-[var(--bg-surface)]" data-paras="1">1 Para</button>
-        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="2">2 Paras</button>
-        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="3">3 Paras</button>
-        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="5">5 Paras</button>
-        <button type="button" class="para-btn px-2 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-paras="999">Full</button>
-      </div>
-
-      <!-- Exam Duration Options (Shown when mode == 'exam') -->
-      <div id="exam-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <button type="button" class="exam-btn active px-2.5 py-1 rounded-lg font-mono font-bold text-purple-600 bg-[var(--bg-surface)]" data-mode-type="full">Full UN Speech</button>
-        <button type="button" class="exam-btn px-2.5 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="5m" data-seconds="300">5 Min (Official)</button>
-        <button type="button" class="exam-btn px-2.5 py-1 rounded-lg font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-mode-type="10m" data-seconds="600">10 Min</button>
-      </div>
-
-      <!-- Adaptive Mode Indicators (Shown when mode == 'adaptive') -->
-      <div id="adaptive-options" class="hidden flex items-center gap-1.5 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs flex-wrap">
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--bg-surface)] border border-amber-500/30 text-amber-500 font-medium">
-          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-          <span id="adaptive-target-tags">Auto-Detecting Weak Keys...</span>
+      <!-- Main Number Input -->
+      <div>
+        <label for="custom-modal-val" id="custom-modal-label" class="block text-xs text-[var(--text-muted)] mb-1.5 font-medium">
+          Enter duration in seconds:
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="custom-modal-val" 
+            min="5" 
+            max="3600" 
+            class="w-full text-center text-xl font-bold font-mono py-2 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-app)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/20 transition-all"
+            placeholder="60"
+            autocomplete="off"
+          />
+          <span id="custom-modal-unit-tag" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-[var(--text-muted)] font-bold pointer-events-none">
+            sec
+          </span>
         </div>
-        <div id="adaptive-meta-pill" class="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--bg-surface)] text-[11px] font-mono text-[var(--text-muted)] border border-[var(--border-subtle)]">
-          <span>Acc:</span>
-          <span id="adaptive-acc-display" class="font-bold text-amber-500">-</span>
-          <span class="text-[var(--border-strong)]">|</span>
-          <span>Goal:</span>
-          <span id="adaptive-goal-display" class="font-bold text-emerald-400">90%</span>
-          <span class="text-[var(--border-strong)]">|</span>
-          <span>Next:</span>
-          <span id="adaptive-next-display" class="font-bold text-[var(--text-primary)]">-</span>
+        <p id="custom-modal-hint" class="text-[11px] text-[var(--text-muted)] mt-1.5 text-center">
+          Allowed range: 5 to 3600 seconds
+        </p>
+        <p id="custom-modal-error" class="text-[11px] text-rose-500 font-medium mt-1 text-center hidden">
+          Please enter a valid value.
+        </p>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div>
+        <span class="block text-[10px] text-[var(--text-muted)] font-mono uppercase text-center mb-1.5">Quick Presets</span>
+        <div id="custom-preset-chips" class="flex flex-wrap items-center justify-center gap-1.5">
+          <!-- Injected dynamically via JS -->
         </div>
-        <button type="button" id="adaptive-reset-btn" class="px-2 py-1 text-[10px] text-[var(--text-muted)] hover:text-red-400 hover:bg-[var(--bg-surface)] rounded-md transition-colors cursor-pointer" title="Reset stroke error history to rediagnose from scratch">
-          Reset History
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center gap-2 pt-2">
+        <button 
+          type="button" 
+          id="custom-modal-cancel-btn"
+          class="flex-1 py-2 px-3 rounded-xl border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] text-xs font-semibold transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          id="custom-modal-submit-btn"
+          class="flex-1 py-2 px-3 rounded-xl bg-[var(--accent-primary)] hover:opacity-90 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+        >
+          Set &amp; Apply
         </button>
       </div>
-
-      <!-- Free Style Info Pill (Shown when mode == 'freestyle') -->
-      <div id="freestyle-options" class="hidden flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <span class="text-[11px] text-teal-500 font-medium px-2 py-0.5">Free Thought Practice • Speed Benchmark</span>
-      </div>
-
-      <!-- Difficulty Level Selection -->
-      <div id="diff-options" class="flex items-center gap-1 p-1 bg-[var(--bg-surface-subtle)] rounded-xl text-xs">
-        <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="easy">Easy</button>
-        <button type="button" class="diff-btn active px-2.5 py-1 rounded-lg font-medium font-bold text-amber-500 bg-[var(--bg-surface)]" data-diff="medium">Medium</button>
-        <button type="button" class="diff-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]" data-diff="hard">Hard</button>
-      </div>
-
-      <!-- Toggle Virtual Keyboard Button -->
-      <button 
-        type="button" 
-        id="toggle-keyboard-btn" 
-        class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-xl border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)] hover:text-[var(--text-primary)] transition-colors"
-        title="Toggle Visual Hardware Keyboard Reference"
-      >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
-          <line x1="6" y1="8" x2="6.01" y2="8"></line>
-          <line x1="10" y1="8" x2="10.01" y2="8"></line>
-          <line x1="14" y1="8" x2="14.01" y2="8"></line>
-          <line x1="18" y1="8" x2="18.01" y2="8"></line>
-          <line x1="6" y1="12" x2="6.01" y2="12"></line>
-          <line x1="18" y1="12" x2="18.01" y2="12"></line>
-          <line x1="7" y1="16" x2="17" y2="16"></line>
-        </svg>
-        <span id="toggle-keyboard-text">Hide Keys</span>
-      </button>
-
     </div>
   </div>
 </div>

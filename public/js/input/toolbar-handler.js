@@ -72,27 +72,262 @@ export function bindToolbarEvents() {
     });
   });
 
-  // Custom Time Button
-  document.getElementById('time-custom-btn')?.addEventListener('click', () => {
-    const input = prompt('Enter custom time limit in seconds (5 - 3600):', '45');
-    if (!input) return;
-    const sec = parseInt(input.trim(), 10);
-    if (isNaN(sec) || sec < 5 || sec > 3600) {
-      alert('Please enter a valid duration between 5 and 3600 seconds.');
-      return;
-    }
-    document.querySelectorAll('.time-btn').forEach(b => {
-      b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
-      b.classList.add('text-[var(--text-muted)]');
+  // --- In-App Custom Input Modal for Time & Word Count ---
+  let customModalMode = 'time'; // 'time' | 'words'
+  let customTimeUnit = 'seconds'; // 'seconds' | 'minutes'
+
+  const customModal = document.getElementById('custom-input-modal');
+  const modalValInput = document.getElementById('custom-modal-val');
+  const modalErrorEl = document.getElementById('custom-modal-error');
+  const modalTitleEl = document.getElementById('custom-modal-title');
+  const modalLabelEl = document.getElementById('custom-modal-label');
+  const modalUnitTagEl = document.getElementById('custom-modal-unit-tag');
+  const modalHintEl = document.getElementById('custom-modal-hint');
+  const timeUnitGroup = document.getElementById('custom-time-unit-group');
+  const unitSecBtn = document.getElementById('unit-seconds-btn');
+  const unitMinBtn = document.getElementById('unit-minutes-btn');
+  const timeIcon = document.getElementById('custom-modal-icon-time');
+  const wordsIcon = document.getElementById('custom-modal-icon-words');
+  const presetChipsEl = document.getElementById('custom-preset-chips');
+
+  function renderCustomPresets(presets) {
+    if (!presetChipsEl) return;
+    presetChipsEl.innerHTML = '';
+    presets.forEach(p => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-medium border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] hover:bg-[var(--accent-primary)]/10 hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] text-[var(--text-secondary)] transition-all cursor-pointer';
+      chip.textContent = typeof p === 'object' ? p.label : `${p} w`;
+      chip.addEventListener('click', () => {
+        if (customModalMode === 'time') {
+          if (p.unit && p.unit !== customTimeUnit) {
+            setTimeUnit(p.unit, p.val);
+          } else if (modalValInput) {
+            modalValInput.value = p.val;
+          }
+        } else if (modalValInput) {
+          modalValInput.value = typeof p === 'object' ? p.val : p;
+        }
+        applyCustomModalValue();
+      });
+      presetChipsEl.appendChild(chip);
     });
-    const customBtn = document.getElementById('time-custom-btn');
-    if (customBtn) {
-      customBtn.textContent = `${sec}s`;
-      customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
-      customBtn.classList.remove('text-[var(--text-muted)]');
+  }
+
+  function setTimeUnit(unit, targetVal) {
+    customTimeUnit = unit;
+    if (modalErrorEl) modalErrorEl.classList.add('hidden');
+
+    if (unit === 'seconds') {
+      unitSecBtn?.classList.add('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-xs');
+      unitSecBtn?.classList.remove('text-[var(--text-muted)]');
+      unitMinBtn?.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-xs');
+      unitMinBtn?.classList.add('text-[var(--text-muted)]');
+
+      if (modalLabelEl) modalLabelEl.textContent = 'Enter duration in seconds (सेकेन्ड):';
+      if (modalUnitTagEl) modalUnitTagEl.textContent = 'sec';
+      if (modalHintEl) modalHintEl.textContent = 'Allowed range: 5 to 3600 seconds';
+      if (modalValInput) {
+        modalValInput.min = '5';
+        modalValInput.max = '3600';
+        modalValInput.step = '1';
+        modalValInput.placeholder = '45';
+        if (targetVal !== undefined) {
+          modalValInput.value = targetVal;
+        }
+      }
+      renderCustomPresets([
+        { label: '45s', val: 45, unit: 'seconds' },
+        { label: '90s', val: 90, unit: 'seconds' },
+        { label: '150s', val: 150, unit: 'seconds' },
+        { label: '2 min', val: 2, unit: 'minutes' },
+        { label: '3 min', val: 3, unit: 'minutes' },
+        { label: '5 min', val: 5, unit: 'minutes' }
+      ]);
+    } else {
+      unitMinBtn?.classList.add('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-xs');
+      unitMinBtn?.classList.remove('text-[var(--text-muted)]');
+      unitSecBtn?.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-xs');
+      unitSecBtn?.classList.add('text-[var(--text-muted)]');
+
+      if (modalLabelEl) modalLabelEl.textContent = 'Enter duration in minutes (मिनेट):';
+      if (modalUnitTagEl) modalUnitTagEl.textContent = 'min';
+      if (modalHintEl) modalHintEl.textContent = 'Allowed range: 0.2 to 60 minutes';
+      if (modalValInput) {
+        modalValInput.min = '0.2';
+        modalValInput.max = '60';
+        modalValInput.step = '0.5';
+        modalValInput.placeholder = '2';
+        if (targetVal !== undefined) {
+          modalValInput.value = targetVal;
+        }
+      }
+      renderCustomPresets([
+        { label: '1 min', val: 1, unit: 'minutes' },
+        { label: '2 min', val: 2, unit: 'minutes' },
+        { label: '3 min', val: 3, unit: 'minutes' },
+        { label: '5 min', val: 5, unit: 'minutes' },
+        { label: '10 min', val: 10, unit: 'minutes' },
+        { label: '15 min', val: 15, unit: 'minutes' }
+      ]);
     }
-    state.duration = sec;
-    setupTest();
+  }
+
+  function openCustomModal(mode) {
+    customModalMode = mode;
+    if (modalErrorEl) modalErrorEl.classList.add('hidden');
+
+    if (mode === 'time') {
+      timeIcon?.classList.remove('hidden');
+      wordsIcon?.classList.add('hidden');
+      if (modalTitleEl) modalTitleEl.textContent = 'Custom Duration';
+      timeUnitGroup?.classList.remove('hidden');
+
+      const curSec = state.duration || 60;
+      if (curSec >= 60 && curSec % 60 === 0) {
+        setTimeUnit('minutes', curSec / 60);
+      } else {
+        setTimeUnit('seconds', curSec);
+      }
+    } else {
+      timeIcon?.classList.add('hidden');
+      wordsIcon?.classList.remove('hidden');
+      if (modalTitleEl) modalTitleEl.textContent = 'Custom Word Count';
+      timeUnitGroup?.classList.add('hidden');
+
+      if (modalLabelEl) modalLabelEl.textContent = 'Enter target word count (शब्द संख्या):';
+      if (modalUnitTagEl) modalUnitTagEl.textContent = 'words';
+      if (modalHintEl) modalHintEl.textContent = 'Allowed range: 5 to 2000 words';
+      if (modalValInput) {
+        modalValInput.min = '5';
+        modalValInput.max = '2000';
+        modalValInput.step = '1';
+        modalValInput.placeholder = '75';
+        modalValInput.value = state.wordCount || 75;
+      }
+      renderCustomPresets([15, 35, 50, 75, 150, 250, 500]);
+    }
+
+    customModal?.classList.add('is-open');
+    setTimeout(() => {
+      modalValInput?.focus();
+      modalValInput?.select();
+    }, 40);
+  }
+
+  function closeCustomModal() {
+    customModal?.classList.remove('is-open');
+    if (modalErrorEl) modalErrorEl.classList.add('hidden');
+    document.getElementById('typing-input')?.focus();
+  }
+
+  function applyCustomModalValue() {
+    const rawVal = modalValInput?.value?.trim();
+    const showErr = (msg) => {
+      if (modalErrorEl) {
+        modalErrorEl.textContent = msg;
+        modalErrorEl.classList.remove('hidden');
+      }
+      modalValInput?.focus();
+    };
+
+    if (customModalMode === 'time') {
+      const num = parseFloat(rawVal);
+      if (isNaN(num) || num <= 0) {
+        showErr('Please enter a valid positive number.');
+        return;
+      }
+      const totalSec = customTimeUnit === 'minutes' ? Math.round(num * 60) : Math.round(num);
+      if (totalSec < 5 || totalSec > 3600) {
+        showErr('Duration must be between 5 and 3600 seconds (max 60 minutes).');
+        return;
+      }
+
+      state.duration = totalSec;
+
+      document.querySelectorAll('.time-btn').forEach(b => {
+        b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+        b.classList.add('text-[var(--text-muted)]');
+      });
+
+      const customBtn = document.getElementById('time-custom-btn');
+      if (customBtn) {
+        const label = (customTimeUnit === 'minutes' || (totalSec >= 60 && totalSec % 60 === 0))
+          ? `${totalSec / 60}m`
+          : `${totalSec}s`;
+        customBtn.textContent = label;
+        customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+        customBtn.classList.remove('text-[var(--text-muted)]');
+      }
+
+      closeCustomModal();
+      setupTest();
+    } else {
+      const cnt = parseInt(rawVal, 10);
+      if (isNaN(cnt) || cnt < 5 || cnt > 2000) {
+        showErr('Please enter a word count between 5 and 2000.');
+        return;
+      }
+
+      state.wordCount = cnt;
+
+      document.querySelectorAll('.word-count-btn').forEach(b => {
+        b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+        b.classList.add('text-[var(--text-muted)]');
+      });
+
+      const customBtn = document.getElementById('word-custom-btn');
+      if (customBtn) {
+        customBtn.textContent = `${cnt}w`;
+        customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+        customBtn.classList.remove('text-[var(--text-muted)]');
+      }
+
+      closeCustomModal();
+      setupTest();
+    }
+  }
+
+  // Attach Custom Modal Controls
+  unitSecBtn?.addEventListener('click', () => {
+    if (customTimeUnit !== 'seconds') {
+      const cur = parseFloat(modalValInput?.value);
+      const converted = !isNaN(cur) && cur > 0 ? Math.round(cur * 60) : 60;
+      setTimeUnit('seconds', converted);
+    }
+  });
+
+  unitMinBtn?.addEventListener('click', () => {
+    if (customTimeUnit !== 'minutes') {
+      const cur = parseFloat(modalValInput?.value);
+      const converted = !isNaN(cur) && cur > 0 ? +(cur / 60).toFixed(1) : 1;
+      setTimeUnit('minutes', converted);
+    }
+  });
+
+  document.getElementById('custom-modal-close-btn')?.addEventListener('click', closeCustomModal);
+  document.getElementById('custom-modal-cancel-btn')?.addEventListener('click', closeCustomModal);
+  document.getElementById('custom-modal-submit-btn')?.addEventListener('click', applyCustomModalValue);
+
+  customModal?.addEventListener('click', (e) => {
+    if (e.target === customModal) {
+      closeCustomModal();
+    }
+  });
+
+  modalValInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyCustomModalValue();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeCustomModal();
+    }
+  });
+
+  // Custom Time & Words Open Buttons
+  document.getElementById('time-custom-btn')?.addEventListener('click', () => {
+    openCustomModal('time');
   });
 
   // Word Count Buttons
@@ -113,25 +348,7 @@ export function bindToolbarEvents() {
 
   // Custom Word Count Button
   document.getElementById('word-custom-btn')?.addEventListener('click', () => {
-    const input = prompt('Enter custom word count (5 - 2000):', '75');
-    if (!input) return;
-    const cnt = parseInt(input.trim(), 10);
-    if (isNaN(cnt) || cnt < 5 || cnt > 2000) {
-      alert('Please enter a valid word count between 5 and 2000.');
-      return;
-    }
-    document.querySelectorAll('.word-count-btn').forEach(b => {
-      b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
-      b.classList.add('text-[var(--text-muted)]');
-    });
-    const customBtn = document.getElementById('word-custom-btn');
-    if (customBtn) {
-      customBtn.textContent = `${cnt}w`;
-      customBtn.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
-      customBtn.classList.remove('text-[var(--text-muted)]');
-    }
-    state.wordCount = cnt;
-    setupTest();
+    openCustomModal('words');
   });
 
   // Paragraph Count Buttons
@@ -323,13 +540,7 @@ export function bindToolbarEvents() {
     }
   });
 
-  // Toggle Shift on Keyboard Visualizer
-  document.getElementById('kb-shift-toggle')?.addEventListener('click', () => {
-    state.isShift = !state.isShift;
-    const ind = document.getElementById('kb-shift-indicator');
-    if (ind) ind.className = state.isShift ? 'w-2 h-2 rounded-full bg-red-500 inline-block' : 'w-2 h-2 rounded-full bg-neutral-400 inline-block';
-    renderKeyboard();
-  });
+
 
   // Copy Results Summary
   document.getElementById('copy-result-btn')?.addEventListener('click', () => {

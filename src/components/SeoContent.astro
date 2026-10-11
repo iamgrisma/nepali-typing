@@ -1,34 +1,34 @@
 ---
-// English Typing Guide & Layout Architecture Reference
+// Typeshala Bench — Authoritative Platform Overview & Keyboard Architecture
 import { Icon } from 'astro-icon/components';
 ---
 
-<section class="mt-14 pt-10 border-t border-[var(--border-subtle)]">
-  <div class="max-w-4xl mx-auto space-y-12 text-sm leading-relaxed text-[var(--text-secondary)]">
+<section class="mt-12 pt-8 border-t border-[var(--border-subtle)]">
+  <div class="max-w-4xl mx-auto space-y-8 text-sm leading-relaxed text-[var(--text-secondary)]">
 
-    <!-- Section 1: Platform Overview -->
+    <!-- 1. Platform Overview -->
     <div>
       <div class="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-[var(--accent-primary)]">
         <Icon name="lucide:globe" class="w-4 h-4" />
-        <span>Typeshala Bench • Modern Typing Assessment</span>
+        <span>Typeshala Bench • Online Typing Standard</span>
       </div>
-      <h2 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)] mb-4 tracking-tight">
+      <h2 class="text-xl sm:text-2xl font-extrabold font-display text-[var(--text-primary)] mb-3 tracking-tight">
         Typeshala Bench: The Modern Online Nepali &amp; English Typing Benchmark
       </h2>
-      <p class="mb-3">
-        For decades across Nepal, students, civil servants, and professionals learned touch typing using the classic desktop <strong>Typeshala</strong>. <strong>Typeshala Bench</strong> is the modern web-native successor to Typeshala—re-engineered for contemporary browsers with zero installation. Typeshala Bench benchmarks, analyzes, and certifies typing proficiency across four standard keyboard layouts: <strong>Nepali Unicode Traditional (MPP)</strong>, <strong>Nepali Unicode Romanized</strong>, <strong>Preeti (ASCII Typewriter)</strong>, and <strong>English US QWERTY</strong>.
+      <p class="mb-2 text-xs sm:text-sm">
+        For decades across Nepal, touch typing was mastered on desktop <strong>Typeshala</strong>. <strong>Typeshala Bench</strong> is the modern web-native standard—built with zero installation, zero lag, and full support for all four core keyboard layouts: <strong>Nepali Unicode Traditional (MPP)</strong>, <strong>Nepali Unicode Romanized</strong>, <strong>Preeti (ASCII)</strong>, and <strong>English US QWERTY</strong>.
       </p>
-      <p>
-        The platform features millisecond-accurate keystroke latency tracking, grapheme-cluster-aware Devanagari character segmentation, authentic Nepali folklore stories (Dantya Katha), lateral hand-load balance diagnostics, and verifiable certificates.
+      <p class="text-xs text-[var(--text-muted)]">
+        Engineered for students, professionals, and public service candidates with authentic Nepali Dantya Katha stories, real-time WPM calculation, grapheme segmentation, and verifiable proficiency certificates.
       </p>
     </div>
 
-    <!-- Section 2: Keyboard Layouts Architecture Matrix -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm">
-      <h3 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
+    <!-- 2. Keyboard Topology Matrix -->
+    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-5 shadow-sm">
+      <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-1">
         Nepali &amp; English Keyboard Layouts Comparison
       </h3>
-      <p class="text-xs text-[var(--text-muted)] mb-5">
+      <p class="text-xs text-[var(--text-muted)] mb-4">
         Key distinctions in character encoding, physical key mapping, and application domains:
       </p>
 
@@ -36,179 +36,88 @@ import { Icon } from 'astro-icon/components';
         <table class="w-full text-xs text-left">
           <thead class="border-b border-[var(--border-subtle)] text-[var(--text-secondary)] font-semibold uppercase tracking-wider">
             <tr>
-              <th class="py-3 pr-4">Dimension</th>
-              <th class="py-3 pr-4">Nepali Unicode Traditional</th>
-              <th class="py-3 pr-4">Nepali Unicode Romanized</th>
-              <th class="py-3 pr-4">Preeti (ASCII)</th>
-              <th class="py-3">English US QWERTY</th>
+              <th class="py-2.5 pr-3">Dimension</th>
+              <th class="py-2.5 pr-3">Nepali Unicode Traditional</th>
+              <th class="py-2.5 pr-3">Nepali Unicode Romanized</th>
+              <th class="py-2.5 pr-3">Preeti (ASCII)</th>
+              <th class="py-2.5">English US QWERTY</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-[var(--border-subtle)]">
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Encoding Protocol</td>
-              <td class="py-3">UTF-8 Devanagari (U+0900–097F)</td>
-              <td class="py-3">UTF-8 Devanagari (U+0900–097F)</td>
-              <td class="py-3 text-amber-500 font-medium">Legacy ASCII Glyph Map</td>
-              <td class="py-3">Standard ASCII / UTF-8 Latin</td>
+              <td class="py-2.5 font-semibold text-[var(--text-primary)]">Encoding Protocol</td>
+              <td class="py-2.5">UTF-8 Devanagari (U+0900–097F)</td>
+              <td class="py-2.5">UTF-8 Devanagari (U+0900–097F)</td>
+              <td class="py-2.5 text-amber-500 font-medium">Legacy ASCII Glyph Map</td>
+              <td class="py-2.5">Standard ASCII / UTF-8 Latin</td>
             </tr>
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Layout Topology</td>
-              <td class="py-3">Remington Mechanical Standard (MPP)</td>
-              <td class="py-3">Phonetic English Transliteration</td>
-              <td class="py-3">Traditional Typewriter Keymap</td>
-              <td class="py-3">Standard International QWERTY</td>
+              <td class="py-2.5 font-semibold text-[var(--text-primary)]">Layout Topology</td>
+              <td class="py-2.5">Remington Mechanical Standard (MPP)</td>
+              <td class="py-2.5">Phonetic English Transliteration</td>
+              <td class="py-2.5">Traditional Typewriter Keymap</td>
+              <td class="py-2.5">Standard International QWERTY</td>
             </tr>
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Web &amp; Search (SEO)</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
-              <td class="py-3 text-red-500 font-semibold">Non-searchable (Font reliant)</td>
-              <td class="py-3 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
+              <td class="py-2.5 font-semibold text-[var(--text-primary)]">Web &amp; Search (SEO)</td>
+              <td class="py-2.5 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
+              <td class="py-2.5 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
+              <td class="py-2.5 text-rose-500 font-semibold">Non-searchable (Font reliant)</td>
+              <td class="py-2.5 text-emerald-500 font-semibold">100% Searchable &amp; Accessible</td>
             </tr>
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Target Key for 'क'</td>
-              <td class="py-3 font-mono">Press key <kbd>s</kbd></td>
-              <td class="py-3 font-mono">Press key <kbd>k</kbd></td>
-              <td class="py-3 font-mono">Press key <kbd>s</kbd></td>
-              <td class="py-3 font-mono">N/A (Latin k)</td>
+              <td class="py-2.5 font-semibold text-[var(--text-primary)]">Target Key for 'क'</td>
+              <td class="py-2.5 font-mono">Press key <kbd>s</kbd></td>
+              <td class="py-2.5 font-mono">Press key <kbd>k</kbd></td>
+              <td class="py-2.5 font-mono">Press key <kbd>s</kbd></td>
+              <td class="py-2.5 font-mono">N/A (Latin k)</td>
             </tr>
             <tr>
-              <td class="py-3 font-semibold text-[var(--text-primary)]">Primary Domain</td>
-              <td class="py-3">Government, Banking, Publishing</td>
-              <td class="py-3">Social Media, Chat, Software UI</td>
-              <td class="py-3">Offset Printing, Archival Press</td>
-              <td class="py-3">Global Business, Coding, Academic</td>
+              <td class="py-2.5 font-semibold text-[var(--text-primary)]">Primary Domain</td>
+              <td class="py-2.5">Government, Banking, Publishing</td>
+              <td class="py-2.5">Social Media, Chat, Software UI</td>
+              <td class="py-2.5">Offset Printing, Archival Press</td>
+              <td class="py-2.5">Global Business, Coding, Academic</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Section 3: Certification Benchmarks -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
-        <div class="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-bold text-sm mb-3">
-          <Icon name="lucide:file-check" class="w-4 h-4" />
-          <h3 class="font-display text-base text-[var(--text-primary)]">Certification Criteria</h3>
+    <!-- 3. Core Standards & Capabilities (Compact 3-Card Grid) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+      <!-- Card 1 -->
+      <div class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+        <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+          <Icon name="lucide:award" class="w-4 h-4 text-purple-500" />
+          <span>Loksewa &amp; Certification</span>
         </div>
-        <p class="text-xs mb-3">
-          To qualify for a Verifiable Certificate of Typing Proficiency, tests must meet both speed and accuracy criteria:
+        <p class="text-[var(--text-muted)] leading-relaxed">
+          Standardized benchmark passing thresholds: 20+ WPM Nepali, 25+ WPM English, and &ge; 85% accuracy. Permanent verifiable certificate records with unique ID and QR code.
         </p>
-        <ul class="space-y-2 text-xs">
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-500 font-bold">✓</span>
-            <span><strong>Nepali Speed:</strong> Net speed must exceed <strong>20 WPM</strong> (&ge; 21 WPM) on Traditional, Romanized, or Preeti.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-500 font-bold">✓</span>
-            <span><strong>English Speed:</strong> Net speed must exceed <strong>25 WPM</strong> (&ge; 26 WPM) on English US QWERTY.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-500 font-bold">✓</span>
-            <span><strong>Accuracy Requirement:</strong> Accuracy must reach or exceed <strong>85.0%</strong>.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-500 font-bold">✓</span>
-            <span><strong>Verification Record:</strong> Each certificate receives a unique ID, QR code, and permanent verification entry.</span>
-          </li>
-        </ul>
       </div>
 
-      <div class="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
-        <div class="flex items-center gap-2 text-amber-500 font-bold text-sm mb-3">
-          <Icon name="lucide:award" class="w-4 h-4" />
-          <h3 class="font-display text-base text-[var(--text-primary)]">Proficiency Tiers</h3>
+      <!-- Card 2 -->
+      <div class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+        <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+          <Icon name="lucide:book-open" class="w-4 h-4 text-amber-500" />
+          <span>Authentic Dantya Katha</span>
         </div>
-        <p class="text-xs mb-3">
-          Candidates who surpass passing requirements earn classification ranks:
+        <p class="text-[var(--text-muted)] leading-relaxed">
+          Expansive library of Nepali folklore stories, historical speeches, and cultural literature. Chained paragraphs prevent repetitive single-word fatigue.
         </p>
-        <div class="space-y-2 text-xs">
-          <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-purple-600 dark:text-purple-400">Grandmaster (Speed Demon)</span>
-            <span class="font-mono font-semibold">60+ WPM (NP) • 90+ WPM (EN)</span>
-          </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-cyan-500">Master Typist (Platinum)</span>
-            <span class="font-mono font-semibold">50–59 WPM (NP) • 70–89 WPM (EN)</span>
-          </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-amber-500">Advanced Typist (Gold)</span>
-            <span class="font-mono font-semibold">40–49 WPM (NP) • 55–69 WPM (EN)</span>
-          </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-slate-400">Professional Typist (Silver)</span>
-            <span class="font-mono font-semibold">30–39 WPM (NP) • 40–54 WPM (EN)</span>
-          </div>
-          <div class="flex justify-between items-center p-2 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <span class="font-bold text-amber-700 dark:text-amber-500">Certified Typist (Bronze)</span>
-            <span class="font-mono font-semibold">21–29 WPM (NP) • 26–39 WPM (EN)</span>
-          </div>
-        </div>
       </div>
-    </div>
 
-    <!-- Section 4: Authentic Folklore Stories & Speech Examination Mode -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm">
-      <h3 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
-        Authentic Nepali Dantya Katha (Folklore), Facts &amp; UN Speech Library
-      </h3>
-      <p class="text-xs sm:text-sm mb-3">
-        Repetitive random words cause mental fatigue and hinder real-world fluency. Typeshala Bench embeds an expansive library of authentic Nepali literature, including beloved Dantya Katha (folk tales like <em>चतुर खरायो र घमण्डी सिंह</em>, <em>स्याल र बाघ</em>), fascinating facts on Himalayan geography and heritage, and the historic United Nations General Assembly address by Kathmandu Mayor Balendra (Balen) Shah.
-      </p>
-      <p class="text-xs sm:text-sm text-[var(--text-muted)]">
-        In time-based tests, stories seamlessly chain from one tale to the next when completed, providing non-stop immersion for 15s, 60s, or marathon 10-minute sessions.
-      </p>
-    </div>
-
-    <!-- Section 5: Biomechanics & Keystroke Telemetry -->
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-sm">
-      <h3 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
-        Keystroke Biomechanics &amp; Telemetry
-      </h3>
-      <p class="text-xs sm:text-sm mb-4">
-        Our analytics engine measures keystroke timing, physical layout scan codes, and corrective interventions:
-      </p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-        <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
-            <Icon name="lucide:timer" class="w-3.5 h-3.5 text-amber-500" />
-            <span>Latency &amp; Hesitation Heatmap</span>
-          </div>
-          <p class="text-[var(--text-muted)]">
-            Tracks per-key latency to distinguish smooth muscle memory from cognitive pauses over 400ms.
-          </p>
+      <!-- Card 3 -->
+      <div class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+        <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+          <Icon name="lucide:activity" class="w-4 h-4 text-blue-500" />
+          <span>Keystroke Biometrics</span>
         </div>
-        <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
-            <Icon name="lucide:activity" class="w-3.5 h-3.5 text-blue-500" />
-            <span>Left vs. Right Hand Ergonomics</span>
-          </div>
-          <p class="text-[var(--text-muted)]">
-            Measures lateral keystroke distribution and error rates between hands to identify asymmetrical strain.
-          </p>
-        </div>
-        <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-          <div class="flex items-center gap-1.5 font-bold text-[var(--text-primary)] mb-1">
-            <Icon name="lucide:zap" class="w-3.5 h-3.5 text-purple-500" />
-            <span>Error Recovery Cost</span>
-          </div>
-          <p class="text-[var(--text-muted)]">
-            Quantifies time lost to backspacing and corrections, demonstrating the impact of accuracy on speed.
-          </p>
-        </div>
+        <p class="text-[var(--text-muted)] leading-relaxed">
+          Real-time measurement of per-key latency, lateral hand load distribution, hesitation heatmaps, and adaptive drills for weak keys.
+        </p>
       </div>
-    </div>
-
-    <!-- Section 6: Adaptive Drill Engine -->
-    <div class="bg-gradient-to-br from-amber-500/10 via-[var(--bg-surface)] to-[var(--bg-surface)] border border-amber-500/20 rounded-2xl p-6 shadow-sm">
-      <div class="flex items-center gap-2 text-amber-500 font-bold text-sm mb-2">
-        <Icon name="lucide:zap" class="w-4 h-4" />
-        <h3 class="font-display text-lg text-[var(--text-primary)]">Adaptive Weak Key Practice</h3>
-      </div>
-      <p class="text-xs sm:text-sm mb-3">
-        When you consistently miss specific characters—such as <code class="font-mono">o</code> and <code class="font-mono">w</code> in English, or conjuncts like <code class="font-mono">ध</code>, <code class="font-mono">भ</code>, or halanta <code class="font-mono">्</code> in Nepali—the adaptive engine automatically generates drills containing a high density of those target keys to build muscle memory quickly.
-      </p>
     </div>
 
   </div>

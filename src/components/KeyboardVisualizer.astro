@@ -25,54 +25,42 @@ function getKeyLabels(k: any, lang: string) {
   return { top: k.uni[1], main: k.uni[0], font: 'var(--font-nepali)' };
 }
 
-const LAYOUT_TITLES: Record<string, { title: string; pill: string }> = {
-  english: { title: 'English QWERTY Layout', pill: 'QWERTY' },
-  nepali_romanized: { title: 'नेपाली रोमन (Romanized) Keyboard Layout', pill: 'MPP ROMANIZED' },
-  nepali_preeti: { title: 'प्रिती (Preeti Typewriter) Keyboard Layout', pill: 'PREETI ASCII' },
-  nepali_unicode: { title: 'नेपाली युनिकोड (Traditional) Keyboard Layout', pill: 'MPP TRADITIONAL' }
+const LAYOUT_TITLES: Record<string, { title: string; hint: string }> = {
+  english: { title: 'English QWERTY Layout', hint: '' },
+  nepali_romanized: { title: 'Romanized Layout', hint: '(Shift+Alt or Shift+Enter to Switch)' },
+  nepali_preeti: { title: 'Preeti Layout', hint: '(Shift+Alt or Shift+Enter to Switch)' },
+  nepali_unicode: { title: 'Traditional Layout', hint: '(Shift+Alt or Shift+Enter to Switch)' }
 };
 
 const meta = LAYOUT_TITLES[defaultLang] || LAYOUT_TITLES.nepali_unicode;
 ---
 
-<div id="keyboard-visualizer-container" class="w-full transition-all duration-300">
-  <div class="kb-wrapper mb-6">
-    <!-- Header of Keyboard Visualizer -->
-    <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-[var(--border-subtle)] text-xs">
-      <div class="flex items-center gap-2">
-        <span class="font-bold text-xs sm:text-sm text-[var(--text-primary)]" id="kb-current-layout-name">
-          {meta.title}
-        </span>
-        <span class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400" id="kb-layout-pill">
-          {meta.pill}
-        </span>
-      </div>
+<!-- 1. Detached Layout Status Bar (Always visible even if virtual keyboard deck is hidden) -->
+<div id="layout-status-bar" class="w-full flex items-center justify-between text-xs py-1.5 px-1 border-b border-[var(--border-subtle)] mb-3">
+  <div class="flex items-center gap-2">
+    <span class="font-bold text-xs sm:text-sm text-[var(--text-primary)]" id="kb-current-layout-name">
+      {meta.title}
+    </span>
+    <span id="kb-switch-hint" class={`text-[11px] text-[var(--text-muted)] font-mono ${defaultLang === 'english' ? 'hidden' : 'inline'}`}>
+      {meta.hint}
+    </span>
+  </div>
 
-      <!-- Action Controls for Keyboard -->
-      <div class="flex items-center gap-2">
-        <button 
-          type="button" 
-          id="kb-input-mode-btn" 
-          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-          title="Toggle Input Layout between Native Nepali and QWERTY (Shortcut: Alt+Shift or Shift+Enter)"
-        >
-          <span id="kb-input-mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-          <span id="kb-input-mode-label">Native Input</span>
-          <span class="text-[10px] px-1 py-0.2 bg-[var(--bg-surface-subtle)] rounded text-[var(--text-secondary)] font-mono font-bold">Alt+Shift / Shift+Enter</span>
-        </button>
+  <!-- Minimalist Input Mode Indicator & Clickable Toggle -->
+  <button 
+    type="button" 
+    id="kb-input-mode-btn" 
+    class={`px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-semibold transition-all shadow-xs cursor-pointer ${defaultLang === 'english' ? 'hidden' : ''}`}
+    title="Toggle Input Layout between Native Nepali and QWERTY (Shortcut: Shift+Alt or Shift+Enter)"
+  >
+    <span id="kb-input-mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+    <span id="kb-input-mode-label">Native</span>
+  </button>
+</div>
 
-        <button 
-          type="button" 
-          id="kb-shift-toggle" 
-          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-bold transition-all shadow-xs cursor-pointer"
-          title="Toggle Shift Layer (Shift Key)"
-        >
-          <span>Shift</span>
-          <span id="kb-shift-indicator" class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
-        </button>
-      </div>
-    </div>
-
+<!-- 2. Hardware Keyboard Visualizer Deck (Toggled by "Keys" button) -->
+<div id="keyboard-visualizer-container" class="w-full transition-all duration-300 mb-5">
+  <div class="kb-wrapper">
     <!-- 5 Rows Keyboard Matrix Container with tactile keyboard deck pre-rendered in SSR to guarantee 0.00 CLS -->
     <div id="keyboard-matrix" class="w-full min-h-[225px] sm:min-h-[240px] flex flex-col gap-1.5 select-none overflow-x-auto p-2 sm:p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
       {KEY_ROWS.map((row, rI) => (
@@ -99,20 +87,6 @@ const meta = LAYOUT_TITLES[defaultLang] || LAYOUT_TITLES.nepali_unicode;
           })}
         </div>
       ))}
-    </div>
-
-    <!-- Keystroke Detail Helper Bar -->
-    <div class="mt-2 pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
-      <div class="flex items-center gap-4">
-        <div>Next: <span id="kb-target-char" class="font-bold text-[var(--accent-primary)] font-mono text-xs ml-0.5">-</span></div>
-        <div>Active: <span id="kb-active-char" class="font-bold text-[var(--text-primary)] font-mono ml-0.5">-</span></div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-sm bg-[var(--accent-primary)] opacity-40 inline-block"></span>
-        <span>Target Key</span>
-        <span class="w-2 h-2 rounded-sm bg-blue-500 opacity-60 inline-block ml-1.5"></span>
-        <span>Pressed Key</span>
-      </div>
     </div>
   </div>
 </div>

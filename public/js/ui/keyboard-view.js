@@ -96,26 +96,26 @@ export function renderKeyboard() {
   const LAYOUT_META = {
     english: {
       title: 'English QWERTY Layout',
-      pill: 'QWERTY',
-      label: 'QWERTY',
+      hint: '',
+      label: 'English',
       canToggle: false
     },
     nepali_unicode: {
-      title: 'Nepali Unicode (Traditional MPP) Layout',
-      pill: 'MPP TRADITIONAL',
-      label: 'Traditional (MPP)',
+      title: 'Traditional Layout',
+      hint: '(Shift+Alt or Shift+Enter to Switch)',
+      label: 'Native',
       canToggle: true
     },
     nepali_romanized: {
-      title: 'Nepali Unicode (Romanized Phonetic) Layout',
-      pill: 'PHONETIC QWERTY',
-      label: 'Romanized',
+      title: 'Romanized Layout',
+      hint: '(Shift+Alt or Shift+Enter to Switch)',
+      label: 'Native',
       canToggle: true
     },
     nepali_preeti: {
-      title: 'Preeti (ASCII Typewriter) Layout',
-      pill: 'PREETI TYPEWRITER',
-      label: 'Preeti',
+      title: 'Preeti Layout',
+      hint: '(Shift+Alt or Shift+Enter to Switch)',
+      label: 'Native',
       canToggle: true
     }
   };
@@ -124,18 +124,15 @@ export function renderKeyboard() {
   const isQwertySwitched = (state.activeInputMode === 'qwerty' && meta.canToggle);
 
   if (titleEl) {
-    titleEl.textContent = isQwertySwitched 
-      ? `${meta.title} ➔ [QWERTY Passthrough]` 
-      : meta.title;
+    titleEl.textContent = isQwertySwitched ? 'QWERTY Passthrough' : meta.title;
+  }
+  const hintEl = document.getElementById('kb-switch-hint');
+  if (hintEl) {
+    hintEl.textContent = meta.hint;
+    hintEl.classList.toggle('hidden', !meta.canToggle);
   }
   if (pillEl) {
-    if (isQwertySwitched) {
-      pillEl.textContent = 'QWERTY ACTIVE (Alt+Shift)';
-      pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 animate-pulse';
-    } else {
-      pillEl.textContent = meta.pill;
-      pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400';
-    }
+    pillEl.classList.add('hidden');
   }
 
   // Update input mode toggle button in visualizer
@@ -149,7 +146,7 @@ export function renderKeyboard() {
     } else {
       kbModeBtn.classList.remove('hidden');
       if (kbModeLabel) {
-        kbModeLabel.textContent = isQwertySwitched ? 'QWERTY Passthrough' : meta.label;
+        kbModeLabel.textContent = isQwertySwitched ? 'QWERTY' : 'Native';
       }
       if (kbModeDot) {
         kbModeDot.className = isQwertySwitched 

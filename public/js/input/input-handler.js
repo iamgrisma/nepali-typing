@@ -741,6 +741,7 @@ export function bindInputEvents() {
     if (e.key === 'Escape') {
       document.getElementById('stats-modal')?.classList.remove('is-open');
       document.getElementById('history-modal')?.classList.remove('is-open');
+      document.getElementById('custom-input-modal')?.classList.remove('is-open');
       return;
     }
 
