@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+const pageTitle = "Terms of Service — Typeshala Bench & TopNepali Typing";
+const pageDesc = "Review the Terms of Service for Typeshala Bench. Covers examination code of conduct, anti-cheat regulations, certification validity, and acceptable use.";
+const canonicalUrl = "https://typing.topnepali.com/terms";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/terms-svg.webp";
+const keywords = "Typeshala terms of service, typing exam rules, Loksewa typing simulation rules, TopNepali Typing policy";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  activeNav="terms"
+>
+  <div class="container max-w-4xl py-6 sm:py-8 space-y-8">
+
+    <!-- Header / Hero -->
+    <header class="text-center max-w-2xl mx-auto space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+        <Icon name="lucide:file-check" class="w-3.5 h-3.5" />
+        <span>PLATFORM POLICIES &amp; CODE OF CONDUCT</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Terms of Service
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)]">
+        Effective Date: October 2026 • Last Updated: October 11, 2026
+      </p>
+    </header>
+
+    <!-- Main Content Cards -->
+    <div class="space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed">
+
+      <!-- Section 1: Acceptance -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-rose-500">
+          <Icon name="lucide:check-circle" class="w-5 h-5" />
+          <span>1. Acceptance of Terms</span>
+        </h2>
+        <p>
+          By accessing or practicing on <strong>Typeshala Bench</strong> (accessible via <code>typing.topnepali.com</code>), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may refrain from using the platform.
+        </p>
+      </section>
+
+      <!-- Section 2: Exam Integrity & Anti-Cheat -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-purple-500">
+          <Icon name="lucide:shield-alert" class="w-5 h-5" />
+          <span>2. Examination Integrity &amp; Anti-Cheat Regulations</span>
+        </h2>
+        <p>
+          To maintain the value, authenticity, and institutional trustworthiness of certificates issued by Typeshala Bench, candidates must adhere to honest testing standards:
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-[var(--text-muted)]">
+          <li><strong>No Automation or Macro Scripts:</strong> The use of automated browser extensions, auto-typers, JavaScript injection, macro keys, or simulated DOM events is strictly prohibited.</li>
+          <li><strong>Biometric Validation:</strong> Our engine continuously analyzes natural neuromotor timing curves and inter-keystroke variance. Sessions detected with synthetic timing profiles are automatically disqualified.</li>
+          <li><strong>Revocation of Credentials:</strong> Any certificate determined to have been obtained through fraudulent means will be immediately revoked and removed from the public verification registry.</li>
+        </ul>
+      </section>
+
+      <!-- Section 3: Educational Independence Disclaimer -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-amber-500">
+          <Icon name="lucide:alert-triangle" class="w-5 h-5" />
+          <span>3. Public Service Commission (Loksewa Aayog) Disclaimer</span>
+        </h2>
+        <p>
+          Typeshala Bench is an independent educational benchmark and simulation tool created by TopNepali. It is designed to match the official syllabi, typing guidelines, and marking schemes of Nepal's Public Service Commission (Loksewa Aayog).
+        </p>
+        <p class="text-xs sm:text-sm text-[var(--text-muted)]">
+          Typeshala Bench is <strong>not</strong> officially affiliated with, endorsed by, or administered by the Public Service Commission of Nepal. Success on our simulation tests is an educational metric and does not guarantee results in official government examinations.
+        </p>
+      </section>
+
+      <!-- Section 4: Intellectual Property & Open Source -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-blue-500">
+          <Icon name="lucide:code" class="w-5 h-5" />
+          <span>4. Intellectual Property &amp; Open Source</span>
+        </h2>
+        <p>
+          The core typing platform code is maintained openly on GitHub under the MIT License. Text libraries featuring traditional Dantya Katha folklore, civic speeches, and cultural works are curated for educational and literacy improvement purposes.
+        </p>
+      </section>
+
+      <!-- Section 5: Governing Law -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-emerald-500">
+          <Icon name="lucide:scale" class="w-5 h-5" />
+          <span>5. Governing Law &amp; Jurisdiction</span>
+        </h2>
+        <p>
+          These Terms of Service are governed by and construed in accordance with the prevailing laws of Nepal. Any disputes arising from the use of this service shall be subject to the exclusive jurisdiction of the courts of Nepal.
+        </p>
+      </section>
+
+    </div>
+  </div>
+</Layout>

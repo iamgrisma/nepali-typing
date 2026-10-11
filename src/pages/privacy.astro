@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+const pageTitle = "Privacy Policy — Typeshala Bench & TopNepali Typing";
+const pageDesc = "Read the Typeshala Bench Privacy Policy. We prioritize on-device biometric telemetry, local-first storage, transparent examination records, and zero invasive tracking.";
+const canonicalUrl = "https://typing.topnepali.com/privacy";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/privacy-svg.webp";
+const keywords = "Typeshala privacy policy, Nepali typing privacy, biometric data policy, TopNepali Typing terms";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  activeNav="privacy"
+>
+  <div class="container max-w-4xl py-6 sm:py-8 space-y-8">
+
+    <!-- Header / Hero -->
+    <header class="text-center max-w-2xl mx-auto space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+        <Icon name="lucide:shield" class="w-3.5 h-3.5" />
+        <span>USER PRIVACY &amp; DATA PROTECTION</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        Privacy Policy
+      </h1>
+      <p class="text-xs sm:text-sm text-[var(--text-secondary)]">
+        Effective Date: October 2026 • Last Updated: October 11, 2026
+      </p>
+    </header>
+
+    <!-- Main Content Cards -->
+    <div class="space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed">
+
+      <!-- Card 1: Local-First Telemetry -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-rose-500">
+          <Icon name="lucide:lock" class="w-5 h-5" />
+          <span>1. Local-First Keystroke Telemetry</span>
+        </h2>
+        <p>
+          Typeshala Bench is architected with a strict <strong>local-first privacy framework</strong>. During regular typing practice, speed drills, and converter operations:
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-[var(--text-muted)]">
+          <li>All keystrokes, timing intervals, and hesitation heatmaps are processed entirely inside your local browser memory.</li>
+          <li>We do <strong>not</strong> record, transmit, or log individual keystroke sequences to any remote server or third-party cloud.</li>
+          <li>Your typing history, session records, and personal best scores are saved exclusively in your browser's <code>localStorage</code> and can be cleared by you at any time.</li>
+        </ul>
+      </section>
+
+      <!-- Card 2: Official Certification Records -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-purple-500">
+          <Icon name="lucide:award" class="w-5 h-5" />
+          <span>2. Certification Examination Records</span>
+        </h2>
+        <p>
+          If you voluntarily participate in and successfully pass the <strong>Official Certification Examination</strong>, you explicitly authorize us to record the following credentials into our public Cloudflare D1 verification database:
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-[var(--text-muted)]">
+          <li>The candidate full name provided upon examination entry.</li>
+          <li>Performance metrics: Net WPM, Gross WPM, Accuracy percentage, Test Duration, and Examination Date.</li>
+          <li>Cryptographic verification ID and unique verification URL used by employers and educational institutions to confirm credential authenticity.</li>
+        </ul>
+        <p class="text-xs text-[var(--text-muted)]">
+          No passwords, government identity numbers (citizenship/NID), or financial credentials are ever requested or stored.
+        </p>
+      </section>
+
+      <!-- Card 3: Preeti to Unicode Converter -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-amber-500">
+          <Icon name="lucide:file-text" class="w-5 h-5" />
+          <span>3. Document &amp; Font Converter Privacy</span>
+        </h2>
+        <p>
+          When using the <strong>Preeti to Unicode</strong> or <strong>Unicode to Preeti</strong> converters:
+        </p>
+        <p class="text-xs sm:text-sm text-[var(--text-muted)]">
+          All font mapping and rich-text conversions occur entirely client-side via JavaScript DOM manipulation in your browser. None of your converted documents, articles, books, or personal notes are sent across the network or stored on our servers.
+        </p>
+      </section>
+
+      <!-- Card 4: Advertising & Google AdSense -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-blue-500">
+          <Icon name="lucide:globe" class="w-5 h-5" />
+          <span>4. Advertising &amp; Third-Party Cookies</span>
+        </h2>
+        <p>
+          We may display non-intrusive advertisements served by Google AdSense to sustain free server infrastructure and edge CDN bandwidth.
+        </p>
+        <p class="text-xs sm:text-sm text-[var(--text-muted)]">
+          Google and its advertising partners may use cookies to serve ads based on prior visits to this or other websites. You can customize or opt out of personalized advertising by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener" class="text-[var(--accent-primary)] underline">Google Ads Settings</a>.
+        </p>
+      </section>
+
+      <!-- Card 5: Contact & Inquiries -->
+      <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-3 shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2 text-emerald-500">
+          <Icon name="lucide:mail" class="w-5 h-5" />
+          <span>5. Contact Regarding Privacy Concerns</span>
+        </h2>
+        <p>
+          If you have questions about our data practices or wish to request the removal of a publicly issued certificate record under your name, please reach out directly:
+        </p>
+        <p class="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
+          Email: <a href="mailto:typing@topnepali.com" class="text-rose-500 hover:underline">typing@topnepali.com</a> • <a href="/contact" class="text-[var(--accent-primary)] hover:underline">Contact Form</a>
+        </p>
+      </section>
+
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+const pageTitle = "About Typeshala Bench — The Modern Nepali Typing Standard";
+const pageDesc = "Learn about the mission, keyboard ergonomics, and technology powering Typeshala Bench. Built to modernize and standardize Nepali typing speed benchmarks for students and professionals.";
+const canonicalUrl = "https://typing.topnepali.com/about";
+const ogImageUrl = "https://img.topnepali.com/typing.tn/og/about-svg.webp";
+const keywords = "About Typeshala, Typeshala online, Nepali typing platform, Typeshala history, Nepali touch typing, TopNepali Typing";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImageUrl}
+  keywords={keywords}
+  activeNav="about"
+>
+  <div class="container max-w-4xl py-6 sm:py-8 space-y-10">
+
+    <!-- Header / Hero -->
+    <header class="text-center max-w-2xl mx-auto space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+        <Icon name="lucide:info" class="w-3.5 h-3.5" />
+        <span>PLATFORM MISSION &amp; HERITAGE</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+        About Typeshala Bench
+      </h1>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        The web-native typing speed benchmark and certification ecosystem engineered specifically for Nepali Unicode, Romanized transliteration, Preeti ASCII, and English touch typists.
+      </p>
+    </header>
+
+    <!-- Section 1: The Evolution of Nepali Typing -->
+    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
+      <div class="flex items-center gap-2.5 text-rose-500">
+        <Icon name="lucide:history" class="w-5 h-5" />
+        <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)]">
+          From Desktop Typeshala to the Modern Cloud Bench
+        </h2>
+      </div>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        For over two decades in schools, cyber cafés, and training centers across Nepal, touch typing was learned on the iconic desktop application <strong>Typeshala</strong>. While groundbreaking for its time, the original desktop program was tied to legacy operating systems and lacked modern Unicode standardization, real-time analytics, and mobile compatibility.
+      </p>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        <strong>Typeshala Bench</strong> honors that heritage while completely rebuilding the typing workbench for the modern web era. Without installing any software or font drivers, candidates can practice immediately on any device with zero input latency, native Devanagari grapheme segmentation, and cryptographic examination verification.
+      </p>
+    </section>
+
+    <!-- Section 2: Core Keyboard Layouts Supported -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)]">
+        Comprehensive Four-Layout Architecture
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-2">
+          <div class="flex items-center gap-2 text-rose-500 font-bold text-sm">
+            <Icon name="lucide:keyboard" class="w-4 h-4" />
+            <span>Nepali Unicode Traditional (MPP)</span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+            Standardized by Madan Puraskar Pustakalaya based on the mechanical Remington typewriter layout. Uses genuine UTF-8 Devanagari encoding required for civil service examinations, national banking, and government records.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-2">
+          <div class="flex items-center gap-2 text-sky-500 font-bold text-sm">
+            <Icon name="lucide:type" class="w-4 h-4" />
+            <span>Nepali Unicode Romanized</span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+            Intuitively maps Devanagari sounds to standard English QWERTY keys (e.g. <code>k</code> for <code>क</code>). Allows instant phonetic typing without memorizing complex mechanical typewriter positions.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-2">
+          <div class="flex items-center gap-2 text-amber-500 font-bold text-sm">
+            <Icon name="lucide:file-text" class="w-4 h-4" />
+            <span>Preeti (ASCII Typewriter)</span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+            Legacy TrueType layout widely utilized in commercial printing and traditional journalism. Features an integrated live bidirectional Preeti-to-Unicode converter with Word format preservation.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-2">
+          <div class="flex items-center gap-2 text-indigo-500 font-bold text-sm">
+            <Icon name="lucide:award" class="w-4 h-4" />
+            <span>English US QWERTY</span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] leading-relaxed">
+            International touch typing speed benchmarking standard utilizing 5-keystroke standardized word calculation, Gross and Net WPM scoring, and error deduction formulas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Engineering & Biometrics -->
+    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
+      <div class="flex items-center gap-2.5 text-blue-500">
+        <Icon name="lucide:activity" class="w-5 h-5" />
+        <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)]">
+          Biometric Neuromotor Telemetry &amp; AI Drills
+        </h2>
+      </div>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        Unlike basic typing tests that only calculate end-of-test speed, Typeshala Bench records 36 fine-grained neuromotor parameters. It maps hand load distribution (Left vs Right hand balance), per-finger fatigue, hesitation latency per glyph, and burst flow recovery.
+      </p>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        The built-in Adaptive Drills engine analyzes these errors in real time, scoring vocabulary density to automatically generate customized practice sessions targeting your exact weak keys.
+      </p>
+    </section>
+
+    <!-- Section 4: Public Service Exam Readiness -->
+    <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
+      <div class="flex items-center gap-2.5 text-emerald-500">
+        <Icon name="lucide:shield-check" class="w-5 h-5" />
+        <h2 class="text-xl sm:text-2xl font-bold font-display text-[var(--text-primary)]">
+          Loksewa Aayog Simulation &amp; Verifiable Certificates
+        </h2>
+      </div>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        Preparing for the Public Service Commission (Loksewa Aayog) Computer Operator and Assistant Computer Operator exams requires strict adherence to official 5-minute timed formats and official error deduction schemes.
+      </p>
+      <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+        Candidates who pass the certification exam earn verifiable digital credentials backed by a permanent Cloudflare D1 ledger, complete with a unique certificate ID and QR code for employer verification.
+      </p>
+    </section>
+
+  </div>
+</Layout>
