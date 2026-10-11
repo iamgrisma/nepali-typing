@@ -182,30 +182,65 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <!-- WORD-BY-WORD PERFORMANCE BREAKDOWN ACCORDION -->
-    <details class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] mb-4 group">
+    <details class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] mb-4 group" id="modal-words-log-details">
       <summary class="font-bold text-xs text-[var(--text-primary)] cursor-pointer list-none flex items-center justify-between">
-        <span class="flex items-center gap-1.5">
+        <span class="flex items-center gap-1.5 flex-wrap">
           <Icon name="lucide:file-text" class="w-3.5 h-3.5 text-blue-500" />
           <span>Word-by-Word Typing Log & Correction Audit</span>
+          <span id="audit-badge-summary" class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-mono bg-blue-500/10 text-blue-500 font-normal"></span>
         </span>
-        <Icon name="lucide:chevron-down" class="w-3.5 h-3.5 text-[var(--text-muted)] group-open:rotate-180 transition-transform" />
+        <Icon name="lucide:chevron-down" class="w-3.5 h-3.5 text-[var(--text-muted)] group-open:rotate-180 transition-transform shrink-0" />
       </summary>
-      <div class="mt-3 pt-3 border-t border-[var(--border-subtle)] max-h-48 overflow-y-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="text-[10px] font-semibold uppercase text-[var(--text-muted)] border-b border-[var(--border-subtle)]">
-            <tr>
-              <th class="py-1.5 pr-2">#</th>
-              <th class="py-1.5 pr-3">Target Word</th>
-              <th class="py-1.5 pr-3">Typed Word</th>
-              <th class="py-1.5 pr-3">Status</th>
-              <th class="py-1.5 pr-3">Strokes</th>
-              <th class="py-1.5">Time</th>
-            </tr>
-          </thead>
-          <tbody id="modal-words-log-tbody" class="divide-y divide-[var(--border-subtle)] font-mono">
-            <!-- Dynamically populated word log entries -->
-          </tbody>
-        </table>
+
+      <div class="mt-3 pt-3 border-t border-[var(--border-subtle)] space-y-3">
+        <!-- Filter Tabs & Actions -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-1 bg-[var(--bg-surface)] p-1 rounded-lg border border-[var(--border-subtle)] text-[11px]" id="audit-filter-tabs">
+            <button type="button" data-filter="all" class="px-2.5 py-1 rounded-md font-semibold transition-colors bg-[var(--accent-primary)] text-white shadow-xs cursor-pointer audit-tab-btn">All (<span id="audit-count-all">0</span>)</button>
+            <button type="button" data-filter="errors" class="px-2.5 py-1 rounded-md text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer audit-tab-btn">Errors (<span id="audit-count-errors" class="text-red-500 font-bold">0</span>)</button>
+            <button type="button" data-filter="fixed" class="px-2.5 py-1 rounded-md text-[var(--text-muted)] hover:text-amber-500 transition-colors cursor-pointer audit-tab-btn">Fixed (<span id="audit-count-fixed" class="text-amber-500 font-bold">0</span>)</button>
+            <button type="button" data-filter="clean" class="px-2.5 py-1 rounded-md text-[var(--text-muted)] hover:text-emerald-500 transition-colors cursor-pointer audit-tab-btn">Clean (<span id="audit-count-clean" class="text-emerald-500">0</span>)</button>
+          </div>
+
+          <button 
+            type="button" 
+            id="audit-export-csv-btn" 
+            class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[11px] font-mono flex items-center gap-1 transition-colors cursor-pointer"
+            title="Download complete word-by-word audit dataset as CSV"
+          >
+            <Icon name="lucide:download" class="w-3.5 h-3.5" />
+            <span>Export CSV</span>
+          </button>
+        </div>
+
+        <!-- Table Container (Windowed Virtual Container) -->
+        <div class="max-h-56 overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+          <table class="w-full text-left text-xs">
+            <thead class="sticky top-0 bg-[var(--bg-surface-elevated)] text-[10px] font-semibold uppercase text-[var(--text-muted)] border-b border-[var(--border-subtle)] z-10">
+              <tr>
+                <th class="py-1.5 px-2.5">#</th>
+                <th class="py-1.5 px-2.5">Target Word</th>
+                <th class="py-1.5 px-2.5">Typed Word</th>
+                <th class="py-1.5 px-2.5">Status</th>
+                <th class="py-1.5 px-2.5">Strokes</th>
+                <th class="py-1.5 px-2.5">Time</th>
+              </tr>
+            </thead>
+            <tbody id="modal-words-log-tbody" class="divide-y divide-[var(--border-subtle)] font-mono text-[11px]">
+              <!-- Dynamically populated windowed word log entries -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-1">
+          <span id="audit-range-info" class="font-mono text-[11px]">Showing 0–0 of 0</span>
+          <div class="flex items-center gap-1.5 font-mono text-[11px]">
+            <button type="button" id="audit-prev-btn" class="px-2.5 py-1 rounded border border-[var(--border-subtle)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--bg-surface)] cursor-pointer">« Prev</button>
+            <span class="px-1.5 text-[var(--text-primary)] font-semibold" id="audit-page-indicator">1 / 1</span>
+            <button type="button" id="audit-next-btn" class="px-2.5 py-1 rounded border border-[var(--border-subtle)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--bg-surface)] cursor-pointer">Next »</button>
+          </div>
+        </div>
       </div>
     </details>
 

@@ -142,15 +142,15 @@ export function analyzeTypingRun(logs, totalSeconds, netWpm, rawWpm, accuracy) {
   const estimatedSecondsLost = Math.round((backspaceCount * 0.45) * 10) / 10;
   const correctionEfficiency = logs.length > 0 ? Math.max(0, Math.round(100 - ((backspaceCount / logs.length) * 100 * 2))) : 100;
 
-  // Burst Speed: Peak 5-second rolling window
+  // Burst Speed: Peak 15-keystroke rolling window (O(N) sliding window)
   let peakBurstWpm = rawWpm;
   if (latencies.length >= 15) {
-    let windowSum = 0;
-    let minWindowTime = Infinity;
-    for (let i = 0; i < latencies.length - 15; i++) {
-      let windowMs = 0;
-      for (let j = 0; j < 15; j++) windowMs += latencies[i + j];
-      if (windowMs < minWindowTime) minWindowTime = windowMs;
+    let currentWindowMs = 0;
+    for (let j = 0; j < 15; j++) currentWindowMs += latencies[j];
+    let minWindowTime = currentWindowMs;
+    for (let i = 15; i < latencies.length; i++) {
+      currentWindowMs += latencies[i] - latencies[i - 15];
+      if (currentWindowMs < minWindowTime) minWindowTime = currentWindowMs;
     }
     if (minWindowTime > 0 && minWindowTime < Infinity) {
       peakBurstWpm = Math.round((15 / 5) / (minWindowTime / 60000));

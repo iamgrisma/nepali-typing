@@ -17,7 +17,7 @@ import {
   formatMinutesSeconds, 
   updateLiveStats 
 } from '../ui/workbench-view.js';
-import { renderTimelineChart, updatePersonalBestsCards } from '../ui/stats-modal-view.js';
+import { renderTimelineChart, updatePersonalBestsCards, WordAuditManager } from '../ui/stats-modal-view.js';
 import { updateHeaderTelemetryBadge } from '../utils/telemetry-parameters.js';
 
 let lastFinishedResult = null;
@@ -593,34 +593,8 @@ export function finishTest() {
   }
   if (mMeta) mMeta.textContent = `${langNames[state.lang] || state.lang} • ${modeDesc} • ${diffDesc}`;
 
-  // Populate Word-by-Word Typing Log & Correction Audit
-  const wordsLogTbody = document.getElementById('modal-words-log-tbody');
-  if (wordsLogTbody) {
-    if (state.wordsLog.length === 0) {
-      wordsLogTbody.innerHTML = '<tr><td colspan="6" class="py-3 text-center text-muted">No word entries submitted</td></tr>';
-    } else {
-      wordsLogTbody.innerHTML = state.wordsLog.map(w => {
-        let statusBadge = '';
-        if (w.isCorrect && !w.hadCorrections) {
-          statusBadge = '<span class="text-emerald-500 font-semibold">✓ Clean</span>';
-        } else if (w.isCorrect && w.hadCorrections) {
-          statusBadge = `<span class="text-amber-500 font-semibold">⟲ Fixed (${w.errorsCount + w.backspacesCount} err)</span>`;
-        } else {
-          statusBadge = '<span class="text-red-500 font-semibold">✗ Error</span>';
-        }
-        return `
-          <tr class="hover:bg-[var(--bg-surface)] transition-colors">
-            <td class="py-1.5 pr-2 text-muted">${w.index}</td>
-            <td class="py-1.5 pr-3 font-semibold text-[var(--text-primary)]">${w.targetWord}</td>
-            <td class="py-1.5 pr-3 ${w.isCorrect ? 'text-[var(--text-secondary)]' : 'text-red-500'}">${w.typedWord}</td>
-            <td class="py-1.5 pr-3">${statusBadge}</td>
-            <td class="py-1.5 pr-3 text-muted text-[11px]">${w.strokesCount} st (${w.backspacesCount} bk)</td>
-            <td class="py-1.5 text-muted text-[11px]">${w.durationMs}ms</td>
-          </tr>
-        `;
-      }).join('');
-    }
-  }
+  // Initialize Windowed Word-by-Word Typing Log & Correction Audit (Memory-Safe)
+  WordAuditManager.init(state.wordsLog);
 
   // Populate Unimagined Biomechanics Cards
   const elHandBias = document.getElementById('analytics-hand-bias');
@@ -876,24 +850,19 @@ export function finishFreestyleTest() {
   const adaptiveCallout = document.getElementById('modal-adaptive-callout');
   if (adaptiveCallout) adaptiveCallout.classList.add('hidden');
 
-  // Word breakdown log for freestyle: show typed words
-  const wordsLogTbody = document.getElementById('modal-words-log-tbody');
-  if (wordsLogTbody) {
-    if (words.length === 0) {
-      wordsLogTbody.innerHTML = '<tr><td colspan="6" class="py-3 text-center text-muted">No freestyle words typed yet.</td></tr>';
-    } else {
-      wordsLogTbody.innerHTML = words.slice(0, 50).map((w, idx) => `
-        <tr class="hover:bg-[var(--bg-surface)] transition-colors">
-          <td class="py-1.5 pr-2 text-muted">${idx + 1}</td>
-          <td class="py-1.5 pr-3 font-semibold text-[var(--text-primary)]">${w}</td>
-          <td class="py-1.5 pr-3 text-[var(--text-secondary)]">${w}</td>
-          <td class="py-1.5 pr-3"><span class="text-teal-500 font-semibold">✍ Free Style</span></td>
-          <td class="py-1.5 pr-3 text-muted text-[11px]">${w.length} chars</td>
-          <td class="py-1.5 text-muted text-[11px]">Free Pace</td>
-        </tr>
-      `).join('');
-    }
-  }
+  // Word breakdown log for freestyle: show typed words via windowed audit manager
+  const freestyleWordsLog = (words || []).map((w, idx) => ({
+    index: idx + 1,
+    targetWord: w,
+    typedWord: w,
+    isCorrect: true,
+    hadCorrections: false,
+    errorsCount: 0,
+    backspacesCount: 0,
+    strokesCount: w.length,
+    durationMs: 0
+  }));
+  WordAuditManager.init(freestyleWordsLog);
 
   // Hide certificate banner for free style practice
   const certBanner = document.getElementById('modal-cert-banner');
