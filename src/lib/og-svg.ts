@@ -3,6 +3,8 @@
  * Optimized for ImageEngine (img.topnepali.com/typing.tn/og/*-svg.webp)
  */
 
+import { LOGO_PNG_BASE64 } from './logo-data';
+
 export interface OgCardData {
   slug: string;
   badge: string;
@@ -413,9 +415,12 @@ export function generateOgSvg(data: OgCardData): string {
     <!-- Brand Pill -->
     <rect x="0" y="0" width="380" height="42" rx="21" fill="#0b1329" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.2" />
     
-    <!-- Logo Badge Icon -->
-    <rect x="8" y="7" width="28" height="28" rx="8" fill="${primaryAccent}" />
-    <text x="22" y="26" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="900" class="nepali-font">ने</text>
+    <!-- Official Typeshala Logo Badge -->
+    <clipPath id="header-logo-clip">
+      <rect x="7" y="7" width="28" height="28" rx="7" />
+    </clipPath>
+    <rect x="7" y="7" width="28" height="28" rx="7" fill="${primaryAccent}" />
+    <image href="${LOGO_PNG_BASE64}" x="7" y="7" width="28" height="28" preserveAspectRatio="xMidYMid slice" clip-path="url(#header-logo-clip)" />
 
     <!-- Brand Label -->
     <text x="46" y="26" fill="#ffffff" font-size="13" font-weight="800" letter-spacing="0.5">
@@ -436,7 +441,7 @@ export function generateOgSvg(data: OgCardData): string {
     <!-- Vertical Accent Strip -->
     <rect x="0" y="20" width="6" height="422" rx="3" fill="url(#accent-grad)" />
 
-    <!-- TITLES -->
+    <!-- TITLES & EMBLEM -->
     <g transform="translate(44, 46)">
       <text x="0" y="0" fill="#ffffff" font-size="${title.length > 28 ? '36' : '42'}" font-weight="900" letter-spacing="-0.5">
         ${title}
@@ -445,6 +450,12 @@ export function generateOgSvg(data: OgCardData): string {
       <text x="0" y="34" fill="${secondaryAccent}" font-size="18" font-weight="700">
         ${subtitle}
       </text>
+    </g>
+
+    <!-- Official Logo Emblem Showcase on Card -->
+    <g transform="translate(948, 26)">
+      <circle cx="44" cy="44" r="44" fill="${primaryAccent}" fill-opacity="0.12" stroke="${primaryAccent}" stroke-width="1.5" stroke-opacity="0.3" />
+      <image href="${LOGO_PNG_BASE64}" x="10" y="10" width="68" height="68" preserveAspectRatio="xMidYMid meet" />
     </g>
 
     <!-- PREVIEW / SPECIMEN DISPLAY BOX -->

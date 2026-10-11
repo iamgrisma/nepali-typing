@@ -13,10 +13,14 @@ const { activeNav = 'test' } = Astro.props;
   <div class="container flex items-center justify-between h-16">
     
     <!-- Logo & Brand -->
-    <a href="/" class="flex items-center gap-2 text-decoration-none group shrink-0 mr-3 sm:mr-4" title="TypeshalaBench Home">
-      <div class="brand-logo-badge w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm group-hover:scale-105 transition-transform shrink-0" style="font-family: var(--font-nepali);" aria-hidden="true">
-        ने
-      </div>
+    <a href="/" class="flex items-center gap-2.5 text-decoration-none group shrink-0 mr-3 sm:mr-4" title="TypeshalaBench Home">
+      <img 
+        src="/logo.svg" 
+        alt="Typeshala Bench Logo" 
+        class="w-8 h-8 object-contain rounded-xl shadow-sm group-hover:scale-105 transition-transform shrink-0" 
+        width="32" 
+        height="32" 
+      />
       <span class="font-bold text-base font-display tracking-tight text-[var(--text-primary)]">
         Typeshala<span class="text-red-600">Bench</span>
       </span>
