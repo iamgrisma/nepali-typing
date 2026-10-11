@@ -17,6 +17,7 @@
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {
+    "esbuild": "^0.25.0",
     "wrangler": "^4.136.2"
   }
 }
