@@ -11,9 +11,17 @@ import { renderKeyboard } from '../ui/keyboard-view.js';
 import { updatePersonalBestsCards } from '../ui/stats-modal-view.js';
 
 export function bindToolbarEvents() {
-  // Language Tabs
+  // Language Tabs (Links to dedicated test pages)
   document.querySelectorAll('.lang-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      if (btn.classList.contains('active')) {
+        e.preventDefault();
+        setupTest();
+        return;
+      }
+      if (btn.tagName === 'A' && btn.getAttribute('href')) {
+        return; // Allow browser to navigate to dedicated URL with its own SEO body
+      }
       document.querySelectorAll('.lang-tab-btn').forEach(b => {
         b.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-primary)]', 'shadow-sm');
         b.classList.add('text-[var(--text-secondary)]');
@@ -27,7 +35,15 @@ export function bindToolbarEvents() {
 
   // Mode Tabs
   document.querySelectorAll('.mode-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      if (btn.tagName === 'A' && btn.getAttribute('href')) {
+        if (btn.classList.contains('active')) {
+          e.preventDefault();
+          setupTest();
+          return;
+        }
+        return; // Allow browser to navigate to dedicated mode page (/loksewa-typing-test, /drills)
+      }
       document.querySelectorAll('.mode-tab-btn').forEach(b => {
         b.classList.remove('active', 'bg-[var(--bg-surface)]', 'text-[var(--accent-blue)]');
         b.classList.add('text-[var(--text-muted)]');

@@ -20,37 +20,37 @@ const {
     <div class="flex items-center justify-between gap-2 flex-wrap">
       <!-- Group 1: Languages / Layouts -->
       <div id="lang-selector-group" class="flex items-center gap-1 p-0.5 bg-[var(--bg-surface-subtle)] rounded-xl overflow-x-auto text-xs">
-        <button 
-          type="button"
-          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_unicode' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+        <a 
+          href="/nepali-traditional-typing-test"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 inline-block text-center ${defaultLang === 'nepali_unicode' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           data-lang="nepali_unicode"
         >
           Traditional
-        </button>
+        </a>
 
-        <button 
-          type="button"
-          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_romanized' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+        <a 
+          href="/romanized-nepali-typing-test"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 inline-block text-center ${defaultLang === 'nepali_romanized' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           data-lang="nepali_romanized"
         >
           Romanized
-        </button>
+        </a>
 
-        <button 
-          type="button"
-          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'nepali_preeti' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+        <a 
+          href="/preeti-typing-test"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 inline-block text-center ${defaultLang === 'nepali_preeti' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           data-lang="nepali_preeti"
         >
           Preeti
-        </button>
+        </a>
 
-        <button 
-          type="button"
-          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 ${defaultLang === 'english' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+        <a 
+          href="/english-typing-test"
+          class={`lang-tab-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-150 inline-block text-center ${defaultLang === 'english' ? 'active bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
           data-lang="english"
         >
           English
-        </button>
+        </a>
       </div>
 
       <!-- Right: Difficulty Level & Keyboard Toggle -->
@@ -98,14 +98,22 @@ const {
         <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'quotes' ? 'active text-[var(--accent-blue)] bg-[var(--bg-surface)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`} data-mode="quotes">
           Prose
         </button>
-        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'exam' ? 'active bg-[var(--bg-surface)] font-bold text-purple-600 dark:text-purple-400' : 'text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="exam">
+        <a 
+          href="/loksewa-typing-test" 
+          class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'exam' ? 'active bg-[var(--bg-surface)] font-bold text-purple-600 dark:text-purple-400' : 'text-purple-600 dark:text-purple-400 hover:text-[var(--text-primary)]'} flex items-center gap-1`} 
+          data-mode="exam"
+        >
           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
           <span>Exam</span>
-        </button>
-        <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'adaptive' ? 'active bg-[var(--bg-surface)] font-bold text-amber-500' : 'text-amber-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="adaptive">
+        </a>
+        <a 
+          href="/drills" 
+          class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'adaptive' ? 'active bg-[var(--bg-surface)] font-bold text-amber-500' : 'text-amber-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} 
+          data-mode="adaptive"
+        >
           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
           <span>Drills</span>
-        </button>
+        </a>
         <button type="button" class={`mode-tab-btn px-2 py-0.5 rounded-lg font-medium ${defaultMode === 'freestyle' ? 'active bg-[var(--bg-surface)] font-bold text-teal-500' : 'text-teal-500 hover:text-[var(--text-primary)]'} flex items-center gap-1`} data-mode="freestyle">
           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
           <span>Free</span>

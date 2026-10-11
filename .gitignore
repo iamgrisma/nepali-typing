@@ -1,5 +1,6 @@
 # Build outputs
 dist/
+_worker.bundle
 .astro/
 .wrangler/
 
