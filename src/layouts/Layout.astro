@@ -94,13 +94,26 @@ const breadcrumbSchema = {
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
 
-    <!-- High-Performance Google Fonts (Preconnect + Swap) -->
+    <!-- High-Performance Google Fonts (Preconnect + Non-Render-Blocking Asynchronous Load) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link 
-      rel="stylesheet" 
+      rel="preload" 
+      as="style" 
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Mukta:wght@500;700&family=Outfit:wght@600;800&display=swap" 
     />
+    <link 
+      rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Mukta:wght@500;700&family=Outfit:wght@600;800&display=swap" 
+      media="print" 
+      onload="this.media='all'" 
+    />
+    <noscript>
+      <link 
+        rel="stylesheet" 
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Mukta:wght@500;700&family=Outfit:wght@600;800&display=swap" 
+      />
+    </noscript>
 
     <!-- Local Font Preload (Only Primary Devanagari Font) -->
     <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />

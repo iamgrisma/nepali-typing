@@ -100,6 +100,7 @@ const initialWords = defaultLang === 'english' ? [
     <input 
       type="text" 
       id="typing-input" 
+      aria-label="Typing test input buffer"
       style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; padding: 0; margin: 0; border: none; outline: none; background: transparent; color: transparent; z-index: -1;"
       autocomplete="off" 
       autocorrect="off" 
@@ -114,6 +115,7 @@ const initialWords = defaultLang === 'english' ? [
     <textarea 
       id="freestyle-input" 
       class="freestyle-canvas" 
+      aria-label="Free style typing canvas"
       placeholder="Start typing anything freely... practice writing thoughts, journaling, or test your unrestricted raw typing speed without pre-determined text prompts."
       rows="4"
     ></textarea>

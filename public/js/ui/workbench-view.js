@@ -59,22 +59,36 @@ export function renderActiveWordHighlight() {
   curWordEl.classList.toggle('is-word-error', hasError);
 }
 
+let scrollRafId = null;
 export function adjust2LineScroll() {
-  const container = document.getElementById('words-container');
-  if (!container) return;
-  const curWordEl = container.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
-  if (!curWordEl) return;
+  if (scrollRafId) cancelAnimationFrame(scrollRafId);
+  scrollRafId = requestAnimationFrame(() => {
+    scrollRafId = null;
+    const container = document.getElementById('words-container');
+    if (!container) return;
+    const curWordEl = container.querySelector(`.word-node[data-word-index="${state.wordIdx}"]`);
+    if (!curWordEl) return;
 
-  const wordTop = curWordEl.offsetTop;
-  if (Math.abs(container.scrollTop - wordTop) > 2) {
-    container.scrollTo({
-      top: wordTop,
-      behavior: 'smooth'
-    });
-  }
+    const wordTop = curWordEl.offsetTop;
+    if (Math.abs(container.scrollTop - wordTop) > 2) {
+      container.scrollTo({
+        top: wordTop,
+        behavior: 'smooth'
+      });
+    }
+  });
 }
 
+let caretRafId = null;
 export function updateCaret() {
+  if (caretRafId) cancelAnimationFrame(caretRafId);
+  caretRafId = requestAnimationFrame(() => {
+    caretRafId = null;
+    performUpdateCaret();
+  });
+}
+
+function performUpdateCaret() {
   const caret = document.getElementById('typing-caret');
   const container = document.getElementById('words-container');
   if (!caret || !container) return;
