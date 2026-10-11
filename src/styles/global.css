@@ -90,7 +90,7 @@
 
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   --text-dim: #94a3b8;
 
   --accent-primary: #dc2626;
@@ -136,7 +136,7 @@
 
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  --text-muted: #94a3b8;
   --text-dim: #334155;
 
   --accent-primary: #f87171;
@@ -462,6 +462,51 @@ input, textarea {
 .text-purple-700 { color: #7e22ce; }
 .text-cyan-500 { color: #06b6d4; }
 .text-slate-400 { color: #94a3b8; }
+
+/* WCAG AA (4.5:1 Minimum Contrast) Dark Mode Overrides & Utility Support */
+[data-theme="dark"] .text-blue-600,
+.dark .text-blue-600,
+[data-theme="dark"] .dark\:text-blue-400,
+.dark .dark\:text-blue-400 {
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .text-purple-600,
+.dark .text-purple-600,
+[data-theme="dark"] .dark\:text-purple-400,
+.dark .dark\:text-purple-400 {
+  color: #c084fc !important;
+}
+
+[data-theme="dark"] .text-amber-700,
+.dark .text-amber-700,
+[data-theme="dark"] .text-amber-600,
+.dark .text-amber-600,
+[data-theme="dark"] .dark\:text-amber-500,
+.dark .dark\:text-amber-500,
+[data-theme="dark"] .dark\:text-amber-400,
+.dark .dark\:text-amber-400 {
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .text-red-600,
+.dark .text-red-600,
+[data-theme="dark"] .dark\:text-rose-400,
+.dark .dark\:text-rose-400,
+[data-theme="dark"] .dark\:text-red-400,
+.dark .dark\:text-red-400 {
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .text-rose-600,
+.dark .text-rose-600 {
+  color: #fb7185 !important;
+}
+
+[data-theme="dark"] .dark\:text-emerald-400,
+.dark .dark\:text-emerald-400 {
+  color: #34d399 !important;
+}
 
 /* Borders & Rounded Corners */
 .rounded { border-radius: 0.25rem; }
@@ -914,21 +959,23 @@ input, textarea {
 
 .keycap.shell-key {
   background-color: #f8fafc;
-  color: #64748b;
+  color: #475569;
   border-color: #e2e8f0;
   border-bottom: 2px solid #cbd5e1;
   font-size: 0.65rem;
   font-weight: 600;
   cursor: default;
-  opacity: 0.85;
+  opacity: 1;
   pointer-events: none;
 }
 
-[data-theme="dark"] .keycap.shell-key {
+[data-theme="dark"] .keycap.shell-key,
+.dark .keycap.shell-key {
   background-color: #111827;
-  color: #64748b;
+  color: #94a3b8;
   border-color: #1f2937;
   border-bottom: 2px solid #0f172a;
+  opacity: 1;
 }
 
 .keycap.is-target {

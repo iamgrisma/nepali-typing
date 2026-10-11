@@ -201,20 +201,22 @@ export function setupTest() {
     caretDiv.className = 'typing-caret';
     container.appendChild(caretDiv);
 
+    const fragment = document.createDocumentFragment();
     state.words.forEach((w, wI) => {
       const wSpan = document.createElement('span');
       wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
       wSpan.dataset.wordIndex = `${wI}`;
       const clusters = getGraphemes(w, state.lang);
       wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
-      container.appendChild(wSpan);
+      fragment.appendChild(wSpan);
     });
+    container.appendChild(fragment);
     container.scrollTop = 0;
   }
 
   renderKeyboard();
   highlightTargetKey();
-  updateCaret();
+  requestAnimationFrame(() => updateCaret());
   updatePersonalBestsCards();
 }
 
@@ -282,20 +284,22 @@ export function setupTestWithWords(words) {
     caretDiv.className = 'typing-caret';
     container.appendChild(caretDiv);
 
+    const fragment = document.createDocumentFragment();
     state.words.forEach((w, wI) => {
       const wSpan = document.createElement('span');
       wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
       wSpan.dataset.wordIndex = `${wI}`;
       const clusters = getGraphemes(w, state.lang);
       wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
-      container.appendChild(wSpan);
+      fragment.appendChild(wSpan);
     });
+    container.appendChild(fragment);
     container.scrollTop = 0;
   }
 
   renderKeyboard();
   highlightTargetKey();
-  updateCaret();
+  requestAnimationFrame(() => updateCaret());
   updatePersonalBestsCards();
 }
 
