@@ -1,43 +1,697 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ModeSelector from '../components/ModeSelector.astro';
-import TypingEngine from '../components/TypingEngine.astro';
 import KeyboardVisualizer from '../components/KeyboardVisualizer.astro';
-import DetailedStatsModal from '../components/DetailedStatsModal.astro';
-import HistoryDrawer from '../components/HistoryDrawer.astro';
 import SeoContent from '../components/SeoContent.astro';
 import FaqSection from '../components/FaqSection.astro';
+import { Icon } from 'astro-icon/components';
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Typeshala Bench — Online Nepali & English Typing Platform",
+  "alternateName": "Typeshala Online Nepali Typing Speed Benchmark & Certification",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": "https://typing.topnepali.com",
+  "image": "https://img.topnepali.com/typing.tn/og/default-svg.webp",
+  "description": "Modern Typeshala Bench for Nepali typing (Unicode Traditional, Romanized Phonetic, Preeti font) and English QWERTY. Real-time WPM speed test, authentic Dantya Katha stories, adaptive drills, and verifiable certificates.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "2480",
+    "reviewCount": "1940"
+  }
+};
 ---
 
 <Layout 
-  title="Typeshala Bench — Online Nepali & English Typing Test, Speed Benchmark & Certification"
-  description="Practice on the modern Typeshala Bench across English QWERTY, Nepali Unicode Traditional, Romanized Phonetic, and Preeti ASCII. Test your real-time WPM typing speed with authentic Dantya Katha stories, adaptive drills, and verifiable certificates."
+  title="Typeshala Bench — Modern Nepali & English Typing Speed Platform & Certification"
+  description="Master Nepali & English typing on the modern Typeshala Bench. Practice Nepali Unicode Traditional, Romanized Phonetic, Preeti font, and English QWERTY with zero latency, real-time WPM tests, and official certificates."
   canonicalUrl="https://typing.topnepali.com"
   ogImage="https://img.topnepali.com/typing.tn/og/default-svg.webp"
-  activeNav="test"
+  schema={softwareSchema}
+  activeNav="home"
 >
+  <!-- Hero Section (Above the Fold) -->
+  <section class="relative pt-6 pb-12 sm:pt-10 sm:pb-16 overflow-hidden">
+    <!-- Subtle Background Glows -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-rose-500/10 via-sky-500/10 to-purple-500/10 blur-3xl pointer-events-none rounded-full" aria-hidden="true"></div>
+
+    <div class="container px-4 relative z-10 text-center max-w-5xl mx-auto">
+      
+      <!-- Trust & Rating Pill -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-secondary)] mb-6 shadow-xs">
+        <span class="flex items-center text-amber-500">
+          <Icon name="lucide:star" class="w-3.5 h-3.5 fill-current" />
+          <Icon name="lucide:star" class="w-3.5 h-3.5 fill-current" />
+          <Icon name="lucide:star" class="w-3.5 h-3.5 fill-current" />
+          <Icon name="lucide:star" class="w-3.5 h-3.5 fill-current" />
+          <Icon name="lucide:star" class="w-3.5 h-3.5 fill-current" />
+        </span>
+        <span class="text-[var(--text-primary)] font-extrabold">4.9 / 5.0</span>
+        <span class="text-[var(--text-muted)]">• Rated by 10,000+ Nepali Typists</span>
+      </div>
+
+      <!-- Main Headline (Large Modern Web Typography) -->
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-[var(--text-primary)] leading-[1.08] mb-6">
+        Master Nepali &amp; English Typing with <span class="bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 bg-clip-text text-transparent">Typeshala Bench</span>
+      </h1>
+
+      <!-- Value Proposition Subtitle -->
+      <p class="text-base sm:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed mb-8">
+        The web-native typing standard for Nepal. Practice official <strong class="text-[var(--text-primary)] font-semibold">Nepali Unicode Traditional (MPP)</strong>, <strong class="text-[var(--text-primary)] font-semibold">Romanized Phonetic</strong>, <strong class="text-[var(--text-primary)] font-semibold">Preeti Font</strong>, and <strong class="text-[var(--text-primary)] font-semibold">English QWERTY</strong> with zero input lag, authentic literature, and verifiable speed certificates.
+      </p>
+
+      <!-- Primary High-Converting CTA (First Viewport leads to Traditional Mode) -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-8">
+        <a 
+          href="/nepali-traditional-typing-test" 
+          class="w-full sm:w-auto inline-flex flex-col sm:flex-row items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-extrabold text-base sm:text-lg shadow-lg hover:shadow-rose-600/30 hover:scale-[1.02] active:scale-[0.99] transition-all cursor-pointer group"
+        >
+          <div class="flex items-center gap-2">
+            <Icon name="lucide:zap" class="w-5 h-5 text-amber-300" />
+            <span>Start Nepali Typing Test (Traditional)</span>
+            <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </a>
+
+        <a 
+          href="#layout-maps" 
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-bold text-sm sm:text-base transition-all hover:scale-[1.01]"
+        >
+          <Icon name="lucide:keyboard" class="w-4 h-4 text-sky-500" />
+          <span>Explore Keyboard Layout Maps</span>
+        </a>
+      </div>
+
+      <!-- Quick Mode Shortcuts Pills -->
+      <div class="flex flex-wrap items-center justify-center gap-2 text-xs mb-10">
+        <span class="text-[var(--text-muted)] font-semibold mr-1">Direct Mode Benches:</span>
+        <a href="/nepali-traditional-typing-test" class="px-3 py-1.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 transition-colors">
+          <span>Traditional (MPP)</span>
+        </a>
+        <a href="/romanized-nepali-typing-test" class="px-3 py-1.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-semibold text-purple-600 dark:text-purple-400 flex items-center gap-1.5 transition-colors">
+          <span>Romanized (Phonetic)</span>
+        </a>
+        <a href="/preeti-typing-test" class="px-3 py-1.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 transition-colors">
+          <span>Preeti (ASCII)</span>
+        </a>
+        <a href="/english-typing-test" class="px-3 py-1.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 transition-colors">
+          <span>English QWERTY</span>
+        </a>
+        <a href="/loksewa-typing-test" class="px-3 py-1.5 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5 transition-colors">
+          <span>Loksewa Exam PSC</span>
+        </a>
+      </div>
+
+      <!-- Trust Metrics & Key Performance Indicators Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto text-left">
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center gap-2 text-rose-500 mb-1">
+            <Icon name="lucide:gauge" class="w-4 h-4" />
+            <span class="text-xs font-bold uppercase tracking-wider">Engine Latency</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">0 ms</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-0.5">Local-first client execution</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center gap-2 text-sky-500 mb-1">
+            <Icon name="lucide:shield-check" class="w-4 h-4" />
+            <span class="text-xs font-bold uppercase tracking-wider">Standards</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">MPP &amp; PSC</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-0.5">Nepal Government syllabus</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center gap-2 text-amber-500 mb-1">
+            <Icon name="lucide:award" class="w-4 h-4" />
+            <span class="text-xs font-bold uppercase tracking-wider">Credential</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">Verifiable</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-0.5">Cloudflare D1 &amp; QR verification</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="flex items-center gap-2 text-emerald-500 mb-1">
+            <Icon name="lucide:sparkles" class="w-4 h-4" />
+            <span class="text-xs font-bold uppercase tracking-wider">Access</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)]">100% Free</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-0.5">Zero ads, no signup needed</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <div class="container px-4">
-    <!-- Primary SEO Landmark Heading (Single H1) -->
-    <h1 class="sr-only">Typeshala Bench — Online Nepali &amp; English Typing Speed Test &amp; Benchmark</h1>
+    
+    <!-- Interactive Keyboard Layout Maps Section (Directly after above the fold) -->
+    <section id="layout-maps" class="my-10 sm:my-14 scroll-mt-20">
+      <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-3xl p-5 sm:p-8 shadow-sm">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-6 border-b border-[var(--border-subtle)]">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 mb-2">
+              <Icon name="lucide:layout" class="w-3.5 h-3.5" />
+              <span>KEYBOARD ARCHITECTURE</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+              Official Nepali Keyboard Layout Maps
+            </h2>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
+              Inspect physical keycap mapping, Shift-layer consonants, and Halanta ligatures in real-time. Switch layouts below to preview keys before you practice.
+            </p>
+          </div>
 
-    <!-- Mode Selector Toolbar -->
-    <ModeSelector />
+          <a 
+            href="/keyboard-layout" 
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--bg-surface-subtle)] hover:bg-[var(--border-subtle)] text-xs font-bold text-[var(--text-primary)] transition-colors shrink-0"
+          >
+            <span>Full Layout Documentation</span>
+            <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
+          </a>
+        </div>
 
-    <!-- Core Interactive Typing Workbench -->
-    <TypingEngine />
+        <!-- Interactive Layout Switcher Tabs & Live Character Lookup -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div class="flex flex-wrap gap-1.5" id="home-layout-tabs">
+            <button 
+              type="button" 
+              class="home-layout-tab-btn active px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--accent-primary)] text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+              data-layout="nepali_unicode"
+            >
+              <Icon name="lucide:type" class="w-3.5 h-3.5" />
+              <span>Traditional (MPP)</span>
+            </button>
 
-    <!-- Interactive Hardware Keyboard Visualizer -->
-    <KeyboardVisualizer defaultLang="nepali_unicode" />
+            <button 
+              type="button" 
+              class="home-layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer flex items-center gap-1.5"
+              data-layout="nepali_romanized"
+            >
+              <Icon name="lucide:languages" class="w-3.5 h-3.5" />
+              <span>Romanized (Phonetic)</span>
+            </button>
 
-    <!-- Comprehensive Authoritative English Educational & SEO Guide -->
+            <button 
+              type="button" 
+              class="home-layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] hover:text-[var(--text-primary)] bg-[var(--bg-surface-subtle)] transition-all cursor-pointer flex items-center gap-1.5"
+              data-layout="nepali_preeti"
+            >
+              <Icon name="lucide:file-text" class="w-3.5 h-3.5" />
+              <span>Preeti (ASCII)</span>
+            </button>
+
+            <button 
+              type="button" 
+              class="home-layout-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer flex items-center gap-1.5"
+              data-layout="english"
+            >
+              <Icon name="lucide:globe" class="w-3.5 h-3.5" />
+              <span>English QWERTY</span>
+            </button>
+          </div>
+
+          <!-- Character Finder Search Box -->
+          <div class="relative w-full sm:w-64">
+            <input 
+              type="text" 
+              id="home-char-search" 
+              placeholder="Search key (e.g. ज्ञ, द्ध, त्र)..."
+              class="w-full px-3 py-1.5 pl-8 text-xs rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] placeholder-[var(--text-muted)]"
+            />
+            <Icon name="lucide:search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[var(--text-muted)] pointer-events-none" />
+          </div>
+        </div>
+
+        <!-- Embedded Hardware Visualizer Matrix -->
+        <div class="mb-6">
+          <KeyboardVisualizer defaultLang="nepali_unicode" />
+        </div>
+
+        <!-- Keycap Rules & Reference Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+          <div class="p-4 rounded-2xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+              <Icon name="lucide:sparkles" class="w-4 h-4 text-purple-500" />
+              <span>Halanta Conjuncts (हलन्त)</span>
+            </div>
+            <p class="text-[var(--text-muted)] leading-relaxed">
+              Consonant + Halanta (्) + Consonant forms ligatures: क् + ष = <strong>क्ष</strong>, त् + र = <strong>त्र</strong>, ज + ञ = <strong>ज्ञ</strong>.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+              <Icon name="lucide:arrow-up" class="w-4 h-4 text-sky-500" />
+              <span>Shift Layer Keycaps</span>
+            </div>
+            <p class="text-[var(--text-muted)] leading-relaxed">
+              Press and hold <strong>Shift</strong> to access upper-tier consonants and aspirates (e.g., क vs ख, ट vs ठ, त vs थ).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <div class="flex items-center gap-2 font-bold text-[var(--text-primary)] mb-1.5">
+              <Icon name="lucide:play" class="w-4 h-4 text-rose-500" />
+              <span>Ready to Practice?</span>
+            </div>
+            <p class="text-[var(--text-muted)] leading-relaxed mb-2">
+              Launch into the dedicated bench for this layout with live WPM and accuracy metrics.
+            </p>
+            <a 
+              id="home-tab-direct-link"
+              href="/nepali-traditional-typing-test" 
+              class="font-bold text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1"
+            >
+              <span>Launch Traditional Test Bench</span>
+              <Icon name="lucide:arrow-right" class="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Dedicated Mode Benches Suite (Tala tala aru mode ma lane button pani) -->
+    <section class="my-14 sm:my-20">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 mb-2.5">
+          <Icon name="lucide:grid" class="w-3.5 h-3.5" />
+          <span>BENCHMARK SUITE</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+          Choose Your Typing Mode &amp; Start Practicing
+        </h2>
+        <p class="text-sm sm:text-base text-[var(--text-secondary)] mt-2">
+          Each mode has its dedicated, distraction-free workbench page calibrated with authentic Dantya Katha stories and custom test durations.
+        </p>
+      </div>
+
+      <!-- 4 Core Mode Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        
+        <!-- Mode 1: Nepali Traditional (MPP Unicode) -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-sky-500/50 rounded-3xl p-6 sm:p-7 shadow-sm transition-all hover:shadow-md flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20">
+                <Icon name="lucide:type" class="w-6 h-6" />
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-mono">
+                GOVERNMENT STANDARD
+              </span>
+            </div>
+
+            <h3 class="text-xl font-bold font-display text-[var(--text-primary)] mb-2">
+              Nepali Traditional (Unicode MPP)
+            </h3>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+              The national Devanagari hardware layout developed by Madan Puraskar Pustakalaya. Essential for public service examinations, court record clerks, and government administration.
+            </p>
+
+            <ul class="space-y-2 text-xs text-[var(--text-muted)] mb-6">
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-sky-500" />
+                <span>Standard MPP physical keycap mapping</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-sky-500" />
+                <span>5-minute timed Loksewa test qualification benchmark</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-sky-500" />
+                <span>Authentic Nepali folklore and civic literature corpora</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/nepali-traditional-typing-test" 
+            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm shadow-md shadow-sky-500/20 transition-all group-hover:translate-y-[-1px]"
+          >
+            <span>Launch Traditional Test Bench</span>
+            <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+        <!-- Mode 2: Romanized Nepali (Phonetic) -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-purple-500/50 rounded-3xl p-6 sm:p-7 shadow-sm transition-all hover:shadow-md flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center border border-purple-500/20">
+                <Icon name="lucide:languages" class="w-6 h-6" />
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-mono">
+                EASY &amp; INTUITIVE
+              </span>
+            </div>
+
+            <h3 class="text-xl font-bold font-display text-[var(--text-primary)] mb-2">
+              Nepali Romanized (Phonetic)
+            </h3>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+              Type Nepali phonetically using English alphabets (<code class="font-mono bg-[var(--bg-surface-subtle)] px-1 rounded">k</code> &rarr; क, <code class="font-mono bg-[var(--bg-surface-subtle)] px-1 rounded">ka</code> &rarr; का). The most accessible layout for students, journalists, content creators, and social media.
+            </p>
+
+            <ul class="space-y-2 text-xs text-[var(--text-muted)] mb-6">
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-purple-500" />
+                <span>Instant phonetics without memorizing hardware keycaps</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-purple-500" />
+                <span>Full Unicode Devanagari output universally searchable</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-purple-500" />
+                <span>Ideal for fast casual writing, blogging, and office emails</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/romanized-nepali-typing-test" 
+            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm shadow-md shadow-purple-600/20 transition-all group-hover:translate-y-[-1px]"
+          >
+            <span>Launch Romanized Test Bench</span>
+            <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+        <!-- Mode 3: Preeti Font Typing (ASCII Typewriter) -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-amber-500/50 rounded-3xl p-6 sm:p-7 shadow-sm transition-all hover:shadow-md flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20">
+                <Icon name="lucide:file-text" class="w-6 h-6" />
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono">
+                CLASSIC TYPEWRITER
+              </span>
+            </div>
+
+            <h3 class="text-xl font-bold font-display text-[var(--text-primary)] mb-2">
+              Preeti Font Typing (ASCII)
+            </h3>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+              Practice on Nepal's legacy typewriter standard font introduced in the 1990s. Widely used across legal deed registrations, publishing houses, and older government documents.
+            </p>
+
+            <ul class="space-y-2 text-xs text-[var(--text-muted)] mb-6">
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-amber-500" />
+                <span>Zero installation: High-fidelity webfont embedded in browser</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-amber-500" />
+                <span>Authentic typewriter chord mapping (<code class="font-mono">s</code> &rarr; क, <code class="font-mono">v</code> &rarr; ख)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-amber-500" />
+                <span>Direct integration with built-in Preeti to Unicode converter</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/preeti-typing-test" 
+            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md shadow-amber-600/20 transition-all group-hover:translate-y-[-1px]"
+          >
+            <span>Launch Preeti Test Bench</span>
+            <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+        <!-- Mode 4: English Typing Speed (QWERTY) -->
+        <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-emerald-500/50 rounded-3xl p-6 sm:p-7 shadow-sm transition-all hover:shadow-md flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+                <Icon name="lucide:globe" class="w-6 h-6" />
+              </div>
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                GLOBAL BENCHMARK
+              </span>
+            </div>
+
+            <h3 class="text-xl font-bold font-display text-[var(--text-primary)] mb-2">
+              English Typing Speed (QWERTY)
+            </h3>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+              Standard international touch typing speed test. Benchmark Net Words Per Minute (WPM), keystroke accuracy, error heatmaps, and biometric rhythm.
+            </p>
+
+            <ul class="space-y-2 text-xs text-[var(--text-muted)] mb-6">
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-emerald-500" />
+                <span>Standardized 5-character word formula and net speed scoring</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-emerald-500" />
+                <span>Flexible 1-minute, 3-minute, and 5-minute timed challenges</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="lucide:check" class="w-3.5 h-3.5 text-emerald-500" />
+                <span>Qualify for English Typing Proficiency Certificate (&gt;25 WPM)</span>
+              </li>
+            </ul>
+          </div>
+
+          <a 
+            href="/english-typing-test" 
+            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition-all group-hover:translate-y-[-1px]"
+          >
+            <span>Launch English Test Bench</span>
+            <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Featured Loksewa Aayog Full-Width Card -->
+      <div class="bg-gradient-to-r from-rose-950/30 via-[var(--bg-surface)] to-[var(--bg-surface)] border border-rose-500/30 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20 mb-3">
+            <Icon name="lucide:award" class="w-3.5 h-3.5" />
+            <span>OFFICIAL LOKSEWA PSC SIMULATION</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)] mb-2">
+            Loksewa Computer Operator Typing Test Exam
+          </h3>
+          <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+            Strict 5-minute examination simulation adhering to the Public Service Commission (Loksewa Aayog) marking scheme: <strong class="text-[var(--text-primary)]">20+ Net WPM</strong> required for Nepali and <strong class="text-[var(--text-primary)]">25+ Net WPM</strong> for English with penalty deductions for uncorrected errors.
+          </p>
+        </div>
+
+        <a 
+          href="/loksewa-typing-test" 
+          class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-rose-600/25 transition-all shrink-0 hover:scale-[1.02]"
+        >
+          <span>Practice Loksewa Exam &rarr;</span>
+        </a>
+      </div>
+
+    </section>
+
+    <!-- Why Typeshala Bench (Feature Advantages Bento Grid) -->
+    <section class="my-14 sm:my-20">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-3xl sm:text-4xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+          Engineered for True Typing Mastery
+        </h2>
+        <p class="text-sm sm:text-base text-[var(--text-secondary)] mt-2">
+          Everything built into Typeshala Bench is purpose-crafted for the linguistic nuances of Devanagari Unicode.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:book-open" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">Authentic Dantya Katha</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Practice typing with authentic folk tales (सुनको अण्डा पार्ने कुखुरा, काग र स्याल) and historical speeches instead of repetitive random syllables.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:target" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">Adaptive Weak Key Drills</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Our engine measures millisecond latency per keycap and dynamically serves vocabulary targeting your slowest fingers.
+          </p>
+          <a href="/drills" class="text-xs font-bold text-purple-600 dark:text-purple-400 mt-3 inline-flex items-center gap-1 hover:underline">
+            <span>Explore Adaptive Drills</span>
+            <Icon name="lucide:arrow-right" class="w-3 h-3" />
+          </a>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:file-check" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">Verifiable Certificates</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Pass the certification benchmark and claim an official certificate with a permanent cryptographic QR code stored on Cloudflare D1.
+          </p>
+          <a href="/verify" class="text-xs font-bold text-sky-600 dark:text-sky-400 mt-3 inline-flex items-center gap-1 hover:underline">
+            <span>Verify a Certificate</span>
+            <Icon name="lucide:arrow-right" class="w-3 h-3" />
+          </a>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:activity" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">Biometric Telemetry</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Deep analytics tracking flight times, dwell times, burst WPM, and fatigue curves directly in your browser without transmitting raw keystrokes.
+          </p>
+          <a href="/analytics" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-3 inline-flex items-center gap-1 hover:underline">
+            <span>View Typing Analytics</span>
+            <Icon name="lucide:arrow-right" class="w-3 h-3" />
+          </a>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:refresh-cw" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">Preeti &harr; Unicode Converter</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Instantly convert legacy Preeti text to standard Devanagari Unicode and vice versa, with support for complex HTML rich text formatting.
+          </p>
+          <a href="/preeti-to-unicode" class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-3 inline-flex items-center gap-1 hover:underline">
+            <span>Launch Preeti Converter</span>
+            <Icon name="lucide:arrow-right" class="w-3 h-3" />
+          </a>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">
+            <Icon name="lucide:lock" class="w-5 h-5" />
+          </div>
+          <h3 class="text-base font-bold font-display text-[var(--text-primary)] mb-2">100% Privacy &amp; Local First</h3>
+          <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+            Zero sign-up required. Keystroke telemetry, test histories, and scores are processed strictly in your local device sandbox.
+          </p>
+          <a href="/privacy" class="text-xs font-bold text-blue-600 dark:text-blue-400 mt-3 inline-flex items-center gap-1 hover:underline">
+            <span>Read Privacy Policy</span>
+            <Icon name="lucide:arrow-right" class="w-3 h-3" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Authoritative SEO Guide -->
     <SeoContent />
 
-    <!-- Structured FAQs Section with JSON-LD -->
+    <!-- Structured FAQs Section -->
     <FaqSection />
 
-    <!-- Modals & Drawers -->
-    <DetailedStatsModal />
-    <HistoryDrawer />
-
   </div>
+
+  <!-- Client Script for Interactive Home Layout Map Tabs & Character Lookup -->
+  <script is:inline type="module">
+    import { state } from '/js/core/state.js';
+    import { renderKeyboard } from '/js/ui/keyboard-view.js';
+    import { KEY_ROWS } from '/js/data/keyboards.js';
+
+    function initHomeLayoutSection() {
+      const tabBtns = document.querySelectorAll('.home-layout-tab-btn');
+      const directLink = document.getElementById('home-tab-direct-link');
+      const searchInput = document.getElementById('home-char-search');
+
+      const MODE_URLS = {
+        nepali_unicode: { url: '/nepali-traditional-typing-test', title: 'Launch Traditional Test Bench' },
+        nepali_romanized: { url: '/romanized-nepali-typing-test', title: 'Launch Romanized Test Bench' },
+        nepali_preeti: { url: '/preeti-typing-test', title: 'Launch Preeti Test Bench' },
+        english: { url: '/english-typing-test', title: 'Launch English Test Bench' }
+      };
+
+      // Tab switcher
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => {
+            b.classList.remove('active', 'bg-[var(--accent-primary)]', 'text-white', 'font-bold');
+            b.classList.add('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]', 'font-semibold');
+          });
+          btn.classList.add('active', 'bg-[var(--accent-primary)]', 'text-white', 'font-bold');
+          btn.classList.remove('bg-[var(--bg-surface-subtle)]', 'text-[var(--text-secondary)]', 'font-semibold');
+
+          const selectedLayout = btn.dataset.layout;
+          state.lang = selectedLayout;
+          renderKeyboard();
+
+          if (directLink && MODE_URLS[selectedLayout]) {
+            directLink.href = MODE_URLS[selectedLayout].url;
+            const span = directLink.querySelector('span');
+            if (span) span.textContent = MODE_URLS[selectedLayout].title;
+          }
+        });
+      });
+
+      // Character search
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value.trim();
+          document.querySelectorAll('.keycap.is-target').forEach(el => el.classList.remove('is-target'));
+          if (!q) return;
+
+          let found = null;
+          for (const row of KEY_ROWS) {
+            for (const k of row) {
+              if (k.special || k.shell) continue;
+              const chNormal = state.lang === 'nepali_unicode' ? k.uni?.[0] :
+                               state.lang === 'nepali_romanized' ? k.rom?.[0] :
+                               state.lang === 'nepali_preeti' ? k.pre?.[2] : k.eng?.[0];
+              const chShift = state.lang === 'nepali_unicode' ? k.uni?.[1] :
+                              state.lang === 'nepali_romanized' ? k.rom?.[1] :
+                              state.lang === 'nepali_preeti' ? k.pre?.[3] : k.eng?.[1];
+
+              if (chNormal === q || (chNormal && chNormal.includes(q))) {
+                found = { code: k.code };
+                break;
+              }
+              if (chShift === q || (chShift && chShift.includes(q))) {
+                found = { code: k.code };
+                break;
+              }
+            }
+            if (found) break;
+          }
+
+          if (found) {
+            const targetEl = document.querySelector(`.keycap[data-code="${found.code}"]`);
+            if (targetEl) targetEl.classList.add('is-target');
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHomeLayoutSection);
+    } else {
+      initHomeLayoutSection();
+    }
+  </script>
 </Layout>

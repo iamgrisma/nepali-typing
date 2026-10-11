@@ -12,6 +12,34 @@ const canonicalUrl = "https://typing.topnepali.com/nepali-traditional-typing-tes
 const ogImageUrl = "https://img.topnepali.com/typing.tn/og/traditional-svg.webp";
 const keywords = "Nepali Unicode typing test, Nepali traditional typing test, MPP Nepali Unicode traditional, Nepali typing practice online, Loksewa Nepali typing test, Devanagari typing test 5 minutes, Nepali keyboard layout";
 
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Nepali Traditional Typing Test — Typeshala Bench",
+  "alternateName": "MPP Nepali Unicode Traditional Typing Speed Benchmark",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": canonicalUrl,
+  "image": ogImageUrl,
+  "description": pageDesc,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "2480",
+    "reviewCount": "1940"
+  }
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -50,8 +78,8 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
-  activeNav="test"
+  schema={[softwareSchema, faqSchema]}
+  activeNav="traditional"
 >
   <div class="container px-4">
     

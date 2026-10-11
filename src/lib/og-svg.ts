@@ -254,8 +254,8 @@ export const OG_CARDS: Record<string, OgCardData> = {
     meta2Value: 'Ecosystem',
     meta3Label: 'Access',
     meta3Value: '100% Free',
-    meta4Label: 'Open Source',
-    meta4Value: 'GitHub',
+    meta4Label: 'Platform',
+    meta4Value: 'TopNepali Pro',
   },
   privacy: {
     slug: 'privacy',
@@ -308,8 +308,8 @@ export const OG_CARDS: Record<string, OgCardData> = {
     meta2Value: 'Within 24h',
     meta3Label: 'Community',
     meta3Value: 'TopNepali',
-    meta4Label: 'Open Source',
-    meta4Value: 'GitHub Repo',
+    meta4Label: 'Support Desk',
+    meta4Value: 'Direct Desk',
   },
 };
 

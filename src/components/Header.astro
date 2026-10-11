@@ -24,12 +24,83 @@ const { activeNav = 'test' } = Astro.props;
 
     <!-- Primary Desktop Navigation (Simple, Compact Text Links - No Icons) -->
     <nav class="header-nav items-center gap-1 text-xs font-semibold">
-      <a 
-        href="/" 
-        class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
-      >
-        Typeshala Bench
-      </a>
+      <!-- Typeshala Bench Dropdown Menu -->
+      <div class="relative group dropdown-container">
+        <button 
+          type="button"
+          class={`px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap ${['test', 'traditional', 'romanized', 'preeti', 'english', 'loksewa'].includes(activeNav) ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+          aria-haspopup="true"
+        >
+          <span>Typeshala Bench</span>
+          <svg class="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+
+        <!-- Dropdown Child Menu -->
+        <div class="dropdown-popover absolute left-0 top-full pt-1.5 w-64 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-150 z-50">
+          <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl shadow-xl p-1.5 flex flex-col gap-0.5 backdrop-blur-md">
+            <div class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+              Typing Test Modes
+            </div>
+            
+            <a 
+              href="/nepali-traditional-typing-test" 
+              class={`px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-between ${activeNav === 'traditional' ? 'bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+            >
+              <div>
+                <div class="font-semibold">Nepali Traditional</div>
+                <div class="text-[10px] text-[var(--text-muted)]">MPP Hardware Standard</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-sky-500/15 text-sky-500 font-bold">MPP</span>
+            </a>
+
+            <a 
+              href="/romanized-nepali-typing-test" 
+              class={`px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-between ${activeNav === 'romanized' ? 'bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+            >
+              <div>
+                <div class="font-semibold">Nepali Romanized</div>
+                <div class="text-[10px] text-[var(--text-muted)]">Phonetic Transliteration</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-purple-500/15 text-purple-500 font-bold">Phonetic</span>
+            </a>
+
+            <a 
+              href="/preeti-typing-test" 
+              class={`px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-between ${activeNav === 'preeti' ? 'bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+            >
+              <div>
+                <div class="font-semibold">Preeti Font Typing</div>
+                <div class="text-[10px] text-[var(--text-muted)]">Classic Legacy ASCII</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-amber-500/15 text-amber-500 font-bold">ASCII</span>
+            </a>
+
+            <a 
+              href="/english-typing-test" 
+              class={`px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-between ${activeNav === 'english' ? 'bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+            >
+              <div>
+                <div class="font-semibold">English Typing</div>
+                <div class="text-[10px] text-[var(--text-muted)]">QWERTY Global WPM</div>
+              </div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-emerald-500/15 text-emerald-500 font-bold">QWERTY</span>
+            </a>
+
+            <div class="my-1 border-t border-[var(--border-subtle)]"></div>
+
+            <a 
+              href="/loksewa-typing-test" 
+              class={`px-2.5 py-1.5 rounded-lg text-xs transition-colors flex items-center justify-between ${activeNav === 'loksewa' ? 'bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+            >
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                <span>Loksewa Exam Practice</span>
+              </div>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-rose-500/10 text-rose-500 font-bold">PSC</span>
+            </a>
+          </div>
+        </div>
+      </div>
 
       <a 
         href="/preeti-to-unicode" 
@@ -168,10 +239,55 @@ const { activeNav = 'test' } = Astro.props;
     <div class="flex flex-col gap-1 text-sm font-semibold">
       <a 
         href="/" 
-        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'test' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+        class={`px-3 py-2 rounded-xl transition-colors ${activeNav === 'home' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
-        Typeshala Bench
+        Home (Landing Page)
       </a>
+
+      <!-- Typeshala Bench Modes Submenu -->
+      <div class="border border-[var(--border-subtle)] rounded-xl p-2.5 bg-[var(--bg-surface-subtle)]/40 space-y-1 my-1">
+        <div class="px-1 py-0.5 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--accent-primary)]">
+          <span>Typeshala Bench</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent-primary)]/15 font-mono">4 Modes</span>
+        </div>
+        <div class="space-y-0.5 pt-1">
+          <a 
+            href="/nepali-traditional-typing-test" 
+            class={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${activeNav === 'traditional' ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'}`}
+          >
+            <span>Nepali Traditional</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded font-mono bg-sky-500/15 text-sky-500">MPP</span>
+          </a>
+          <a 
+            href="/romanized-nepali-typing-test" 
+            class={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${activeNav === 'romanized' ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'}`}
+          >
+            <span>Nepali Romanized</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded font-mono bg-purple-500/15 text-purple-500">Phonetic</span>
+          </a>
+          <a 
+            href="/preeti-typing-test" 
+            class={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${activeNav === 'preeti' ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'}`}
+          >
+            <span>Preeti Font Typing</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded font-mono bg-amber-500/15 text-amber-500">ASCII</span>
+          </a>
+          <a 
+            href="/english-typing-test" 
+            class={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${activeNav === 'english' ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'}`}
+          >
+            <span>English Typing</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded font-mono bg-emerald-500/15 text-emerald-500">QWERTY</span>
+          </a>
+          <a 
+            href="/loksewa-typing-test" 
+            class={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${activeNav === 'loksewa' ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] font-bold' : 'text-rose-500 hover:bg-[var(--bg-surface)]'}`}
+          >
+            <span>Loksewa Exam Practice</span>
+            <span class="text-[10px] px-1 py-0.2 rounded bg-rose-500/10 text-rose-500 font-bold">PSC</span>
+          </a>
+        </div>
+      </div>
 
       <a 
         href="/keyboard-layout" 

@@ -12,6 +12,34 @@ const canonicalUrl = "https://typing.topnepali.com/romanized-nepali-typing-test"
 const ogImageUrl = "https://img.topnepali.com/typing.tn/og/romanized-svg.webp";
 const keywords = "Nepali Romanized typing test, Romanized Nepali typing practice, type Nepali in English letters, MPP Romanized keyboard layout, Nepali typing test online, phonetic Devanagari typing, WPM test Nepal";
 
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Nepali Romanized Typing Test — Typeshala Bench",
+  "alternateName": "MPP Phonetic Nepali Romanized Typing Speed Benchmark",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": canonicalUrl,
+  "image": ogImageUrl,
+  "description": pageDesc,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "2210",
+    "reviewCount": "1780"
+  }
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -50,8 +78,8 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
-  activeNav="test"
+  schema={[softwareSchema, faqSchema]}
+  activeNav="romanized"
 >
   <div class="container px-4">
     

@@ -22,8 +22,8 @@ const {
 } = Astro.props;
 
 const hasCustomWebAppSchema = Array.isArray(schema)
-  ? schema.some((s: any) => s?.['@type'] === 'WebApplication')
-  : (schema as any)?.['@type'] === 'WebApplication';
+  ? schema.some((s: any) => s?.['@type'] === 'WebApplication' || s?.['@type'] === 'SoftwareApplication')
+  : ((schema as any)?.['@type'] === 'WebApplication' || (schema as any)?.['@type'] === 'SoftwareApplication');
 
 import '../styles/global.css';
 import Header from '../components/Header.astro';

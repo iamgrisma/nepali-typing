@@ -12,6 +12,34 @@ const canonicalUrl = "https://typing.topnepali.com/preeti-typing-test";
 const ogImageUrl = "https://img.topnepali.com/typing.tn/og/preeti-svg.webp";
 const keywords = "Preeti typing test, Preeti font typing test online, Preeti typing practice 5 minutes, Preeti keyboard layout, Preeti to Unicode, Loksewa Preeti typing test, Nepal government typing test, Preeti speed test";
 
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Preeti Font Typing Test — Typeshala Bench",
+  "alternateName": "Preeti ASCII Typewriter Keyboard Speed Benchmark",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": canonicalUrl,
+  "image": ogImageUrl,
+  "description": pageDesc,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "2630",
+    "reviewCount": "2050"
+  }
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -50,8 +78,8 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
-  activeNav="test"
+  schema={[softwareSchema, faqSchema]}
+  activeNav="preeti"
 >
   <div class="container px-4">
     

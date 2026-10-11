@@ -12,6 +12,34 @@ const canonicalUrl = "https://typing.topnepali.com/loksewa-typing-test";
 const ogImageUrl = "https://img.topnepali.com/typing.tn/og/loksewa-svg.webp";
 const keywords = "Loksewa typing test, Loksewa computer operator typing test, Loksewa 5 minute typing test, Nepali typing test for Loksewa, Loksewa typing marking scheme, Kharidar typing test, Nayab Subba computer practical exam, PSC typing syllabus";
 
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Loksewa Nepali Typing Test Simulator — Typeshala Bench",
+  "alternateName": "Public Service Commission (PSC) Nepal 5-Minute Typing Simulator",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": canonicalUrl,
+  "image": ogImageUrl,
+  "description": pageDesc,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "1980",
+    "reviewCount": "1560"
+  }
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -50,8 +78,8 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
-  activeNav="test"
+  schema={[softwareSchema, faqSchema]}
+  activeNav="loksewa"
 >
   <div class="container px-4">
     

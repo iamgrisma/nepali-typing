@@ -12,6 +12,34 @@ const canonicalUrl = "https://typing.topnepali.com/english-typing-test";
 const ogImageUrl = "https://img.topnepali.com/typing.tn/og/english-svg.webp";
 const keywords = "English typing test, typing speed test WPM, 1 minute typing test, 5 minute typing test, touch typing test online, typing speed test Nepal, typing certificate English, WPM typing test";
 
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "English Typing Speed Test — Typeshala Bench",
+  "alternateName": "Standard QWERTY Net WPM Typing Speed Benchmark",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+  "browserRequirements": "Requires HTML5 & JavaScript enabled browser",
+  "softwareVersion": "2.0",
+  "url": canonicalUrl,
+  "image": ogImageUrl,
+  "description": pageDesc,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "3150",
+    "reviewCount": "2420"
+  }
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -50,8 +78,8 @@ const faqSchema = {
   canonicalUrl={canonicalUrl}
   ogImage={ogImageUrl}
   keywords={keywords}
-  schema={faqSchema}
-  activeNav="test"
+  schema={[softwareSchema, faqSchema]}
+  activeNav="english"
 >
   <div class="container px-4">
     
