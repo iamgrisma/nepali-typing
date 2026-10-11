@@ -96,22 +96,46 @@ export const ENGLISH_DIFFICULTY_TIERS = {
 
 export { allNepaliTokens as ALL_NEPALI_WORDS, allEnglishTokens as ALL_ENGLISH_WORDS };
 
-let lastUsedStoryIdx = { nepali: -1, english: -1 };
-
 /**
- * Returns a random engaging story or fact set for time-based typing tests
+ * Returns a random engaging story or fact set for time-based typing tests,
+ * guaranteed not to repeat across reloads until the entire catalog is exhausted.
  */
 export function getRandomStory(lang = 'nepali_unicode') {
   const isEng = (lang === 'english');
   const pool = isEng ? ENGLISH_STORIES : NEPALI_STORIES;
-  const key = isEng ? 'english' : 'nepali';
+  const storageKey = isEng ? 'topnepali_seen_stories_en' : 'topnepali_seen_stories_ne';
 
-  let nextIdx = Math.floor(Math.random() * pool.length);
-  if (pool.length > 1 && nextIdx === lastUsedStoryIdx[key]) {
-    nextIdx = (nextIdx + 1) % pool.length;
+  let seenIds = [];
+  try {
+    const raw = sessionStorage.getItem(storageKey);
+    if (raw) seenIds = JSON.parse(raw);
+    if (!Array.isArray(seenIds)) seenIds = [];
+  } catch (e) {
+    seenIds = [];
   }
-  lastUsedStoryIdx[key] = nextIdx;
-  return pool[nextIdx];
+
+  // Filter pool to candidates that have not been seen yet
+  let candidates = pool.filter(s => !seenIds.includes(s.id));
+
+  // If all stories have been seen, recycle the deck and start fresh
+  if (candidates.length === 0) {
+    seenIds = [];
+    candidates = pool;
+  }
+
+  const picked = candidates[Math.floor(Math.random() * candidates.length)] || pool[0];
+
+  seenIds.push(picked.id);
+  // Keep seen buffer up to pool.length - 1 so the last one never repeats immediately
+  if (seenIds.length >= pool.length) {
+    seenIds = [picked.id];
+  }
+
+  try {
+    sessionStorage.setItem(storageKey, JSON.stringify(seenIds));
+  } catch (e) { }
+
+  return picked;
 }
 
 /**

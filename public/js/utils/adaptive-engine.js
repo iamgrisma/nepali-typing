@@ -143,25 +143,60 @@ function buildInvertedIndex(wordList) {
 const englishIndex = buildInvertedIndex(MASTER_ENGLISH_WORDS);
 const nepaliIndex = buildInvertedIndex(MASTER_NEPALI_WORDS);
 
-// Stroke Recording & Profile Analysis
+// Stroke Recording & Profile Analysis (In-Memory Cached & Debounced)
+let cachedStrokeProfile = null;
+let profileSaveTimeout = null;
+
 export function getStrokeProfile() {
+  if (cachedStrokeProfile) return cachedStrokeProfile;
   try {
-    return JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}');
+    cachedStrokeProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}');
   } catch (e) {
-    return {};
+    cachedStrokeProfile = {};
   }
+  return cachedStrokeProfile || {};
 }
 
 export function resetStrokeProfile() {
+  cachedStrokeProfile = {};
+  if (profileSaveTimeout) {
+    clearTimeout(profileSaveTimeout);
+    profileSaveTimeout = null;
+  }
   try {
     localStorage.removeItem(PROFILE_STORAGE_KEY);
   } catch (e) { }
 }
 
+export function flushStrokeProfile() {
+  if (!cachedStrokeProfile) return;
+  if (profileSaveTimeout) {
+    clearTimeout(profileSaveTimeout);
+    profileSaveTimeout = null;
+  }
+  try {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(cachedStrokeProfile));
+  } catch (e) {
+    // Quota safety: prune keys with low sample count
+    try {
+      const keys = Object.keys(cachedStrokeProfile);
+      if (keys.length > 40) {
+        keys.sort((a, b) => (cachedStrokeProfile[a].hits || 0) - (cachedStrokeProfile[b].hits || 0));
+        keys.slice(0, 20).forEach(k => delete cachedStrokeProfile[k]);
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(cachedStrokeProfile));
+      }
+    } catch (e2) { }
+  }
+}
+
 export function recordStrokeData(char, isCorrect, latencyMs = 200) {
   if (!char || char === ' ') return;
+  // Clean single grapheme / character to avoid polluting profile with long word slices
+  const cleanChar = Array.from(char)[0] || char.charAt(0);
+  if (!cleanChar || cleanChar === ' ') return;
+  const c = cleanChar.toLowerCase();
+
   const profile = getStrokeProfile();
-  const c = char.toLowerCase();
 
   if (!profile[c]) {
     profile[c] = { hits: 0, errors: 0, totalLatency: 0, latenciesCount: 0, recent: [] };
@@ -183,9 +218,21 @@ export function recordStrokeData(char, isCorrect, latencyMs = 200) {
     profile[c].recent.shift();
   }
 
-  try {
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-  } catch (e) { }
+  // Debounced write (saves after typing pauses for 2 seconds, eliminating 500+ disk writes per test)
+  if (!profileSaveTimeout) {
+    profileSaveTimeout = setTimeout(() => {
+      profileSaveTimeout = null;
+      flushStrokeProfile();
+    }, 2000);
+  }
+}
+
+// Auto-flush on page unload / hide
+if (typeof window !== 'undefined') {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushStrokeProfile();
+  });
+  window.addEventListener('beforeunload', () => flushStrokeProfile());
 }
 
 export function getWeakKeysAnalysis(lang = 'english', limit = 4) {

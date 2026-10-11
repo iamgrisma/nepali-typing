@@ -1,6 +1,38 @@
 ---
 // Hardware Keyboard Visualizer Component
 // Displays 5 rows of hardware keyboard with real-time keypress sync
+import { KEY_ROWS } from '../../public/js/data/keyboards.js';
+
+interface Props {
+  defaultLang?: string;
+}
+
+const { defaultLang = 'nepali_unicode' } = Astro.props;
+
+function getKeyLabels(k: any, lang: string) {
+  if (k.special || k.shell) return { top: '', main: k.label || k.key, font: 'var(--font-sans)' };
+  if (lang === 'english') {
+    const top = k.eng[1] !== k.eng[0].toUpperCase() ? k.eng[1] : '';
+    return { top, main: k.eng[0], font: 'var(--font-sans)' };
+  }
+  if (lang === 'nepali_romanized') {
+    return { top: k.rom[1], main: k.rom[0], font: 'var(--font-nepali)' };
+  }
+  if (lang === 'nepali_preeti') {
+    return { top: k.pre[0], main: k.pre[2], font: 'var(--font-nepali)' };
+  }
+  // Default traditional
+  return { top: k.uni[1], main: k.uni[0], font: 'var(--font-nepali)' };
+}
+
+const LAYOUT_TITLES: Record<string, { title: string; pill: string }> = {
+  english: { title: 'English QWERTY Layout', pill: 'QWERTY' },
+  nepali_romanized: { title: 'नेपाली रोमन (Romanized) Keyboard Layout', pill: 'MPP ROMANIZED' },
+  nepali_preeti: { title: 'प्रिती (Preeti Typewriter) Keyboard Layout', pill: 'PREETI ASCII' },
+  nepali_unicode: { title: 'नेपाली युनिकोड (Traditional) Keyboard Layout', pill: 'MPP TRADITIONAL' }
+};
+
+const meta = LAYOUT_TITLES[defaultLang] || LAYOUT_TITLES.nepali_unicode;
 ---
 
 <div id="keyboard-visualizer-container" class="w-full transition-all duration-300">
@@ -9,10 +41,10 @@
     <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-[var(--border-subtle)] text-xs">
       <div class="flex items-center gap-2">
         <span class="font-bold text-xs sm:text-sm text-[var(--text-primary)]" id="kb-current-layout-name">
-          नेपाली युनिकोड (Traditional) Keyboard Layout
+          {meta.title}
         </span>
         <span class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400" id="kb-layout-pill">
-          MPP TRADITIONAL
+          {meta.pill}
         </span>
       </div>
 
@@ -22,11 +54,11 @@
           type="button" 
           id="kb-input-mode-btn" 
           class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-          title="Toggle Input Layout between Native Nepali and QWERTY (Shortcut: Alt+Shift)"
+          title="Toggle Input Layout between Native Nepali and QWERTY (Shortcut: Alt+Shift or Shift+Enter)"
         >
           <span id="kb-input-mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
           <span id="kb-input-mode-label">Native Input</span>
-          <span class="text-[10px] px-1 py-0.2 bg-[var(--bg-surface-subtle)] rounded text-[var(--text-muted)] font-mono font-bold">Alt+Shift</span>
+          <span class="text-[10px] px-1 py-0.2 bg-[var(--bg-surface-subtle)] rounded text-[var(--text-muted)] font-mono font-bold">Alt+Shift / Shift+Enter</span>
         </button>
 
         <button 
@@ -41,13 +73,32 @@
       </div>
     </div>
 
-    <!-- 5 Rows Keyboard Matrix Container with tactile keyboard deck -->
-    <div id="keyboard-matrix" class="w-full min-h-[200px] sm:min-h-[225px] flex flex-col gap-1.5 select-none overflow-x-auto p-2 sm:p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-      <div class="kb-row flex gap-1 w-full" data-row="1"></div>
-      <div class="kb-row flex gap-1 w-full" data-row="2"></div>
-      <div class="kb-row flex gap-1 w-full" data-row="3"></div>
-      <div class="kb-row flex gap-1 w-full" data-row="4"></div>
-      <div class="kb-row flex gap-1 w-full justify-center" data-row="5"></div>
+    <!-- 5 Rows Keyboard Matrix Container with tactile keyboard deck pre-rendered in SSR to guarantee 0.00 CLS -->
+    <div id="keyboard-matrix" class="w-full min-h-[225px] sm:min-h-[240px] flex flex-col gap-1.5 select-none overflow-x-auto p-2 sm:p-2.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+      {KEY_ROWS.map((row, rI) => (
+        <div class={`kb-row flex gap-1 w-full ${rI === 4 ? 'justify-center' : ''}`} data-row={rI + 1}>
+          {row.map(k => {
+            const { top, main, font } = getKeyLabels(k, defaultLang);
+            const extraCls = k.shell ? 'special-key shell-key' : (k.special ? 'special-key' : '');
+            return (
+              <div 
+                class={`keycap ${extraCls}`.trim()} 
+                data-code={k.code} 
+                style={`flex: ${k.flex} 1 0%;`}
+              >
+                {(k.shell || k.special) ? (
+                  k.label || k.key
+                ) : (
+                  <>
+                    <span class="keycap-shift-label">{top}</span>
+                    <span class="keycap-main-label" style={`font-family: ${font};`}>{main}</span>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
 
     <!-- Keystroke Detail Helper Bar -->

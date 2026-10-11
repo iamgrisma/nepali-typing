@@ -68,7 +68,7 @@ export const KEY_ROWS = [
     { code: 'KeyB', key: 'b', eng: ['b', 'B'], uni: ['द', 'ौ'], rom: ['ब', 'भ'], pre: ['b', 'B', 'द', 'द्य'], flex: '1' },
     { code: 'KeyN', key: 'n', eng: ['n', 'N'], uni: ['ल', 'द्य'], rom: ['न', 'ण'], pre: ['n', 'N', 'ल', 'ल्'], flex: '1' },
     { code: 'KeyM', key: 'm', eng: ['m', 'M'], uni: ['ः', 'ड्ड'], rom: ['म', 'ं'], pre: ['m', 'M', 'फ', 'ः'], flex: '1' },
-    { code: 'Comma', key: ',', eng: [',', '<'], uni: ['ऽ', 'ङ'], rom: [',', 'ङ'], pre: [',', '<', ',', '?'], flex: '1' },
+    { code: 'Comma', key: ',', eng: [',', '<'], uni: [',', 'ङ'], rom: [',', 'ङ'], pre: [',', '<', ',', '?'], flex: '1' },
     { code: 'Period', key: '.', eng: ['.', '>'], uni: ['।', 'श्र'], rom: ['।', '.'], pre: ['.', '>', '।', 'श्र'], flex: '1' },
     { code: 'Slash', key: '/', eng: ['/', '?'], uni: ['र', 'रु'], rom: ['्', '?'], pre: ['/', '?', 'र', 'रु'], flex: '1' },
     { code: 'ShiftRight', key: 'Shift', flex: '2.75', special: true, label: 'Shift ⇧' }

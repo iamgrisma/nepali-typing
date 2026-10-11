@@ -82,6 +82,11 @@ export const state = {
   freestyleChars: 0,
   freestyleBackspaces: 0,
 
+  // Authoritative Hardware-Sandbox Buffers (Bypasses OS IME / Keyboard Layout bleed)
+  currentWordBuffer: '',
+  authoritativeFreestyleValue: '',
+  authoritativeFreestyleCursor: 0,
+
   // Story & Fact Chaining State
   currentStoryId: null,
   currentStoryTitle: ''

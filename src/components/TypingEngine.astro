@@ -81,7 +81,11 @@ const initialWords = defaultLang === 'english' ? [
     data-default-mode={defaultMode}
     data-default-duration={defaultDuration}
   >
-    <div id="words-container" class="words-stream h-[76px] min-h-[76px] max-h-[76px] text-xl sm:text-2xl leading-[38px] select-none font-medium overflow-hidden">
+    <div 
+      id="words-container" 
+      class="words-stream h-[76px] min-h-[76px] max-h-[76px] text-xl sm:text-2xl leading-[38px] select-none font-medium overflow-hidden"
+      style={`font-family: ${defaultLang === 'nepali_preeti' ? "'Font_preeti', 'Preeti', sans-serif" : (defaultLang === 'english' ? "var(--font-sans)" : "var(--font-nepali)")};`}
+    >
       <!-- Blinking / Sliding Caret -->
       <div id="typing-caret" class="typing-caret hidden"></div>
 

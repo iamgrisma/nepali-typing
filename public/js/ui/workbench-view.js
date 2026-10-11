@@ -11,7 +11,7 @@ export function renderActiveWordHighlight() {
   const inputField = document.getElementById('typing-input');
   if (!curWord || !curWordEl || !inputField) return;
 
-  const typed = inputField.value;
+  const typed = (state.currentWordBuffer !== undefined) ? state.currentWordBuffer : inputField.value;
   const clusters = getGraphemes(curWord, state.lang);
   const charSpans = curWordEl.querySelectorAll('.char-node:not(.is-extra-error)');
 
@@ -88,7 +88,7 @@ export function updateCaret() {
   caret.classList.remove('hidden');
   const cRect = container.getBoundingClientRect();
   const inputField = document.getElementById('typing-input');
-  const typed = inputField ? inputField.value : '';
+  const typed = (state.currentWordBuffer !== undefined) ? state.currentWordBuffer : (inputField ? inputField.value : '');
 
   const charSpans = curWordEl.querySelectorAll('.char-node');
   let targetSpan = null;
@@ -125,13 +125,8 @@ export function computeCurrentStats() {
 
   if (state.mode === 'freestyle') {
     const words = state.freestyleWords || 0;
-    const chars = state.freestyleChars || (state.freestyleText ? state.freestyleText.length : 0);
-    // Standard typing word count: 1 standard word = 5 characters/keystrokes
-    const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : chars / 5;
-    const netWords = Math.max(words, strokeWords);
-    const rawWords = Math.max(words, (state.totalKeystrokes || chars) / 5);
-    const wpm = Math.max(0, Math.round(netWords / m));
-    const rawWpm = Math.max(wpm, Math.round(rawWords / m));
+    const wpm = Math.max(0, Math.round(words / m));
+    const rawWpm = wpm;
     const strokeAcc = state.totalKeystrokes > 0
       ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
       : 100;
@@ -139,28 +134,18 @@ export function computeCurrentStats() {
     return { wpm, rawWpm, acc: strokeAcc, wordAcc, strokeAcc, elapsed };
   }
 
-  // Standard Typing Test Statistics Calculation:
+  // Pure Space-Separated Words (No 5-keystroke assumption)
   // 1. Total Words Submitted = Correct (Clean + Corrected) + Incorrect Words
   const completedWords = state.cleanWords + state.correctedWords;
   const totalSubmittedWords = completedWords + state.incorrectWords;
 
   // 2. Net Words: Total Submitted Words minus Incorrect Words = completedWords
-  // (Fixes the double penalty bug where incorrect words were subtracted twice)
   const netWords = Math.max(0, totalSubmittedWords - state.incorrectWords);
 
-  // 3. Universal / Loksewa Standard Equivalence:
-  // In Nepali typing, Devanagari words average 7-12 keystrokes due to matras, conjuncts, and halants.
-  // Standard typing benchmarks (Loksewa Computer Operator, Monkeytype, 10FastFingers)
-  // define 1 Standard Typing Word = 5 keystrokes (key depressions).
-  const strokeNetWords = state.correctKeystrokes / 5;
-  const strokeRawWords = state.totalKeystrokes / 5;
-
-  // Standard Net Words: whichever is more representative (ensures Nepali typists aren't artificially halved)
-  const effectiveNetWords = Math.max(netWords, strokeNetWords);
-  const effectiveRawWords = Math.max(totalSubmittedWords, strokeRawWords);
-
-  const wpm = Math.max(0, Math.round(effectiveNetWords / m));
-  const rawWpm = Math.max(wpm, Math.round(effectiveRawWords / m));
+  // 3. Pure Literal WPM Calculation:
+  // Each space-separated token ("र", "तर", "उपमहानगरपालिका", "काठमाडौँ") counts as 1 word.
+  const wpm = Math.max(0, Math.round(netWords / m));
+  const rawWpm = Math.max(0, Math.round(totalSubmittedWords / m));
 
   // Two-Level Accuracy Calculations:
   // Level 1: Keystroke / Stroke Accuracy (includes mistypes, backspaces and corrections)

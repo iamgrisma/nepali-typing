@@ -5,7 +5,7 @@
 import { state, playBeep } from './state.js';
 import { getWordsPool, getGraphemes, refillWords } from './words-pool.js';
 import { KEY_CODE_MAP } from '../data/keyboards.js';
-import { getWeakKeysAnalysis, generateAdaptiveWords, calculateTargetGoal } from '../utils/adaptive-engine.js';
+import { getWeakKeysAnalysis, generateAdaptiveWords, calculateTargetGoal, flushStrokeProfile } from '../utils/adaptive-engine.js';
 import { analyzeTypingRun } from '../utils/stroke-analytics.js';
 import { getSpeedRank, checkCertificationPass } from '../utils/certificate-db.js';
 import { renderKeyboard, highlightTargetKey } from '../ui/keyboard-view.js';
@@ -57,11 +57,14 @@ export function setupTest() {
   state.currentWordTotalStrokes = 0;
   state.wordsLog = [];
 
-  // Reset Free Style State
+  // Reset Free Style State & Hardware Sandbox Buffers
   state.freestyleText = '';
   state.freestyleWords = 0;
   state.freestyleChars = 0;
   state.freestyleBackspaces = 0;
+  state.currentWordBuffer = '';
+  state.authoritativeFreestyleValue = '';
+  state.authoritativeFreestyleCursor = 0;
 
   if (state.mode === 'exam') {
     if (state.examType === 'full') {
@@ -167,6 +170,7 @@ export function setupTest() {
 
   if (inputField) {
     inputField.value = '';
+    state.currentWordBuffer = '';
     inputField.removeAttribute('placeholder');
     if (state.lang === 'nepali_preeti') {
       inputField.style.fontFamily = "'Font_preeti', 'Preeti', sans-serif";
@@ -260,7 +264,7 @@ export function setupTestWithWords(words) {
   if (accDisp) accDisp.textContent = '100%';
   if (wordAccDisp) wordAccDisp.textContent = '100%';
   if (strokeAccDisp) strokeAccDisp.textContent = '100%';
-  if (inputField) { inputField.value = ''; inputField.focus(); }
+  if (inputField) { inputField.value = ''; state.currentWordBuffer = ''; inputField.focus(); }
 
   const container = document.getElementById('words-container');
   if (container) {
@@ -734,7 +738,17 @@ export function finishTest() {
         fastestKeys: strokeAnalytics.fastestKeys || []
       }
     });
-    localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
+    const trimmed = hist.slice(0, 50);
+    try {
+      localStorage.setItem('nepali_typing_history', JSON.stringify(trimmed));
+    } catch (quotaErr) {
+      // Auto-prune to 20 records if device storage quota is strained
+      try {
+        localStorage.setItem('nepali_typing_history', JSON.stringify(trimmed.slice(0, 20)));
+      } catch (e2) { }
+    }
+
+    flushStrokeProfile();
     updatePersonalBestsCards();
     updateHeaderTelemetryBadge();
   } catch (e) {
@@ -757,17 +771,16 @@ export function finishFreestyleTest() {
   const words = val.trim().split(/\s+/).filter(Boolean);
   const totalChars = val.length;
 
-  const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : totalChars / 5;
-  const netWords = Math.max(words.length, strokeWords);
-  const rawWords = Math.max(words.length, (state.totalKeystrokes || totalChars) / 5);
+  const netWords = words.length;
+  const rawWords = words.length;
 
   const netWpm = Math.max(0, Math.round(netWords / m));
-  const rawWpm = Math.max(netWpm, Math.round(rawWords / m));
+  const rawWpm = netWpm;
   const strokeAcc = state.totalKeystrokes > 0
     ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
     : 100;
   const wordAcc = 100;
-  const cpm = Math.round(totalChars / m);
+  const cpm = Math.round(state.totalKeystrokes > 0 ? (state.totalKeystrokes - state.freestyleBackspaces) / m : totalChars / m);
 
   const strokeAnalytics = analyzeTypingRun(state.keystrokeLogs, elapsed, netWpm, rawWpm, strokeAcc);
   const rank = getSpeedRank(state.lang, netWpm);

@@ -168,7 +168,7 @@ export function highlightTargetKey() {
   const inputField = document.getElementById('typing-input');
   if (!curWord) return;
 
-  const typed = inputField ? inputField.value : '';
+  const typed = (state.currentWordBuffer !== undefined) ? state.currentWordBuffer : (inputField ? inputField.value : '');
   let targetCh = '';
   if (typed.length < curWord.length) {
     targetCh = curWord[typed.length];

@@ -97,6 +97,12 @@ export function getMappedChar(code, isShift, currentMode, expectedChar = '') {
   }
 
   if (currentMode === 'traditional') {
+    if (code === 'Comma' && !isShift) {
+      return expectedChar === 'ऽ' ? 'ऽ' : ',';
+    }
+    if (code === 'Period' && !isShift && expectedChar === '.') {
+      return '.';
+    }
     return matched.uni ? (isShift ? matched.uni[1] : matched.uni[0]) : '';
   }
 
@@ -131,12 +137,13 @@ export function normalizeLigatures(val) {
 }
 
 export function checkAndHandleAltShift(e) {
-  // Support Alt+Shift, Shift+Alt, Ctrl+Alt, and Ctrl+Shift for website-level switching
+  // Support Alt+Shift, Shift+Alt, Ctrl+Alt, Ctrl+Shift, and Shift+Enter for website-level switching
   const isAltShiftCombo = 
     (e.altKey && (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight')) ||
     (e.shiftKey && (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight')) ||
     (e.ctrlKey && (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight')) ||
-    (e.altKey && (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight'));
+    (e.altKey && (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight')) ||
+    (e.shiftKey && (e.key === 'Enter' || e.code === 'Enter') && state.mode !== 'freestyle');
 
   if (isAltShiftCombo) {
     e.preventDefault();
@@ -200,7 +207,13 @@ export function bindInputEvents() {
 
   inputField?.addEventListener('input', () => {
     if (state.isFinished) return;
-    if (!state.isRunning && inputField.value.length > 0) startTimer();
+    if (!state.isRunning && (inputField.value.length > 0 || (state.currentWordBuffer && state.currentWordBuffer.length > 0))) startTimer();
+
+    // Hardware sandbox barrier: Revert any leaked characters from OS IME / Windows multi-char layouts
+    if (inputField.value !== state.currentWordBuffer) {
+      inputField.value = state.currentWordBuffer || '';
+      inputField.setSelectionRange(inputField.value.length, inputField.value.length);
+    }
 
     // Auto-normalize traditional ligatures
     if (state.lang === 'nepali_unicode' || state.lang === 'nepali_romanized') {
@@ -208,6 +221,7 @@ export function bindInputEvents() {
       const normalized = normalizeLigatures(val);
       if (normalized !== val) {
         inputField.value = normalized;
+        state.currentWordBuffer = normalized;
       }
     }
 
@@ -237,7 +251,7 @@ export function bindInputEvents() {
       if (state.isFinished) return;
       if (!state.isRunning) startTimer();
 
-      const typed = inputField.value.trim();
+      const typed = (state.currentWordBuffer !== undefined ? state.currentWordBuffer : inputField.value).trim();
       if (!curWord) return;
 
       const isCorrect = (typed === curWord);
@@ -300,6 +314,7 @@ export function bindInputEvents() {
       }
 
       state.wordIdx++;
+      state.currentWordBuffer = '';
       inputField.value = '';
 
       // Live adaptive mastery check (Seamless continuation: Do NOT return early!)
@@ -368,21 +383,28 @@ export function bindInputEvents() {
         latencyMs: deltaMs
       });
 
-      if (inputField.value.length > 0) {
-        const curPos = inputField.selectionStart ?? inputField.value.length;
-        if (curPos > 0) {
-          const charToDelete = inputField.value[curPos - 1];
-          const expectedCharToDelete = curWord ? curWord[curPos - 1] : '';
-          if (charToDelete === expectedCharToDelete) {
-            state.correctKeystrokes = Math.max(0, state.correctKeystrokes - 1);
-          } else {
-            state.errorKeystrokes = Math.max(0, state.errorKeystrokes - 1);
-            state.currentWordErrors = Math.max(0, state.currentWordErrors - 1);
-          }
+      const curLen = (state.currentWordBuffer || '').length;
+      if (curLen > 0) {
+        const charToDelete = state.currentWordBuffer[curLen - 1];
+        const expectedCharToDelete = curWord ? curWord[curLen - 1] : '';
+        if (charToDelete === expectedCharToDelete) {
+          state.correctKeystrokes = Math.max(0, state.correctKeystrokes - 1);
+        } else {
+          state.errorKeystrokes = Math.max(0, state.errorKeystrokes - 1);
+          state.currentWordErrors = Math.max(0, state.currentWordErrors - 1);
         }
+
+        state.currentWordBuffer = state.currentWordBuffer.slice(0, -1);
+        inputField.value = state.currentWordBuffer;
+        inputField.setSelectionRange(state.currentWordBuffer.length, state.currentWordBuffer.length);
+        renderActiveWordHighlight();
+        highlightTargetKey();
+        updateCaret();
+        updateLiveStats();
+        return;
       }
 
-      if (inputField.value.length === 0 && state.wordIdx > 0) {
+      if (curLen === 0 && state.wordIdx > 0) {
         e.preventDefault();
 
         // Revert last word record from stats
@@ -415,7 +437,9 @@ export function bindInputEvents() {
           prevWordEl.classList.add('is-active-word');
         }
 
-        inputField.value = state.typedWords[state.wordIdx] || '';
+        state.currentWordBuffer = state.typedWords[state.wordIdx] || '';
+        inputField.value = state.currentWordBuffer;
+        inputField.setSelectionRange(state.currentWordBuffer.length, state.currentWordBuffer.length);
 
         adjust2LineScroll();
         renderActiveWordHighlight();
@@ -449,7 +473,7 @@ export function bindInputEvents() {
         if (state.isFinished) return;
         if (!state.isRunning) startTimer();
 
-        const curPos = inputField.selectionStart ?? inputField.value.length;
+        const curPos = (state.currentWordBuffer || '').length;
         const expectedChar = curWord ? (curWord[curPos] || '') : '';
         const currentMode = state.activeInputMode;
         const isShift = (e.shiftKey || state.isShift);
@@ -481,19 +505,17 @@ export function bindInputEvents() {
         });
         recordStrokeData(expectedSlice || expectedChar || ch, isCharCorrect, deltaMs);
 
-        const start = inputField.selectionStart ?? inputField.value.length;
-        const end = inputField.selectionEnd ?? inputField.value.length;
-        inputField.setRangeText(ch, start, end, 'end');
-
+        state.currentWordBuffer = (state.currentWordBuffer || '') + ch;
         if (currentMode === 'traditional' || currentMode === 'romanized') {
-          const val = inputField.value;
-          const norm = normalizeLigatures(val);
-          if (norm !== val) {
-            inputField.value = norm;
-          }
+          state.currentWordBuffer = normalizeLigatures(state.currentWordBuffer);
         }
+        inputField.value = state.currentWordBuffer;
+        inputField.setSelectionRange(state.currentWordBuffer.length, state.currentWordBuffer.length);
 
-        inputField.dispatchEvent(new Event('input'));
+        renderActiveWordHighlight();
+        highlightTargetKey();
+        updateCaret();
+        updateLiveStats();
         return;
       }
     }
@@ -513,10 +535,16 @@ export function bindInputEvents() {
     const words = val.trim().split(/\s+/).filter(Boolean);
     state.freestyleWords = words.length;
 
+    // Strip any leaked Devanagari characters if running in English mode
+    if (state.lang === 'english') {
+      if (/[\u0900-\u097F]/.test(freestyleInput.value)) {
+        freestyleInput.value = freestyleInput.value.replace(/[\u0900-\u097F]/g, '');
+      }
+    }
+
     const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
     const m = elapsed / 60;
-    const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : val.length / 5;
-    const currentWpm = Math.max(0, Math.round(Math.max(words.length, strokeWords) / m));
+    const currentWpm = Math.max(0, Math.round(words.length / m));
 
     const fWordEl = document.getElementById('freestyle-word-count');
     const fCharEl = document.getElementById('freestyle-char-count');
@@ -614,18 +642,64 @@ export function bindInputEvents() {
           }
         }
 
+        // Hardware sandbox snapshot
+        state.authoritativeFreestyleValue = freestyleInput.value;
+        state.authoritativeFreestyleCursor = freestyleInput.selectionEnd;
+
         freestyleInput.dispatchEvent(new Event('input'));
         return;
       }
     }
   });
 
+  // Intercept beforeinput to block OS/IME text from bypassing keydown.preventDefault()
+  const blockNativeInsert = (e) => {
+    if (e.inputType && (e.inputType.startsWith('insert') || e.inputType === 'insertCompositionText')) {
+      if (e.cancelable) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  };
+  inputField?.addEventListener('beforeinput', blockNativeInsert);
+  freestyleInput?.addEventListener('beforeinput', blockNativeInsert);
+
   // Block native IME composition events so device language doesn't hijack sandbox
-  inputField?.addEventListener('compositionstart', (e) => {
-    e.preventDefault();
+  const cancelComposition = (e) => {
+    if (e.cancelable) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  inputField?.addEventListener('compositionstart', cancelComposition);
+  inputField?.addEventListener('compositionupdate', cancelComposition);
+  inputField?.addEventListener('compositionend', (e) => {
+    if (e.cancelable) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (inputField.value !== state.currentWordBuffer) {
+      inputField.value = state.currentWordBuffer || '';
+      inputField.setSelectionRange(inputField.value.length, inputField.value.length);
+      renderActiveWordHighlight();
+      updateCaret();
+    }
   });
-  freestyleInput?.addEventListener('compositionstart', (e) => {
-    e.preventDefault();
+
+  freestyleInput?.addEventListener('compositionstart', cancelComposition);
+  freestyleInput?.addEventListener('compositionupdate', cancelComposition);
+  freestyleInput?.addEventListener('compositionend', (e) => {
+    if (e.cancelable) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (state.lang === 'english') {
+      if (/[\u0900-\u097F]/.test(freestyleInput.value)) {
+        freestyleInput.value = freestyleInput.value.replace(/[\u0900-\u097F]/g, '');
+        freestyleInput.dispatchEvent(new Event('input'));
+      }
+    }
   });
 
   finishFreestyleBtn?.addEventListener('click', () => {
