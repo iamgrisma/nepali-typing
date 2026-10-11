@@ -40,8 +40,13 @@ export function getGraphemes(text, lang) {
 export function getWordsPool() {
   let list = [];
 
-  // 1. EXAM MODE: Balen Shah's historic UN General Assembly address
-  if (state.mode === 'exam') {
+  const isLoksewaBench = typeof window !== 'undefined' && (
+    window.location.pathname.includes('loksewa') ||
+    document.title.toLowerCase().includes('loksewa')
+  );
+
+  // 1. EXAM MODE / LOKSEWA BENCH: Official civic, administrative & parliamentary address
+  if (state.mode === 'exam' || isLoksewaBench) {
     const isEng = (state.lang === 'english');
     const text = isEng ? EXAM_SPEECH_ENGLISH : EXAM_SPEECH_NEPALI;
     list = text.split(/\s+/).filter(Boolean);

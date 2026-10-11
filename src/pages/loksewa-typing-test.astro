@@ -114,38 +114,92 @@ const faqSchema = {
         <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
           <div class="flex items-center gap-2 mb-2">
             <svg class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <h3 class="font-bold text-sm text-[var(--text-primary)]">300 Seconds (5 Min) Duration</h3>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">300 Seconds (5 Min) Module</h3>
           </div>
           <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
-            Exactly replicates the standard 5-minute timed exam window stipulated in Loksewa Aayog computer practical syllabus.
+            Exactly replicates the standard 5-minute timed examination window stipulated in Loksewa Aayog (PSC) computer practical syllabus.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
           <div class="flex items-center gap-2 mb-2">
             <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <h3 class="font-bold text-sm text-[var(--text-primary)]">Minimum Net Speed: >20 WPM</h3>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Pass Threshold: &ge; 20 Net WPM</h3>
           </div>
           <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
-            You must type at least 100 net correct words in 5 minutes (average &ge; 21 WPM) with &ge; 85% accuracy to qualify.
+            Candidates must type at least 100 net correct words in 5 minutes (average &ge; 20 Net WPM) with &ge; 85% accuracy to qualify for final selection.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
           <div class="flex items-center gap-2 mb-2">
             <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <h3 class="font-bold text-sm text-[var(--text-primary)]">UN & Civic Corpora</h3>
+            <h3 class="font-bold text-sm text-[var(--text-primary)]">Civic Examination Corpora</h3>
           </div>
           <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
-            Practice with official civic, administrative, and parliamentary texts including Mayor Balen Shah's historic UN General Assembly address.
+            Practice with authentic administrative, constitutional, and civic governance passages designed to match real exam hall test papers.
           </p>
         </div>
       </div>
 
+      <!-- Syllabus & Posts Breakdown Table -->
+      <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
+          Public Service Commission (Loksewa Aayog) Practical Examination Syllabus
+        </h2>
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+          The computer practical examination is conducted in stage two for administrative and technical appointments. Below is the official syllabus and speed allocation across public posts:
+        </p>
+
+        <div class="overflow-x-auto text-xs">
+          <table class="w-full border-collapse border border-[var(--border-subtle)] text-left">
+            <thead>
+              <tr class="bg-[var(--bg-surface-subtle)] text-[var(--text-primary)] font-bold">
+                <th class="p-3 border border-[var(--border-subtle)]">Exam / Post</th>
+                <th class="p-3 border border-[var(--border-subtle)]">Service Level</th>
+                <th class="p-3 border border-[var(--border-subtle)]">Nepali Speed (5 Min)</th>
+                <th class="p-3 border border-[var(--border-subtle)]">English Speed (5 Min)</th>
+                <th class="p-3 border border-[var(--border-subtle)]">Marking Weight</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--border-subtle)] text-[var(--text-secondary)]">
+              <tr>
+                <td class="p-3 border border-[var(--border-subtle)] font-semibold text-[var(--text-primary)]">Computer Operator (कम्प्युटर अपरेटर)</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Non-Gazetted 1st / 5th Level</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 20 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 25 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">5 Marks (Nepali) + 5 Marks (English)</td>
+              </tr>
+              <tr>
+                <td class="p-3 border border-[var(--border-subtle)] font-semibold text-[var(--text-primary)]">Assistant Computer Operator (सहायक कम्प्युटर अपरेटर)</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Non-Gazetted 2nd / 4th Level</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 18–20 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 22–25 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Practical Paper Component</td>
+              </tr>
+              <tr>
+                <td class="p-3 border border-[var(--border-subtle)] font-semibold text-[var(--text-primary)]">Kharidar & Nayab Subba (खरिदार / नायब सुब्बा)</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Administration / Judiciary</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 15–20 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 20 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Computer Skill Test (Pass Required)</td>
+              </tr>
+              <tr>
+                <td class="p-3 border border-[var(--border-subtle)] font-semibold text-[var(--text-primary)]">Public Banks (RBB, NBL, ADBL, NRB)</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Assistant / Officer Level</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 20 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">&ge; 25 Net WPM</td>
+                <td class="p-3 border border-[var(--border-subtle)]">Practical Interview Qualification</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
       <!-- Loksewa Evaluation Formula & Marking Breakdown -->
       <article class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
         <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
-          Public Service Commission (Loksewa) Typing Test Protocol & Marking System
+          Public Service Commission Typing Marking System & Error Penalty Formula
         </h2>
         
         <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
@@ -156,20 +210,22 @@ const faqSchema = {
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
             <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Official Marking Formula</h3>
             <div class="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[11px] mb-3">
-              Net Words = Total Words Typed - (Errors &times; Penalty)<br />
-              Net Speed (WPM) = Net Words / 5 Minutes
+              Net Words = Gross Words Typed - (Errors &times; Penalty Factor)<br />
+              Net Speed (WPM) = Net Words / 5 Minutes<br />
+              Accuracy (%) = (Net Words / Gross Words Typed) &times; 100
             </div>
             <p class="text-[var(--text-secondary)] leading-relaxed">
-              If a candidate types 150 words with 10 uncorrected errors, their Net Words drop to 140, yielding a Net Speed of 28 WPM (Pass). However, excessive errors can easily drop an otherwise fast typist below the 20 WPM threshold.
+              If a candidate types 130 words with 10 uncorrected errors in 5 minutes, their Net Words drop to 120, yielding <strong>24 Net WPM</strong> (Pass). However, if an over-eager typist attempts 150 words but commits 35 uncorrected errors, their Net Words plunge to 115, lowering their speed to <strong>19 Net WPM</strong> and resulting in disqualification.
             </p>
           </div>
 
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Exam Day Strategies</h3>
+            <h3 class="font-bold text-sm text-[var(--text-primary)] mb-2.5">Exam Day Hall Strategies</h3>
             <ul class="space-y-2 text-[var(--text-secondary)]">
-              <li><strong>Prioritize Accuracy:</strong> Rushing leads to compounding errors that take twice as long to backspace and correct.</li>
-              <li><strong>Watch Punctuation:</strong> Ensure Devanagari full stops (।), commas (,), and hyphens match the source passage exactly.</li>
-              <li><strong>Keep Rythm Steady:</strong> Avoid sprinting during easy words and hesitating on difficult conjuncts. Maintain an even metronome cadence.</li>
+              <li><strong>Prioritize Accuracy Over Blind Speed:</strong> Rushing leads to compounding errors that cost valuable marks and break typing rhythm.</li>
+              <li><strong>Physical Keyboard Inspection:</strong> Test key travel during the 2-minute warmup. Confirm the Space bar, Backslash (\), and Shift keys respond smoothly.</li>
+              <li><strong>Watch Punctuation Closely:</strong> Ensure Devanagari full stops (।), commas (,), and hyphens match the printed question paper accurately.</li>
+              <li><strong>Maintain Pacing Cadence:</strong> Avoid sprinting through easy words and freezing on complex conjuncts. A consistent 22-25 WPM rhythm easily secures full marks.</li>
             </ul>
           </div>
         </div>
@@ -178,21 +234,35 @@ const faqSchema = {
       <!-- FAQ Section -->
       <section class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
         <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-4">
-          Frequently Asked Questions (FAQ)
+          Loksewa Practical Typing Exam FAQs
         </h2>
         
         <div class="space-y-4 text-xs sm:text-sm">
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I take the official certification test on this site?</h3>
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">What is the minimum passing score in the Loksewa typing test?</h3>
             <p class="text-[var(--text-secondary)] leading-relaxed">
-              Yes, navigate to our <a href="/test" class="text-purple-600 dark:text-purple-400 hover:underline">Certification Exam</a> page to take the standardized UN speech test and obtain a permanent, verifiable digital certificate.
+              Candidates must obtain at least 20 Net WPM in Nepali typing and 25 Net WPM in English typing with a minimum of 85% accuracy. Scoring below 20 Net WPM in Nepali leads to automatic disqualification in the computer practical phase.
             </p>
           </div>
 
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How can I switch to 5-minute Preeti mode for Loksewa?</h3>
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Which keyboard layout is provided in Loksewa examination halls?</h3>
             <p class="text-[var(--text-secondary)] leading-relaxed">
-              Click the "Preeti (ASCII)" tab in the toolbar above, or visit our dedicated <a href="/preeti-typing-test" class="text-purple-600 dark:text-purple-400 hover:underline">Preeti Font Typing Test</a> page.
+              Most examination centers designate standard Nepali Unicode Traditional layout on Windows desktop terminals. Some centers also support Preeti font based on the specific advertisement syllabus. Candidates can practice both modes on Typeshala Bench.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I also practice English typing for Loksewa here?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes, navigate to our dedicated <a href="/english-typing-test" class="text-purple-600 dark:text-purple-400 font-bold hover:underline">English Typing Speed Test</a> to practice the 5-minute English module (&ge; 25 WPM) required by the Public Service Commission.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">How does the 300-second timer on this page simulate the real test?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              The 300-second countdown replicates the uninterrupted 5-minute test window. Live WPM, gross strokes, uncorrected errors, and Net WPM are computed dynamically, simulating real PSC examination scoring upon test completion.
             </p>
           </div>
         </div>

@@ -88,6 +88,18 @@ export function bindToolbarEvents() {
     });
   });
 
+  // Sync initial active state on time-btn matching state.duration
+  document.querySelectorAll('.time-btn[data-seconds]').forEach(b => {
+    const s = parseInt(b.dataset.seconds, 10);
+    if (s === state.duration) {
+      b.classList.add('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      b.classList.remove('text-[var(--text-muted)]');
+    } else {
+      b.classList.remove('active', 'bg-[var(--bg-surface)]', 'font-bold', 'text-[var(--accent-primary)]');
+      b.classList.add('text-[var(--text-muted)]');
+    }
+  });
+
   // --- In-App Custom Input Modal for Time & Word Count ---
   let customModalMode = 'time'; // 'time' | 'words'
   let customTimeUnit = 'seconds'; // 'seconds' | 'minutes'
@@ -533,11 +545,36 @@ export function bindToolbarEvents() {
     }
   });
 
-  // Sound toggle
-  document.getElementById('sound-toggle-btn')?.addEventListener('click', () => {
+  // Sound toggle with localStorage persistence
+  const soundBtn = document.getElementById('sound-toggle-btn');
+  const soundIconOn = document.getElementById('sound-icon-on');
+  const soundIconOff = document.getElementById('sound-icon-off');
+  const soundToggleTxt = document.getElementById('sound-toggle-text');
+
+  // Load user sound preference from localStorage (defaults to true)
+  const storedSound = localStorage.getItem('typeshala_sound');
+  if (storedSound !== null) {
+    state.sound = (storedSound === '1');
+  }
+  if (soundIconOn && soundIconOff) {
+    soundIconOn.classList.toggle('hidden', !state.sound);
+    soundIconOff.classList.toggle('hidden', state.sound);
+  }
+  if (soundToggleTxt) {
+    soundToggleTxt.textContent = state.sound ? 'Sound' : 'Mute';
+  }
+
+  soundBtn?.addEventListener('click', () => {
     state.sound = !state.sound;
-    document.getElementById('sound-icon-on')?.classList.toggle('hidden', !state.sound);
-    document.getElementById('sound-icon-off')?.classList.toggle('hidden', state.sound);
+    localStorage.setItem('typeshala_sound', state.sound ? '1' : '0');
+    if (soundIconOn && soundIconOff) {
+      soundIconOn.classList.toggle('hidden', !state.sound);
+      soundIconOff.classList.toggle('hidden', state.sound);
+    }
+    if (soundToggleTxt) {
+      soundToggleTxt.textContent = state.sound ? 'Sound' : 'Mute';
+    }
+    soundBtn.classList.toggle('bg-[var(--bg-surface-subtle)]', state.sound);
   });
 
   // Toggle Keyboard Visualizer

@@ -371,6 +371,7 @@ export function bindInputEvents() {
 
     // BACKSPACE SUPPORT
     if (e.key === 'Backspace') {
+      playBeep(420, 'triangle', 0.02, 0.03);
       state.currentWordBackspaces++;
       state.totalKeystrokes++;
 
@@ -488,8 +489,10 @@ export function bindInputEvents() {
 
         state.totalKeystrokes++;
         if (isCharCorrect) {
+          playBeep(620, 'sine', 0.02, 0.03);
           state.correctKeystrokes++;
         } else {
+          playBeep(180, 'sawtooth', 0.05, 0.06);
           state.errorKeystrokes++;
           state.currentWordErrors++;
           state.errorMap[expectedSlice || expectedChar || ch] = (state.errorMap[expectedSlice || expectedChar || ch] || 0) + 1;
