@@ -195,6 +195,13 @@ export function refillWords() {
   } else if (state.mode === 'words') {
     // Additional words matching chosen logical difficulty
     extra = getRandomWordsByDifficulty(state.lang, state.difficulty, 40);
+  } else if (state.mode === 'adaptive') {
+    // Dynamically replenish targeted adaptive words/sentences
+    extra = generateAdaptiveWords({
+      lang: state.lang,
+      targetKeys: state.targetWeakKeys,
+      targetCount: 30
+    });
   } else {
     // Fallback to random difficulty words
     extra = getRandomWordsByDifficulty(state.lang, state.difficulty, 40);

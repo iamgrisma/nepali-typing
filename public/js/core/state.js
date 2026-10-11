@@ -2,8 +2,38 @@
  * TopNepali Typing PRO — Global Application State & Audio Feedback
  */
 
+export function getActiveInputMode(st = state) {
+  if (!st || st.lang === 'english') {
+    return 'qwerty';
+  }
+  if (st.isQwertyPassthrough) {
+    return 'qwerty';
+  }
+  if (st.lang === 'nepali_unicode') {
+    return 'traditional';
+  }
+  if (st.lang === 'nepali_romanized') {
+    return 'romanized';
+  }
+  if (st.lang === 'nepali_preeti') {
+    return 'preeti';
+  }
+  return 'qwerty';
+}
+
 export const state = {
   lang: 'nepali_unicode',
+  isQwertyPassthrough: false,
+  get activeInputMode() {
+    return getActiveInputMode(this);
+  },
+  set activeInputMode(val) {
+    if (val === 'qwerty') {
+      this.isQwertyPassthrough = true;
+    } else {
+      this.isQwertyPassthrough = false;
+    }
+  },
   mode: 'time',
   difficulty: 'medium',
   duration: 60,

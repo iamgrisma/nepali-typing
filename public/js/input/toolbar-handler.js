@@ -52,17 +52,6 @@ export function bindToolbarEvents() {
       if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive' || state.mode === 'freestyle');
       if (freestyleOpts) freestyleOpts.classList.toggle('hidden', state.mode !== 'freestyle');
 
-      if (state.mode === 'freestyle') {
-        state.lang = 'english';
-        document.querySelectorAll('.lang-tab-btn').forEach(b => {
-          const isTarget = b.dataset.lang === 'english';
-          b.classList.toggle('active', isTarget);
-          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
-          b.classList.toggle('text-[var(--accent-primary)]', isTarget);
-          b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
-        });
-      }
-
       setupTest();
     });
   });
@@ -459,16 +448,6 @@ export function bindToolbarEvents() {
       if (diffOpts) diffOpts.classList.toggle('hidden', state.mode === 'exam' || state.mode === 'adaptive' || state.mode === 'freestyle');
       if (freestyleOpts) freestyleOpts.classList.toggle('hidden', state.mode !== 'freestyle');
 
-      if (state.mode === 'freestyle') {
-        state.lang = 'english';
-        document.querySelectorAll('.lang-tab-btn').forEach(b => {
-          const isTarget = b.dataset.lang === 'english';
-          b.classList.toggle('active', isTarget);
-          b.classList.toggle('bg-[var(--bg-surface)]', isTarget);
-          b.classList.toggle('text-[var(--accent-primary)]', isTarget);
-          b.classList.toggle('text-[var(--text-secondary)]', !isTarget);
-        });
-      }
 
       if (qExam && ['full', '5m', '10m'].includes(qExam)) {
         state.examType = qExam;

@@ -212,6 +212,37 @@ const PREETI_FULL_CONS = '(?:k\\|m|k\\||km|Qm|qm|em|If|if|6«|7«|8«|9«|6\\||7
 const PREETI_MATRAS = '[fL\\]}\'\"\\[+FM]';
 
 /**
+ * Strips or converts characters that cannot be physically typed on a standard US keyboard in Preeti mode.
+ */
+export function sanitizePreetiText(text) {
+  if (!text) return '';
+  return text
+    .replace(/[‘]/g, "'")
+    .replace(/[’]/g, "'")
+    .replace(/[“]/g, '"')
+    .replace(/[”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/[…]/g, '.')
+    .replace(/¡/g, '1\\')
+    .replace(/¢/g, 'b\\3')
+    .replace(/£/g, '3\\')
+    .replace(/ª/g, '+')
+    .replace(/‰/g, 'em\\')
+    .replace(/´/g, 'em')
+    .replace(/ˆ/g, 'km\\')
+    .replace(/[ç˜‹›Þ°•§å¿ÝßÅÎÍË„]/g, '')
+    .replace(/[\u0900-\u097F]/g, '') // remove unconvertible Devanagari Unicode
+    .replace(/[^\x20-\x7E]/g, ''); // keep only printable standard keyboard ASCII
+}
+
+export function sanitizePreetiWords(words) {
+  if (!Array.isArray(words)) return [];
+  return words
+    .map(w => sanitizePreetiText(w))
+    .filter(w => w.trim().length > 0);
+}
+
+/**
  * Converts standard Unicode Devanagari text to Preeti ASCII characters.
  */
 export function toPreeti(text) {
@@ -234,7 +265,8 @@ export function toPreeti(text) {
     s = s.replaceAll(u, p);
   }
 
-  return s;
+  // Step 4: Ensure every character is typable from standard US keyboard
+  return sanitizePreetiText(s);
 }
 
 /**

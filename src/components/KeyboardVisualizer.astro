@@ -20,6 +20,17 @@
       <div class="flex items-center gap-2">
         <button 
           type="button" 
+          id="kb-input-mode-btn" 
+          class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+          title="Toggle Input Layout between Native Nepali and QWERTY (Shortcut: Alt+Shift)"
+        >
+          <span id="kb-input-mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          <span id="kb-input-mode-label">Native Input</span>
+          <span class="text-[10px] px-1 py-0.2 bg-[var(--bg-surface-subtle)] rounded text-[var(--text-muted)] font-mono font-bold">Alt+Shift</span>
+        </button>
+
+        <button 
+          type="button" 
           id="kb-shift-toggle" 
           class="px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] font-mono flex items-center gap-1.5 text-xs font-bold transition-all shadow-xs cursor-pointer"
           title="Toggle Shift Layer (Shift Key)"

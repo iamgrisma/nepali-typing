@@ -126,6 +126,23 @@ export function setupTest() {
     }
     if (freestyleInput) {
       freestyleInput.value = '';
+      if (state.lang === 'nepali_preeti') {
+        freestyleInput.style.fontFamily = 'Preeti, sans-serif';
+        freestyleInput.style.fontSize = '1.35rem';
+        freestyleInput.placeholder = 'यहाँ प्रीति फन्टमा जे पनि स्वतन्त्र रूपमा टाइप गर्नुहोस्... (Unrestricted Preeti typing)';
+      } else if (state.lang === 'nepali_unicode') {
+        freestyleInput.style.fontFamily = 'inherit';
+        freestyleInput.style.fontSize = '1.2rem';
+        freestyleInput.placeholder = 'यहाँ नेपाली युनिकोड (ट्रेडिसनल) मा जे पनि स्वतन्त्र रूपमा टाइप गर्नुहोस्... (Alt+Shift थिचेर संकेत : , ( ) आदि)';
+      } else if (state.lang === 'nepali_romanized') {
+        freestyleInput.style.fontFamily = 'inherit';
+        freestyleInput.style.fontSize = '1.2rem';
+        freestyleInput.placeholder = 'यहाँ नेपाली युनिकोड (रोमनाइज्ड) मा जे पनि स्वतन्त्र रूपमा टाइप गर्नुहोस्... (Alt+Shift थिचेर संकेत : , ( ) आदि)';
+      } else {
+        freestyleInput.style.fontFamily = 'inherit';
+        freestyleInput.style.fontSize = '1.2rem';
+        freestyleInput.placeholder = 'Start typing anything freely in English... practice writing thoughts, journaling, or test raw velocity.';
+      }
       freestyleInput.focus();
     }
     const fWordEl = document.getElementById('freestyle-word-count');
@@ -136,7 +153,6 @@ export function setupTest() {
     if (fBurstEl) fBurstEl.textContent = '0 WPM';
 
     renderKeyboard();
-    updatePersonalBestsCards();
     return;
   } else {
     if (typingWorkbench) typingWorkbench.classList.remove('hidden');
@@ -218,6 +234,17 @@ export function setupTestWithWords(words) {
   // Use provided words
   state.words = [...words];
 
+  // Reset hardware input mode to natural mode of selected language bench
+  if (state.lang === 'nepali_unicode') {
+    state.activeInputMode = 'traditional';
+  } else if (state.lang === 'nepali_romanized') {
+    state.activeInputMode = 'romanized';
+  } else if (state.lang === 'nepali_preeti') {
+    state.activeInputMode = 'preeti';
+  } else {
+    state.activeInputMode = 'qwerty';
+  }
+
   const timerDisp = document.getElementById('live-timer-display');
   const progDisp = document.getElementById('live-progress-display');
   const wpmDisp = document.getElementById('live-wpm-display');
@@ -274,7 +301,7 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
 
   const targetTags = document.getElementById('adaptive-target-tags');
   if (targetTags) {
-    targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🎉 Key '${masteredKey.toUpperCase()}' Mastered (${achievedAcc}%)!</span>`;
+    targetTags.innerHTML = `<span class="text-emerald-400 font-bold animate-pulse">🎉 Key '${masteredKey.toUpperCase()}' Mastered (${achievedAcc}%)!</span>`;
   }
 
   // Flash the target keycap green if visible
@@ -292,28 +319,24 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
     }
   }
 
-  // After a brief celebratory moment, advance to the next weakest key
-  setTimeout(() => {
-    isMasteryTransitioning = false;
-    if (state.mode !== 'adaptive') return;
+  // Advance to next weakest key without interrupting the active typing session
+  const analysis = getWeakKeysAnalysis(state.lang, 4);
+  const remaining = analysis.keys.filter(k => k.char.toLowerCase() !== masteredKey.toLowerCase());
 
-    const analysis = getWeakKeysAnalysis(state.lang, 4);
-    // Find next key with highest error ratio that is not the just-mastered key
-    const remaining = analysis.keys.filter(k => k.char.toLowerCase() !== masteredKey.toLowerCase());
+  if (remaining.length > 0) {
+    const nextWeak = remaining[0];
+    const secondWeak = remaining[1] || null;
+    state.adaptivePrimaryTarget = nextWeak.char;
+    state.adaptiveSecondaryTarget = secondWeak ? secondWeak.char : '';
+    state.targetWeakKeys = [nextWeak.char, ...(secondWeak ? [secondWeak.char] : [])];
 
-    if (remaining.length > 0) {
-      const nextWeak = remaining[0];
-      const secondWeak = remaining[1] || null;
-      state.adaptivePrimaryTarget = nextWeak.char;
-      state.adaptiveSecondaryTarget = secondWeak ? secondWeak.char : '';
-      state.targetWeakKeys = [nextWeak.char, ...(secondWeak ? [secondWeak.char] : [])];
+    const goal = calculateTargetGoal(nextWeak.accuracy);
+    state.adaptiveTargetGoal = goal;
 
-      const goal = calculateTargetGoal(nextWeak.accuracy);
-      state.adaptiveTargetGoal = goal;
+    const badgeLabel = nextWeak.accuracy >= 95 ? 'Perfection' : (nextWeak.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
+    const badgeColor = nextWeak.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (nextWeak.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
 
-      const badgeLabel = nextWeak.accuracy >= 95 ? 'Perfection' : (nextWeak.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
-      const badgeColor = nextWeak.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (nextWeak.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
-
+    setTimeout(() => {
       if (targetTags) {
         targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${nextWeak.char}</b> (Current: ${nextWeak.accuracy}% ➔ Goal: ${goal}%)`;
       }
@@ -323,49 +346,67 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
       if (accDisp) accDisp.textContent = `${nextWeak.accuracy}%`;
       if (goalDisp) goalDisp.textContent = `${goal}%`;
       if (nextDisp) nextDisp.textContent = secondWeak ? secondWeak.char.toUpperCase() : 'None';
+    }, 1200);
 
-      // Generate new drill words targeting the new weak key
-      const newWords = generateAdaptiveWords({
-        lang: state.lang,
-        targetKeys: state.targetWeakKeys,
-        targetCount: 35
-      });
-      state.words = newWords;
-      state.wordIdx = 0;
-      state.typedWords = [];
-
-      // Re-populate words container
-      const container = document.getElementById('words-container');
-      const inputField = document.getElementById('typing-input');
-      if (inputField) inputField.value = '';
-
-      if (container) {
-        container.innerHTML = '';
-        const caretDiv = document.createElement('div');
-        caretDiv.id = 'typing-caret';
-        caretDiv.className = 'typing-caret';
-        container.appendChild(caretDiv);
-
-        state.words.forEach((w, wI) => {
-          const wSpan = document.createElement('span');
-          wSpan.className = 'word-node' + (wI === 0 ? ' is-active-word' : '');
-          wSpan.dataset.wordIndex = `${wI}`;
-          const clusters = getGraphemes(w, state.lang);
-          wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
-          container.appendChild(wSpan);
-        });
-        container.scrollTop = 0;
+    // SEAMLESS BUFFER RETARGETING:
+    // Keep ongoing sentence and at least the next 5 words completely untouched.
+    const curIdx = state.wordIdx;
+    let sentenceEndIdx = -1;
+    for (let i = curIdx; i < Math.min(curIdx + 15, state.words.length); i++) {
+      const w = state.words[i] || '';
+      if (/[।\.?!]/.test(w)) {
+        sentenceEndIdx = i;
+        break;
       }
-      highlightTargetKey();
-      updateCaret();
-    } else {
-      if (targetTags) {
-        targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🏆 All weak keys mastered (>90%)! Great work!</span>`;
-      }
-      const metaPill = document.getElementById('adaptive-meta-pill');
-      if (metaPill) metaPill.classList.add('hidden');
     }
-  }, 1200);
+
+    const safeIdx = Math.max(curIdx + 5, sentenceEndIdx !== -1 ? sentenceEndIdx + 1 : curIdx + 5);
+
+    // Generate new words for the new target key
+    const newWords = generateAdaptiveWords({
+      lang: state.lang,
+      targetKeys: state.targetWeakKeys,
+      targetCount: 35
+    });
+
+    // Splice in newWords silently after safeIdx
+    state.words = [...state.words.slice(0, safeIdx), ...newWords];
+
+    // Silently remove DOM word nodes at and beyond safeIdx, then append new ones
+    const container = document.getElementById('words-container');
+    if (container) {
+      const existingSpans = container.querySelectorAll('.word-node');
+      existingSpans.forEach(span => {
+        const idx = parseInt(span.dataset.wordIndex, 10);
+        if (idx >= safeIdx) {
+          span.remove();
+        }
+      });
+
+      newWords.forEach((w, offset) => {
+        const wIdx = safeIdx + offset;
+        const wSpan = document.createElement('span');
+        wSpan.className = 'word-node';
+        wSpan.dataset.wordIndex = `${wIdx}`;
+        const clusters = getGraphemes(w, state.lang);
+        wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
+        container.appendChild(wSpan);
+      });
+    }
+
+    setTimeout(() => {
+      isMasteryTransitioning = false;
+    }, 800);
+  } else {
+    if (targetTags) {
+      targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🏆 All weak keys mastered (>90%)! Great work!</span>`;
+    }
+    const metaPill = document.getElementById('adaptive-meta-pill');
+    if (metaPill) metaPill.classList.add('hidden');
+    setTimeout(() => {
+      isMasteryTransitioning = false;
+    }, 800);
+  }
 }
 
 export function startTimer() {
@@ -713,17 +754,22 @@ export function finishFreestyleTest() {
   const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
   const m = elapsed / 60;
   const words = val.trim().split(/\s+/).filter(Boolean);
-  const rawWpm = Math.round(words.length / m);
-  const netWpm = rawWpm;
+  const totalChars = val.length;
+
+  const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : totalChars / 5;
+  const netWords = Math.max(words.length, strokeWords);
+  const rawWords = Math.max(words.length, (state.totalKeystrokes || totalChars) / 5);
+
+  const netWpm = Math.max(0, Math.round(netWords / m));
+  const rawWpm = Math.max(netWpm, Math.round(rawWords / m));
   const strokeAcc = state.totalKeystrokes > 0
     ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
     : 100;
   const wordAcc = 100;
-  const totalChars = val.length;
   const cpm = Math.round(totalChars / m);
 
   const strokeAnalytics = analyzeTypingRun(state.keystrokeLogs, elapsed, netWpm, rawWpm, strokeAcc);
-  const rank = getSpeedRank('english', netWpm);
+  const rank = getSpeedRank(state.lang, netWpm);
 
   lastFinishedResult = {
     netWpm,
@@ -733,7 +779,7 @@ export function finishFreestyleTest() {
     strokeAcc,
     cpm,
     elapsed: Math.round(elapsed),
-    layout: 'english',
+    layout: state.lang,
     mode: 'freestyle',
     examType: '',
     rank,
@@ -765,7 +811,13 @@ export function finishFreestyleTest() {
     mRankPill.textContent = rank.title;
     mRankPill.style.color = rank.color;
   }
-  if (mMeta) mMeta.textContent = `English Free Style • Raw Typing Velocity • ${Math.round(elapsed)}s Elapsed`;
+  const langNames = {
+    nepali_unicode: 'Nepali Traditional (MPP)',
+    nepali_romanized: 'Nepali Romanized (Phonetic)',
+    nepali_preeti: 'Preeti (ASCII Typewriter)',
+    english: 'English US QWERTY'
+  };
+  if (mMeta) mMeta.textContent = `${langNames[state.lang] || 'Free Style'} Practice Session • Unrestricted (Not Saved to Analytics) • ${Math.round(elapsed)}s Elapsed`;
 
   // Populate Unimagined Biomechanics Cards
   const elHandBias = document.getElementById('analytics-hand-bias');
@@ -829,33 +881,14 @@ export function finishFreestyleTest() {
     }
   }
 
+  // Hide certificate banner for free style practice
+  const certBanner = document.getElementById('modal-cert-banner');
+  if (certBanner) certBanner.classList.add('hidden');
+
   renderTimelineChart(state.timeline);
   document.getElementById('stats-modal')?.classList.add('is-open');
   document.getElementById('freestyle-input')?.blur();
   document.getElementById('typing-input')?.blur();
-
-  // Save record to LocalStorage
-  try {
-    const hist = JSON.parse(localStorage.getItem('nepali_typing_history') || '[]');
-    hist.unshift({
-      id: Date.now(),
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      layout: 'english',
-      mode: 'Free Style Typing',
-      wpm: netWpm,
-      rawWpm: rawWpm,
-      acc: strokeAcc,
-      wordAcc: 100,
-      strokeAcc: strokeAcc,
-      totalKeystrokes: state.totalKeystrokes,
-      correctKeystrokes: Math.max(0, state.totalKeystrokes - state.freestyleBackspaces),
-      errorKeystrokes: state.freestyleBackspaces,
-      duration: Math.round(elapsed)
-    });
-    localStorage.setItem('nepali_typing_history', JSON.stringify(hist.slice(0, 50)));
-    updatePersonalBestsCards();
-    updateHeaderTelemetryBadge();
-  } catch (e) {
-    console.error('Failed to save freestyle typing history:', e);
-  }
+  // NOTE: Freestyle typing is strictly ephemeral practice and deliberately NOT saved
+  // to LocalStorage history, telemetry parameters, or personal bests.
 }

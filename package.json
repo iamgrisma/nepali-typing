@@ -11,9 +11,9 @@
     "deploy": "astro build && wrangler pages deploy dist --project-name=nepali-typing"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.3.2",
+    "@astrojs/cloudflare": "^14.3.4",
     "@iconify-json/lucide": "^1.2.137",
-    "astro": "^7.3.3",
+    "astro": "^7.3.8",
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {

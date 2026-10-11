@@ -125,22 +125,42 @@ export function computeCurrentStats() {
 
   if (state.mode === 'freestyle') {
     const words = state.freestyleWords || 0;
-    const rawWpm = Math.round(words / m);
-    const wpm = rawWpm;
+    const chars = state.freestyleChars || (state.freestyleText ? state.freestyleText.length : 0);
+    // Standard typing word count: 1 standard word = 5 characters/keystrokes
+    const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : chars / 5;
+    const netWords = Math.max(words, strokeWords);
+    const rawWords = Math.max(words, (state.totalKeystrokes || chars) / 5);
+    const wpm = Math.max(0, Math.round(netWords / m));
+    const rawWpm = Math.max(wpm, Math.round(rawWords / m));
     const strokeAcc = state.totalKeystrokes > 0
       ? Math.max(0, Math.min(100, Math.round(((state.totalKeystrokes - state.freestyleBackspaces) / state.totalKeystrokes) * 1000) / 10))
       : 100;
     const wordAcc = 100;
-    return { wpm, rawWpm, acc: wordAcc, wordAcc, strokeAcc, elapsed };
+    return { wpm, rawWpm, acc: strokeAcc, wordAcc, strokeAcc, elapsed };
   }
 
-  // Actual words completed minus incorrect words
+  // Standard Typing Test Statistics Calculation:
+  // 1. Total Words Submitted = Correct (Clean + Corrected) + Incorrect Words
   const completedWords = state.cleanWords + state.correctedWords;
-  const netWords = Math.max(0, completedWords - state.incorrectWords);
   const totalSubmittedWords = completedWords + state.incorrectWords;
 
-  const wpm = Math.max(0, Math.round(netWords / m));
-  const rawWpm = Math.max(wpm, Math.round(totalSubmittedWords / m));
+  // 2. Net Words: Total Submitted Words minus Incorrect Words = completedWords
+  // (Fixes the double penalty bug where incorrect words were subtracted twice)
+  const netWords = Math.max(0, totalSubmittedWords - state.incorrectWords);
+
+  // 3. Universal / Loksewa Standard Equivalence:
+  // In Nepali typing, Devanagari words average 7-12 keystrokes due to matras, conjuncts, and halants.
+  // Standard typing benchmarks (Loksewa Computer Operator, Monkeytype, 10FastFingers)
+  // define 1 Standard Typing Word = 5 keystrokes (key depressions).
+  const strokeNetWords = state.correctKeystrokes / 5;
+  const strokeRawWords = state.totalKeystrokes / 5;
+
+  // Standard Net Words: whichever is more representative (ensures Nepali typists aren't artificially halved)
+  const effectiveNetWords = Math.max(netWords, strokeNetWords);
+  const effectiveRawWords = Math.max(totalSubmittedWords, strokeRawWords);
+
+  const wpm = Math.max(0, Math.round(effectiveNetWords / m));
+  const rawWpm = Math.max(wpm, Math.round(effectiveRawWords / m));
 
   // Two-Level Accuracy Calculations:
   // Level 1: Keystroke / Stroke Accuracy (includes mistypes, backspaces and corrections)

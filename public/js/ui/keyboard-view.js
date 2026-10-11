@@ -17,24 +17,27 @@ export function renderKeyboard() {
       rowEl.innerHTML = '';
     }
 
+    const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+
     row.forEach((k, kI) => {
       let topLbl = '';
       let mainLbl = '';
       let fontFam = 'var(--font-sans)';
 
       if (!k.special && !k.shell) {
-        if (state.lang === 'english') {
+        if (currentMode === 'qwerty' || state.lang === 'english') {
           topLbl = k.eng[1] !== k.eng[0].toUpperCase() ? k.eng[1] : '';
           mainLbl = state.isShift ? k.eng[1] : k.eng[0];
-        } else if (state.lang === 'nepali_unicode') {
+          fontFam = 'var(--font-sans)';
+        } else if (currentMode === 'traditional') {
           topLbl = k.uni[1];
           mainLbl = state.isShift ? k.uni[1] : k.uni[0];
           fontFam = 'var(--font-nepali)';
-        } else if (state.lang === 'nepali_romanized') {
+        } else if (currentMode === 'romanized') {
           topLbl = k.rom[1];
           mainLbl = state.isShift ? k.rom[1] : k.rom[0];
           fontFam = 'var(--font-nepali)';
-        } else if (state.lang === 'nepali_preeti') {
+        } else if (currentMode === 'preeti') {
           topLbl = state.isShift ? k.pre[1] : k.pre[0];
           mainLbl = state.isShift ? k.pre[3] : k.pre[2];
           fontFam = 'var(--font-nepali)';
@@ -101,8 +104,69 @@ export function renderKeyboard() {
     nepali_romanized: 'PHONETIC QWERTY',
     nepali_preeti: 'PREETI TYPEWRITER'
   };
-  if (titleEl) titleEl.textContent = titles[state.lang] || '';
-  if (pillEl) pillEl.textContent = pills[state.lang] || '';
+
+  const isQwertySwitched = (state.activeInputMode === 'qwerty' && state.lang !== 'english');
+
+  if (titleEl) {
+    titleEl.textContent = isQwertySwitched 
+      ? `${titles[state.lang] || ''} ➔ [QWERTY Passthrough]` 
+      : (titles[state.lang] || '');
+  }
+  if (pillEl) {
+    if (isQwertySwitched) {
+      pillEl.textContent = 'QWERTY ACTIVE (Alt+Shift)';
+      pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 animate-pulse';
+    } else {
+      pillEl.textContent = pills[state.lang] || '';
+      pillEl.className = 'px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400';
+    }
+  }
+
+  // Update input mode toggle button in visualizer
+  const kbModeLabel = document.getElementById('kb-input-mode-label');
+  const kbModeDot = document.getElementById('kb-input-mode-dot');
+  if (kbModeLabel) {
+    if (state.lang === 'english') {
+      kbModeLabel.textContent = 'QWERTY (Fixed)';
+    } else if (isQwertySwitched) {
+      kbModeLabel.textContent = 'QWERTY Active';
+    } else if (state.lang === 'nepali_unicode') {
+      kbModeLabel.textContent = 'Traditional';
+    } else if (state.lang === 'nepali_romanized') {
+      kbModeLabel.textContent = 'Romanized';
+    } else if (state.lang === 'nepali_preeti') {
+      kbModeLabel.textContent = 'Preeti';
+    }
+  }
+  if (kbModeDot) {
+    kbModeDot.className = isQwertySwitched 
+      ? 'w-2 h-2 rounded-full bg-amber-500 inline-block animate-pulse' 
+      : 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
+  }
+
+  // Update workbench pill
+  const wbInputText = document.getElementById('workbench-input-text');
+  const wbInputDot = document.getElementById('workbench-input-dot');
+  const wbInputPill = document.getElementById('workbench-input-mode-pill');
+  if (wbInputPill) {
+    wbInputPill.classList.toggle('hidden', state.lang === 'english');
+  }
+  if (wbInputText) {
+    if (isQwertySwitched) {
+      wbInputText.textContent = 'QWERTY Passthrough';
+    } else if (state.lang === 'nepali_unicode') {
+      wbInputText.textContent = 'Traditional';
+    } else if (state.lang === 'nepali_romanized') {
+      wbInputText.textContent = 'Romanized';
+    } else if (state.lang === 'nepali_preeti') {
+      wbInputText.textContent = 'Preeti';
+    }
+  }
+  if (wbInputDot) {
+    wbInputDot.className = isQwertySwitched 
+      ? 'w-1.5 h-1.5 rounded-full bg-amber-500 inline-block animate-pulse' 
+      : 'w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block';
+  }
 
   highlightTargetKey();
 }
@@ -121,15 +185,21 @@ export function highlightTargetKey() {
     targetCh = ' ';
   }
 
+  const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+
+  const isAsciiSymbol = targetCh && targetCh !== ' ' && targetCh.charCodeAt(0) < 128 && !/[0-9a-zA-Z]/.test(targetCh);
+
   const targetDisp = document.getElementById('kb-target-char');
   if (targetDisp) {
     if (targetCh === ' ') {
       targetDisp.textContent = '␣ Space';
-    } else if (state.lang === 'nepali_unicode' && targetCh === '्') {
+    } else if (currentMode !== 'qwerty' && isAsciiSymbol && (state.lang === 'nepali_unicode' || state.lang === 'nepali_romanized')) {
+      targetDisp.textContent = `${targetCh} (Press Alt+Shift for QWERTY)`;
+    } else if (currentMode === 'traditional' && targetCh === '्') {
       targetDisp.textContent = '् (halanta \\)';
-    } else if (state.lang === 'nepali_unicode' && targetCh === 'आ') {
+    } else if (currentMode === 'traditional' && targetCh === 'आ') {
       targetDisp.textContent = 'आ (Shift + A or अ + ा)';
-    } else if (state.lang === 'nepali_romanized' && targetCh === '्') {
+    } else if (currentMode === 'romanized' && targetCh === '्') {
       targetDisp.textContent = '् (q or /)';
     } else {
       targetDisp.textContent = targetCh;
@@ -149,16 +219,16 @@ export function highlightTargetKey() {
       const item = KEY_ROWS[r][k];
       if (item.special) continue;
 
-      if (state.lang === 'english') {
+      if (currentMode === 'qwerty' || state.lang === 'english') {
         if (item.eng[0] === targetCh) { targetCode = item.code; needsShift = false; break; }
         if (item.eng[1] === targetCh) { targetCode = item.code; needsShift = true; break; }
-      } else if (state.lang === 'nepali_unicode') {
+      } else if (currentMode === 'traditional') {
         if (item.uni[0] === targetCh) { targetCode = item.code; needsShift = false; break; }
         if (item.uni[1] === targetCh) { targetCode = item.code; needsShift = true; break; }
-      } else if (state.lang === 'nepali_romanized') {
+      } else if (currentMode === 'romanized') {
         if (item.rom[0] === targetCh) { targetCode = item.code; needsShift = false; break; }
         if (item.rom[1] === targetCh) { targetCode = item.code; needsShift = true; break; }
-      } else if (state.lang === 'nepali_preeti') {
+      } else if (currentMode === 'preeti') {
         if (item.pre[0] === targetCh || item.pre[2] === targetCh) { targetCode = item.code; needsShift = false; break; }
         if (item.pre[1] === targetCh || item.pre[3] === targetCh) { targetCode = item.code; needsShift = true; break; }
       }

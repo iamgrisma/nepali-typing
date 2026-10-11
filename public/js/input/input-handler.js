@@ -66,9 +66,80 @@ export function confirmReset() {
   setupTest();
 }
 
+let lastAltShiftToggleTime = 0;
+export function toggleInputMode() {
+  if (state.lang === 'english') {
+    // English QWERTY bench stays on QWERTY
+    return;
+  }
+
+  if (state.activeInputMode === 'qwerty') {
+    // Return to the bench's native input mode
+    if (state.lang === 'nepali_unicode') {
+      state.activeInputMode = 'traditional';
+    } else if (state.lang === 'nepali_romanized') {
+      state.activeInputMode = 'romanized';
+    } else if (state.lang === 'nepali_preeti') {
+      state.activeInputMode = 'preeti';
+    }
+  } else {
+    // Switch to QWERTY passthrough input mode
+    state.activeInputMode = 'qwerty';
+  }
+
+  // If in freestyle mode and Preeti bench, adjust textarea font dynamically
+  if (state.mode === 'freestyle' && state.lang === 'nepali_preeti') {
+    const freestyleInput = document.getElementById('freestyle-input');
+    if (freestyleInput) {
+      freestyleInput.style.fontFamily = state.activeInputMode === 'qwerty' ? 'inherit' : 'Preeti, sans-serif';
+    }
+  }
+
+  playBeep(520, 'sine', 0.04, 0.05);
+  renderKeyboard();
+  updateLiveStats();
+}
+
+export function checkAndHandleAltShift(e) {
+  // Support Alt+Shift, Shift+Alt, Ctrl+Alt, and Ctrl+Shift for website-level switching
+  const isAltShiftCombo = 
+    (e.altKey && (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight')) ||
+    (e.shiftKey && (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight')) ||
+    (e.ctrlKey && (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight')) ||
+    (e.altKey && (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight'));
+
+  if (isAltShiftCombo) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    const now = performance.now();
+    if (now - lastAltShiftToggleTime > 250) {
+      lastAltShiftToggleTime = now;
+      toggleInputMode();
+    }
+    return true;
+  }
+  return false;
+}
+
 export function bindInputEvents() {
   const inputField = document.getElementById('typing-input');
   const workbench = document.getElementById('typing-workbench');
+
+  // Input mode switcher button bindings (Visualizer and Workbench)
+  document.getElementById('kb-input-mode-btn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleInputMode();
+    inputField?.focus();
+  });
+
+  document.getElementById('workbench-input-mode-pill')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleInputMode();
+    inputField?.focus();
+  });
 
   // Reset confirmation modal action bindings
   const resetModal = document.getElementById('reset-confirm-modal');
@@ -129,6 +200,13 @@ export function bindInputEvents() {
   });
 
   inputField?.addEventListener('keydown', (e) => {
+    if (checkAndHandleAltShift(e)) return;
+
+    if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
+      e.preventDefault();
+      return;
+    }
+
     const curWord = state.words[state.wordIdx];
     const now = performance.now();
     const deltaMs = state.lastStrokeTime > 0 ? Math.max(10, Math.min(3000, Math.round(now - state.lastStrokeTime))) : 150;
@@ -206,12 +284,12 @@ export function bindInputEvents() {
       state.wordIdx++;
       inputField.value = '';
 
-      // Live adaptive mastery check
+      // Live adaptive mastery check (Seamless continuation: Do NOT return early!)
       if (state.mode === 'adaptive' && !state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
         const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget, state.adaptiveTargetGoal || 90);
         if (mastery.mastered) {
           triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
-          return;
+          // Let typist continue typing into the next word without being blocked!
         } else {
           const accDisp = document.getElementById('adaptive-acc-display');
           if (accDisp && mastery.recentAccuracy !== undefined) {
@@ -229,16 +307,10 @@ export function bindInputEvents() {
         finishTest();
         return;
       }
-      if (state.mode === 'adaptive' && state.wordIdx >= state.words.length) {
-        if (!state.isAdaptiveDiagnostic && state.adaptivePrimaryTarget) {
-          const mastery = checkTargetKeyMastery(state.adaptivePrimaryTarget, state.adaptiveTargetGoal || 90);
-          if (mastery.mastered) {
-            triggerAdaptiveMastery(state.adaptivePrimaryTarget, mastery.recentAccuracy);
-            return;
-          }
+      if (state.mode === 'adaptive') {
+        if (state.wordIdx >= state.words.length - 10) {
+          refillWords();
         }
-        finishTest();
-        return;
       }
       if (state.mode === 'exam' && state.wordIdx >= state.words.length) {
         // Complete UN Speech Finished!
@@ -360,8 +432,43 @@ export function bindInputEvents() {
       const isAscii = e.key.charCodeAt(0) < 128;
       const curPos = inputField.selectionStart ?? inputField.value.length;
       const expectedChar = curWord ? (curWord[curPos] || '') : '';
+      const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
 
-      if (state.lang === 'nepali_unicode' && isAscii) {
+      // A. QWERTY Passthrough Mode (when toggled via Alt+Shift on any bench, or on English bench)
+      if (currentMode === 'qwerty') {
+        const ch = e.key;
+        e.preventDefault();
+        const expectedSlice = curWord ? curWord.slice(curPos, curPos + ch.length) : '';
+        const isCharCorrect = (ch === expectedSlice || ch === expectedChar);
+
+        state.totalKeystrokes++;
+        if (isCharCorrect) {
+          state.correctKeystrokes++;
+        } else {
+          state.errorKeystrokes++;
+          state.currentWordErrors++;
+          state.errorMap[expectedSlice || expectedChar || ch] = (state.errorMap[expectedSlice || expectedChar || ch] || 0) + 1;
+        }
+
+        state.keystrokeLogs.push({
+          timestamp: now,
+          charExpected: expectedSlice || expectedChar,
+          charTyped: ch,
+          isCorrect: isCharCorrect,
+          code: e.code,
+          latencyMs: deltaMs
+        });
+        recordStrokeData(expectedSlice || expectedChar || ch, isCharCorrect, deltaMs);
+
+        const start = inputField.selectionStart ?? inputField.value.length;
+        const end = inputField.selectionEnd ?? inputField.value.length;
+        inputField.setRangeText(ch, start, end, 'end');
+        inputField.dispatchEvent(new Event('input'));
+        return;
+      }
+
+      // B. Traditional Devanagari Mapping
+      if (currentMode === 'traditional' && isAscii) {
         const matched = KEY_CODE_MAP[e.code];
         if (matched && matched.uni) {
           e.preventDefault();
@@ -404,7 +511,7 @@ export function bindInputEvents() {
           inputField.dispatchEvent(new Event('input'));
           return;
         }
-      } else if (state.lang === 'nepali_romanized' && isAscii) {
+      } else if (currentMode === 'romanized' && isAscii) {
         const matched = KEY_CODE_MAP[e.code];
         if (matched && matched.rom) {
           e.preventDefault();
@@ -503,7 +610,8 @@ export function bindInputEvents() {
 
     const elapsed = Math.max(1, (performance.now() - state.startTime) / 1000);
     const m = elapsed / 60;
-    const currentWpm = Math.round((val.length / 5) / m);
+    const strokeWords = state.totalKeystrokes > 0 ? Math.max(0, state.totalKeystrokes - state.freestyleBackspaces) / 5 : val.length / 5;
+    const currentWpm = Math.max(0, Math.round(Math.max(words.length, strokeWords) / m));
 
     const fWordEl = document.getElementById('freestyle-word-count');
     const fCharEl = document.getElementById('freestyle-char-count');
@@ -517,13 +625,14 @@ export function bindInputEvents() {
   });
 
   freestyleInput?.addEventListener('keydown', (e) => {
+    if (checkAndHandleAltShift(e)) return;
+
     if (state.isFinished) return;
     if (!state.isRunning) startTimer();
 
     const now = performance.now();
     const deltaMs = state.lastStrokeTime > 0 ? Math.max(10, Math.min(3000, Math.round(now - state.lastStrokeTime))) : 150;
     state.lastStrokeTime = now;
-    state.totalKeystrokes++;
 
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -534,6 +643,7 @@ export function bindInputEvents() {
 
     if (e.key === 'Backspace') {
       state.freestyleBackspaces++;
+      state.totalKeystrokes++;
       state.keystrokeLogs.push({
         timestamp: now,
         charExpected: 'Backspace',
@@ -545,7 +655,140 @@ export function bindInputEvents() {
       return;
     }
 
+    if (e.key === 'Enter') {
+      state.totalKeystrokes++;
+      state.correctKeystrokes++;
+      state.keystrokeLogs.push({
+        timestamp: now,
+        charExpected: '\n',
+        charTyped: '\n',
+        isCorrect: true,
+        code: 'Enter',
+        latencyMs: deltaMs
+      });
+      return; // allow normal textarea newline
+    }
+
+    // Suppress Alt menu focus during typing
+    if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
+      e.preventDefault();
+      return;
+    }
+
+    // Website native language layout logic for US keyboard keystrokes
     if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      const isAscii = e.key.charCodeAt(0) < 128;
+      const currentMode = state.activeInputMode || (state.lang === 'english' ? 'qwerty' : (state.lang === 'nepali_romanized' ? 'romanized' : (state.lang === 'nepali_preeti' ? 'preeti' : 'traditional')));
+
+      // A. QWERTY Mode or English Layout
+      if (currentMode === 'qwerty' || state.lang === 'english') {
+        state.totalKeystrokes++;
+        state.correctKeystrokes++;
+        state.keystrokeLogs.push({
+          timestamp: now,
+          charExpected: e.key,
+          charTyped: e.key,
+          isCorrect: true,
+          code: e.code,
+          latencyMs: deltaMs
+        });
+        return; // let native textarea insert character
+      }
+
+      // B. Traditional Devanagari Mapping
+      if (currentMode === 'traditional' && isAscii) {
+        const matched = KEY_CODE_MAP[e.code];
+        if (matched && matched.uni) {
+          e.preventDefault();
+          const ch = (e.shiftKey || state.isShift) ? matched.uni[1] : matched.uni[0];
+          state.totalKeystrokes++;
+          state.correctKeystrokes++;
+          state.keystrokeLogs.push({
+            timestamp: now,
+            charExpected: ch,
+            charTyped: ch,
+            isCorrect: true,
+            code: e.code,
+            latencyMs: deltaMs
+          });
+
+          const start = freestyleInput.selectionStart;
+          const end = freestyleInput.selectionEnd;
+          freestyleInput.setRangeText(ch, start, end, 'end');
+
+          let val = freestyleInput.value;
+          const norm = val
+            .replace(/अा/g, 'आ')
+            .replace(/ाे/g, 'ो')
+            .replace(/ाै/g, 'ौ')
+            .replace(/अो/g, 'ओ')
+            .replace(/अौ/g, 'औ');
+          if (norm !== val) {
+            freestyleInput.value = norm;
+          }
+          freestyleInput.dispatchEvent(new Event('input'));
+          return;
+        }
+      }
+
+      // C. Romanized Phonetic Mapping
+      if (currentMode === 'romanized' && isAscii) {
+        const matched = KEY_CODE_MAP[e.code];
+        if (matched && matched.rom) {
+          e.preventDefault();
+          let ch = (e.shiftKey || state.isShift) ? matched.rom[1] : matched.rom[0];
+          if (e.code === 'KeyQ' && !e.shiftKey && !state.isShift) {
+            ch = '्';
+          } else if (e.code === 'Slash' && !e.shiftKey && !state.isShift) {
+            ch = '्';
+          }
+          state.totalKeystrokes++;
+          state.correctKeystrokes++;
+          state.keystrokeLogs.push({
+            timestamp: now,
+            charExpected: ch,
+            charTyped: ch,
+            isCorrect: true,
+            code: e.code,
+            latencyMs: deltaMs
+          });
+
+          const start = freestyleInput.selectionStart;
+          const end = freestyleInput.selectionEnd;
+          freestyleInput.setRangeText(ch, start, end, 'end');
+
+          let val = freestyleInput.value;
+          const norm = val
+            .replace(/अा/g, 'आ')
+            .replace(/ाे/g, 'ो')
+            .replace(/ाै/g, 'ौ')
+            .replace(/अो/g, 'ओ')
+            .replace(/अौ/g, 'औ');
+          if (norm !== val) {
+            freestyleInput.value = norm;
+          }
+          freestyleInput.dispatchEvent(new Event('input'));
+          return;
+        }
+      }
+
+      // D. Preeti layout (rendered via Preeti font)
+      if (currentMode === 'preeti') {
+        state.totalKeystrokes++;
+        state.correctKeystrokes++;
+        state.keystrokeLogs.push({
+          timestamp: now,
+          charExpected: e.key,
+          charTyped: e.key,
+          isCorrect: true,
+          code: e.code,
+          latencyMs: deltaMs
+        });
+        return; // native key in Preeti font renders Devanagari
+      }
+
+      // Fallback
+      state.totalKeystrokes++;
       state.correctKeystrokes++;
       state.keystrokeLogs.push({
         timestamp: now,
@@ -607,6 +850,13 @@ export function bindInputEvents() {
     
     if (modalOpen || isModalInput) {
       return; // Let the modal handle input natively
+    }
+
+    if (checkAndHandleAltShift(e)) return;
+
+    if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
+      e.preventDefault();
+      return;
     }
 
     if (state.mode === 'freestyle') {

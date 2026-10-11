@@ -1,5 +1,7 @@
 import { DATA } from '../data/typing-words.js';
 import { EXAM_SPEECH_NEPALI, EXAM_SPEECH_ENGLISH } from '../data/speeches.js';
+import { NEPALI_STORIES, ENGLISH_STORIES } from '../data/stories.js';
+import { toPreeti, sanitizePreetiWords } from './preeti-converter.js';
 
 const PROFILE_STORAGE_KEY = 'topnepali_stroke_profile';
 
@@ -289,9 +291,38 @@ export function generateDiagnosticWords(lang = 'english', count = 30) {
   return out.slice(0, count);
 }
 
+function extractSentencesFromCorpus(stories, speech, dataObj, isNepali = true) {
+  const allTexts = [
+    ...(stories || []).map(s => s.text),
+    speech || '',
+    ...(dataObj?.easy?.sentences || []),
+    ...(dataObj?.medium?.sentences || []),
+    ...(dataObj?.hard?.sentences || []),
+    ...(dataObj?.easy?.quotes || []),
+    ...(dataObj?.medium?.quotes || []),
+    ...(dataObj?.hard?.quotes || [])
+  ];
+
+  const delimiter = isNepali ? /(?<=[।?!])\s+/ : /(?<=[.?!])\s+/;
+  const sentences = [];
+  allTexts.forEach(t => {
+    if (!t) return;
+    t.split(delimiter).forEach(raw => {
+      const s = raw.trim();
+      if (s.length >= 10 && s.length <= 180) {
+        sentences.push(s);
+      }
+    });
+  });
+  return Array.from(new Set(sentences));
+}
+
+const ALL_NEPALI_SENTENCES = extractSentencesFromCorpus(NEPALI_STORIES, EXAM_SPEECH_NEPALI, DATA.nepali, true);
+const ALL_ENGLISH_SENTENCES = extractSentencesFromCorpus(ENGLISH_STORIES, EXAM_SPEECH_ENGLISH, DATA.english, false);
+
 /**
- * Generates drill words specifically targeted at the user's real weak key(s)
- * Drawn from the massive 1,300+ word master corpora
+ * Generates drill words and authentic sentences specifically targeted at the user's real weak key(s)
+ * Dynamically drawn from the entire text corpus (stories, speeches, sentences, master lexicon).
  */
 export function generateAdaptiveWords(options = {}) {
   const {
@@ -303,12 +334,14 @@ export function generateAdaptiveWords(options = {}) {
   const isEng = (lang === 'english');
   const wordPool = isEng ? MASTER_ENGLISH_WORDS : MASTER_NEPALI_WORDS;
   const index = isEng ? englishIndex : nepaliIndex;
+  const sentencePool = isEng ? ALL_ENGLISH_SENTENCES : ALL_NEPALI_SENTENCES;
 
   let keys = targetKeys;
   if (!keys || keys.length === 0) {
     const analysis = getWeakKeysAnalysis(lang, 2);
     if (!analysis.hasEnoughData || analysis.keys.length === 0) {
-      return generateDiagnosticWords(lang, targetCount);
+      const diag = generateDiagnosticWords(lang, targetCount);
+      return lang === 'nepali_preeti' ? sanitizePreetiWords(diag.map(w => toPreeti(w))) : diag;
     }
     keys = analysis.keys.map(k => k.char);
   }
@@ -317,6 +350,36 @@ export function generateAdaptiveWords(options = {}) {
   const primaryKey = normalizedKeys[0];
   const secondaryKey = normalizedKeys[1] || null;
 
+  // 1. DYNAMIC SENTENCES SELECTION: Score sentences based on target keystroke density
+  const scoredSentences = [];
+  sentencePool.forEach(sentence => {
+    const lower = sentence.toLowerCase();
+    let pCount = 0;
+    let pos = lower.indexOf(primaryKey);
+    while (pos !== -1) {
+      pCount++;
+      pos = lower.indexOf(primaryKey, pos + 1);
+    }
+
+    let sCount = 0;
+    if (secondaryKey) {
+      let sPos = lower.indexOf(secondaryKey);
+      while (sPos !== -1) {
+        sCount++;
+        sPos = lower.indexOf(secondaryKey, sPos + 1);
+      }
+    }
+
+    if (pCount > 0 || sCount > 0) {
+      const score = (pCount * 4) + (sCount * 2);
+      const density = score / Math.sqrt(sentence.length);
+      scoredSentences.push({ sentence, score: density, pCount, sCount });
+    }
+  });
+
+  scoredSentences.sort((a, b) => b.score - a.score);
+
+  // 2. DYNAMIC HIGH-DENSITY WORDS SELECTION
   const matchingIndices = index[primaryKey] || [];
   const candidateIndices = new Set(matchingIndices);
 
@@ -325,7 +388,6 @@ export function generateAdaptiveWords(options = {}) {
   }
 
   const scoredWords = [];
-
   candidateIndices.forEach(idx => {
     const word = wordPool[idx];
     if (!word) return;
@@ -356,24 +418,41 @@ export function generateAdaptiveWords(options = {}) {
 
   scoredWords.sort((a, b) => b.score - a.score);
 
-  if (scoredWords.length === 0) {
-    return generateDiagnosticWords(lang, targetCount);
+  const resultWords = [];
+
+  // Pick from top authentic sentences containing the targeted key(s)
+  if (scoredSentences.length > 0) {
+    const topSentences = scoredSentences.slice(0, Math.min(20, scoredSentences.length));
+    const shuffledSentences = [...topSentences].sort(() => 0.5 - Math.random());
+    for (const item of shuffledSentences) {
+      const tokens = item.sentence.split(/\s+/).filter(Boolean);
+      resultWords.push(...tokens);
+      if (resultWords.length >= targetCount) break;
+    }
   }
 
-  // Pick top-density words with variety (from up to top 60 matches)
-  const topCandidates = scoredWords.slice(0, Math.min(60, scoredWords.length));
-  const result = [];
-
-  // Shuffle candidate pool to ensure variety across tests
-  const shuffledCandidates = [...topCandidates].sort(() => 0.5 - Math.random());
-
-  while (result.length < targetCount) {
-    const pool = (Math.random() < 0.75) 
-      ? topCandidates.slice(0, Math.ceil(topCandidates.length * 0.6)) 
-      : topCandidates;
-    const picked = pool[Math.floor(Math.random() * pool.length)].word;
-    result.push(picked);
+  // If more words needed or sentences were scarce, weave in top high-density words
+  if (resultWords.length < targetCount && scoredWords.length > 0) {
+    const topCandidates = scoredWords.slice(0, Math.min(60, scoredWords.length));
+    while (resultWords.length < targetCount) {
+      const pool = (Math.random() < 0.75) 
+        ? topCandidates.slice(0, Math.ceil(topCandidates.length * 0.6)) 
+        : topCandidates;
+      const picked = pool[Math.floor(Math.random() * pool.length)].word;
+      resultWords.push(picked);
+    }
   }
 
-  return result;
+  // Fallback if still empty
+  if (resultWords.length === 0) {
+    const diag = generateDiagnosticWords(lang, targetCount);
+    return lang === 'nepali_preeti' ? sanitizePreetiWords(diag.map(w => toPreeti(w))) : diag;
+  }
+
+  // Preeti mode conversion and keyboard-safe sanitization
+  if (lang === 'nepali_preeti') {
+    return sanitizePreetiWords(resultWords.slice(0, Math.max(targetCount, resultWords.length)).map(w => toPreeti(w)));
+  }
+
+  return resultWords.slice(0, Math.max(targetCount, resultWords.length));
 }
