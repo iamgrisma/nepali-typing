@@ -3,6 +3,9 @@ import icon from 'astro-icon';
 
 // Full static generation for Cloudflare Pages (Zero CPU, instant CDN delivery)
 export default defineConfig({
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [icon()],
   output: 'static',
   site: 'https://typing.topnepali.com',
