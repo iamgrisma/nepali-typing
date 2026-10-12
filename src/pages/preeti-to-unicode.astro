@@ -120,6 +120,14 @@ const appSchema = {
             <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path>
           </svg>
         </button>
+
+        <a
+          href="/ams-to-unicode"
+          class="converter-btn px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-xl"
+          title="Switch to IndiaFont AMS Calligraphy Converter"
+        >
+          AMS &harr; Unicode
+        </a>
       </div>
 
       <!-- Rich Text Formatting Actions -->
@@ -338,7 +346,13 @@ const appSchema = {
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
             <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Can I convert pasted Unicode back into Preeti?</h3>
             <p class="text-[var(--text-secondary)] leading-relaxed">
-              Yes. Use the <a href="/unicode-to-preeti/" class="text-rose-600 underline font-semibold">Unicode to Preeti Converter</a> for reverse conversions needed in Adobe InDesign and PageMaker.
+              Yes. Use the <a href="/unicode-to-preeti" class="text-rose-600 underline font-semibold">Unicode to Preeti Converter</a> for reverse conversions needed in Adobe InDesign and PageMaker.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+            <h3 class="font-bold text-[var(--text-primary)] mb-1.5">Looking for IndiaFont AMS Calligraphy Converter?</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Yes. Use our <a href="/ams-to-unicode" class="text-amber-600 dark:text-amber-400 underline font-semibold">AMS to Unicode Converter</a> or <a href="/unicode-to-ams" class="text-amber-600 dark:text-amber-400 underline font-semibold">Unicode to AMS Converter</a> for decorative calligraphy fonts like AMS Mantra and AMS Kirti.
             </p>
           </div>
           <div class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
@@ -347,6 +361,27 @@ const appSchema = {
               No. All conversion operations occur client-side in your browser JavaScript engine. Your confidential documents and notes never leave your computer.
             </p>
           </div>
+        </div>
+      </div>
+
+      <!-- Related Converters & Typography Ecosystem -->
+      <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <h2 class="text-lg font-bold font-display text-[var(--text-primary)] mb-3">
+          Explore Related Nepali Typing Tools &amp; Typography
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm">
+          <a href="/ams-to-unicode" class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-amber-500/40 transition-colors group">
+            <h3 class="font-bold text-[var(--text-primary)] group-hover:text-amber-600 mb-1">AMS to Unicode Converter &rarr;</h3>
+            <p class="text-[var(--text-muted)]">Convert decorative IndiaFont AMS calligraphy ASCII text into standard Nepali Unicode.</p>
+          </a>
+          <a href="/unicode-to-ams" class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-amber-500/40 transition-colors group">
+            <h3 class="font-bold text-[var(--text-primary)] group-hover:text-amber-600 mb-1">Unicode to AMS Converter &rarr;</h3>
+            <p class="text-[var(--text-muted)]">Convert Nepali Unicode into AMS ASCII keystrokes for Photoshop and CorelDRAW.</p>
+          </a>
+          <a href="https://fonts.topnepali.com" class="p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] hover:border-blue-500/40 transition-colors group">
+            <h3 class="font-bold text-[var(--text-primary)] group-hover:text-blue-600 mb-1">Download Nepali &amp; AMS Fonts &rarr;</h3>
+            <p class="text-[var(--text-muted)]">Browse 500+ free Nepali fonts, calligraphy styles, and Unicode typefaces on FontsDir.</p>
+          </a>
         </div>
       </div>
     </section>
@@ -887,7 +922,7 @@ const appSchema = {
         if (textToCarry) {
           sessionStorage.setItem('tn_converter_swap_text', textToCarry);
         }
-        window.location.href = '/unicode-to-preeti/';
+        window.location.href = '/unicode-to-preeti';
       }
 
       if (modeBtnUniToPreeti) {

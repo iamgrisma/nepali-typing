@@ -116,6 +116,14 @@ const { activeNav = 'test' } = Astro.props;
       </a>
 
       <a 
+        href="/ams-to-unicode" 
+        class={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${activeNav === 'ams-converter' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        <span>AMS Converter</span>
+      </a>
+
+      <a 
         href="/keyboard-layout" 
         class={`px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${activeNav === 'layouts' ? 'bg-[var(--bg-surface-subtle)] text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
@@ -279,6 +287,17 @@ const { activeNav = 'test' } = Astro.props;
           <span>Preeti Converter</span>
         </div>
         <span class="text-[11px] text-[var(--text-muted)] font-normal">Unicode &amp; Rich Text</span>
+      </a>
+
+      <a 
+        href="/ams-to-unicode" 
+        class={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${activeNav === 'ams-converter' ? 'bg-[var(--bg-surface-subtle)] text-amber-500 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-subtle)]'}`}
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+          <span>AMS Converter</span>
+        </div>
+        <span class="text-[11px] text-[var(--text-muted)] font-normal">IndiaFont Calligraphy</span>
       </a>
 
       <a 
