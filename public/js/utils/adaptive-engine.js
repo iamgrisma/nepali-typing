@@ -26,7 +26,7 @@ export const ADAPTIVE_ENGLISH_WORDS = [
   // I
   'imagine', 'inspire', 'inside', 'initial', 'limit', 'spirit', 'finish', 'citizen', 'listen', 'visual', 'silent', 'winter', 'liquid', 'impact', 'intent', 'invest',
   // J
-  'judge', 'journey', 'enjoy', 'project', 'major', 'object', 'inject', 'adjust', 'justice', 'jungle', 'jacket', 'junior', 'injury', 'jovial', 'junction', 'jargon',
+  'judge', 'journey', 'enjoy', 'project', 'major', 'object', 'inject', 'adjust', 'justice', 'jungle', 'jacket', 'junior', 'injury', 'jovial', 'junction', 'jargon', 'joint', 'job', 'join', 'joy', 'jump', 'jazz', 'jewel', 'joke', 'journal', 'journalist', 'jail', 'jam', 'jar', 'jaw', 'jelly', 'jeopardy', 'jog', 'jolt', 'juice', 'july', 'june', 'jumbo', 'jury', 'justify', 'subject', 'reject', 'adjacent', 'trajectory', 'objective', 'prejudice', 'rejoice', 'jealous', 'jubilant', 'judicious', 'juvenile',
   // K
   'strike', 'market', 'make', 'break', 'skill', 'weak', 'know', 'quick', 'risk', 'block', 'shock', 'check', 'pocket', 'jacket', 'blanket', 'knight', 'kernel',
   // L
@@ -123,9 +123,9 @@ export const DIAGNOSTIC_NEPALI_WORDS = [
 
 import { ALL_NEPALI_WORDS, ALL_ENGLISH_WORDS } from '../data/text-library.js';
 
-// Comprehensive Master Lexicon for Adaptive Drill Training (2,100+ NE, 1,600+ EN)
-export const MASTER_NEPALI_WORDS = ALL_NEPALI_WORDS;
-export const MASTER_ENGLISH_WORDS = ALL_ENGLISH_WORDS;
+// Comprehensive Master Lexicon for Adaptive Drill Training (curated high-yield weak keys + corpus words)
+export const MASTER_NEPALI_WORDS = Array.from(new Set([...ADAPTIVE_NEPALI_WORDS, ...ALL_NEPALI_WORDS]));
+export const MASTER_ENGLISH_WORDS = Array.from(new Set([...ADAPTIVE_ENGLISH_WORDS, ...ALL_ENGLISH_WORDS]));
 
 function buildInvertedIndex(wordList) {
   const index = {};
@@ -467,27 +467,58 @@ export function generateAdaptiveWords(options = {}) {
 
   const resultWords = [];
 
-  // Pick from top authentic sentences containing the targeted key(s)
-  if (scoredSentences.length > 0) {
-    const topSentences = scoredSentences.slice(0, Math.min(20, scoredSentences.length));
-    const shuffledSentences = [...topSentences].sort(() => 0.5 - Math.random());
-    for (const item of shuffledSentences) {
-      const tokens = item.sentence.split(/\s+/).filter(Boolean);
-      resultWords.push(...tokens);
-      if (resultWords.length >= targetCount) break;
+  // Determine quotas: High-density target words form the core of the drill (~70%)
+  const wordQuota = scoredWords.length > 0 ? Math.ceil(targetCount * 0.70) : 0;
+  const sentenceQuota = targetCount - wordQuota;
+
+  // 1. Gather high-density target words
+  const chosenWords = [];
+  if (scoredWords.length > 0) {
+    const topCandidates = scoredWords.slice(0, Math.min(80, scoredWords.length));
+    const shuffledCandidates = [...topCandidates].sort(() => 0.5 - Math.random());
+    let cIdx = 0;
+    while (chosenWords.length < wordQuota) {
+      chosenWords.push(shuffledCandidates[cIdx % shuffledCandidates.length].word);
+      cIdx++;
     }
   }
 
-  // If more words needed or sentences were scarce, weave in top high-density words
-  if (resultWords.length < targetCount && scoredWords.length > 0) {
-    const topCandidates = scoredWords.slice(0, Math.min(60, scoredWords.length));
-    while (resultWords.length < targetCount) {
-      const pool = (Math.random() < 0.75) 
-        ? topCandidates.slice(0, Math.ceil(topCandidates.length * 0.6)) 
-        : topCandidates;
-      const picked = pool[Math.floor(Math.random() * pool.length)].word;
-      resultWords.push(picked);
+  // 2. Gather authentic contextual sentence tokens with priority on high target-key density
+  const chosenSentenceTokens = [];
+  if (scoredSentences.length > 0 && sentenceQuota > 0) {
+    const topSentences = scoredSentences.slice(0, Math.min(15, scoredSentences.length));
+    const shuffledSentences = [...topSentences].sort(() => 0.5 - Math.random());
+    for (const item of shuffledSentences) {
+      const tokens = item.sentence.split(/\s+/).filter(Boolean);
+      chosenSentenceTokens.push(...tokens);
+      if (chosenSentenceTokens.length >= sentenceQuota) break;
     }
+  }
+
+  // 3. Interleave high-density words with contextual sentence tokens for natural motor rhythm
+  let wI = 0;
+  let sI = 0;
+  while (resultWords.length < targetCount && (wI < chosenWords.length || sI < chosenSentenceTokens.length)) {
+    const wordsToTake = Math.min(3, chosenWords.length - wI);
+    for (let k = 0; k < wordsToTake && resultWords.length < targetCount; k++) {
+      resultWords.push(chosenWords[wI++]);
+    }
+    const sentTokensToTake = Math.min(2, chosenSentenceTokens.length - sI);
+    for (let k = 0; k < sentTokensToTake && resultWords.length < targetCount; k++) {
+      resultWords.push(chosenSentenceTokens[sI++]);
+    }
+    if (sI >= chosenSentenceTokens.length && wI < chosenWords.length) {
+      resultWords.push(chosenWords[wI++]);
+    }
+    if (wI >= chosenWords.length && sI < chosenSentenceTokens.length) {
+      resultWords.push(chosenSentenceTokens[sI++]);
+    }
+  }
+
+  // If still under targetCount, pad with high-density words
+  while (resultWords.length < targetCount && scoredWords.length > 0) {
+    const pick = scoredWords[Math.floor(Math.random() * Math.min(40, scoredWords.length))].word;
+    resultWords.push(pick);
   }
 
   // Fallback if still empty
@@ -498,8 +529,8 @@ export function generateAdaptiveWords(options = {}) {
 
   // Preeti mode conversion and keyboard-safe sanitization
   if (lang === 'nepali_preeti') {
-    return sanitizePreetiWords(resultWords.slice(0, Math.max(targetCount, resultWords.length)).map(w => toPreeti(w)));
+    return sanitizePreetiWords(resultWords.slice(0, targetCount).map(w => toPreeti(w)));
   }
 
-  return resultWords.slice(0, Math.max(targetCount, resultWords.length));
+  return resultWords.slice(0, targetCount);
 }

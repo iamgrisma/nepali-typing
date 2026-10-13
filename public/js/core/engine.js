@@ -5,7 +5,7 @@
 import { state, playBeep } from './state.js';
 import { getWordsPool, getGraphemes, refillWords } from './words-pool.js';
 import { KEY_CODE_MAP } from '../data/keyboards.js';
-import { getWeakKeysAnalysis, generateAdaptiveWords, calculateTargetGoal, flushStrokeProfile } from '../utils/adaptive-engine.js';
+import { getWeakKeysAnalysis, generateAdaptiveWords, calculateTargetGoal, flushStrokeProfile, getStrokeProfile } from '../utils/adaptive-engine.js';
 import { analyzeTypingRun } from '../utils/stroke-analytics.js';
 import { getSpeedRank, checkCertificationPass } from '../utils/certificate-db.js';
 import { renderKeyboard, highlightTargetKey } from '../ui/keyboard-view.js';
@@ -328,33 +328,56 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
     }
   }
 
-  // Advance to next weakest key without interrupting the active typing session
-  const analysis = getWeakKeysAnalysis(state.lang, 4);
-  const remaining = analysis.keys.filter(k => k.char.toLowerCase() !== masteredKey.toLowerCase());
+  // Advance to next target key without interrupting the active typing session
+  let nextTargetKey = null;
+  let secondTargetKey = null;
 
-  if (remaining.length > 0) {
-    const nextWeak = remaining[0];
-    const secondWeak = remaining[1] || null;
-    state.adaptivePrimaryTarget = nextWeak.char;
-    state.adaptiveSecondaryTarget = secondWeak ? secondWeak.char : '';
-    state.targetWeakKeys = [nextWeak.char, ...(secondWeak ? [secondWeak.char] : [])];
+  if (state.targetWeakKeys && state.targetWeakKeys.length > 0) {
+    const unmasteredCustom = state.targetWeakKeys.filter(k => k.toLowerCase() !== masteredKey.toLowerCase());
+    if (unmasteredCustom.length > 0) {
+      nextTargetKey = unmasteredCustom[0];
+      secondTargetKey = unmasteredCustom[1] || null;
+      state.targetWeakKeys = unmasteredCustom;
+    }
+  }
 
-    const goal = calculateTargetGoal(nextWeak.accuracy);
+  if (!nextTargetKey) {
+    const analysis = getWeakKeysAnalysis(state.lang, 4);
+    const remaining = analysis.keys.filter(k => k.char.toLowerCase() !== masteredKey.toLowerCase());
+    if (remaining.length > 0) {
+      nextTargetKey = remaining[0].char;
+      secondTargetKey = remaining[1] ? remaining[1].char : null;
+      state.targetWeakKeys = [nextTargetKey, ...(secondTargetKey ? [secondTargetKey] : [])];
+    }
+  }
+
+  if (nextTargetKey) {
+    state.adaptivePrimaryTarget = nextTargetKey;
+    state.adaptiveSecondaryTarget = secondTargetKey || '';
+
+    const profile = getStrokeProfile();
+    const pData = profile[nextTargetKey.toLowerCase()];
+    let currentAcc = 50;
+    if (pData && pData.hits > 0) {
+      const errs = pData.errors || 0;
+      currentAcc = Math.max(0, Math.round((1 - errs / pData.hits) * 100));
+    }
+    const goal = calculateTargetGoal(currentAcc);
     state.adaptiveTargetGoal = goal;
 
-    const badgeLabel = nextWeak.accuracy >= 95 ? 'Perfection' : (nextWeak.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
-    const badgeColor = nextWeak.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (nextWeak.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
+    const badgeLabel = currentAcc >= 95 ? 'Perfection' : (currentAcc >= 88 ? 'Refinement' : 'Weak-Key');
+    const badgeColor = currentAcc >= 95 ? 'text-teal-400 bg-teal-500/20' : (currentAcc >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
 
     setTimeout(() => {
       if (targetTags) {
-        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${nextWeak.char}</b> (Current: ${nextWeak.accuracy}% ➔ Goal: ${goal}%)`;
+        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${nextTargetKey}</b> (Current: ${currentAcc}% ➔ Goal: ${goal}%)`;
       }
       const accDisp = document.getElementById('adaptive-acc-display');
       const goalDisp = document.getElementById('adaptive-goal-display');
       const nextDisp = document.getElementById('adaptive-next-display');
-      if (accDisp) accDisp.textContent = `${nextWeak.accuracy}%`;
+      if (accDisp) accDisp.textContent = `${currentAcc}%`;
       if (goalDisp) goalDisp.textContent = `${goal}%`;
-      if (nextDisp) nextDisp.textContent = secondWeak ? secondWeak.char.toUpperCase() : 'None';
+      if (nextDisp) nextDisp.textContent = secondTargetKey ? secondTargetKey.toUpperCase() : 'None';
     }, 1200);
 
     // SEAMLESS BUFFER RETARGETING:

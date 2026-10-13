@@ -230,7 +230,16 @@ import { Icon } from 'astro-icon/components';
     // Launch Drill in Workbench
     document.getElementById('launch-drill-workbench-btn')?.addEventListener('click', () => {
       const keys = activeTargetKeys.join(',');
-      window.location.href = `/?mode=adaptive&lang=${currentLang}&keys=${encodeURIComponent(keys)}`;
+      const benchUrls = {
+        english: '/english-typing-test',
+        nepali_unicode: '/nepali-traditional-typing-test',
+        nepali_traditional: '/nepali-traditional-typing-test',
+        nepali_romanized: '/romanized-nepali-typing-test',
+        nepali_preeti: '/preeti-typing-test'
+      };
+      const targetUrl = benchUrls[currentLang] || '/english-typing-test';
+      const targetLang = (currentLang === 'nepali_traditional') ? 'nepali_unicode' : currentLang;
+      window.location.href = `${targetUrl}?mode=adaptive&lang=${targetLang}&keys=${encodeURIComponent(keys)}`;
     });
 
     // Initialize

@@ -1,7 +1,7 @@
 /* Embedded AMS IndiaFont Calligraphy Font Face & Utility Classes */
 @font-face {
   font-family: "Font_ams";
-  src: local("AMS Mantra"), local("AMS Kirti"), local("AMS Aaditya"), local("AMS Calligraphy"), url("/fonts/ams-mantra.ttf") format("truetype");
+  src: local("AMS 1"), local("AMS1"), url("/fonts/ams-1.woff2") format("woff2"), url("/fonts/ams-1.ttf") format("truetype");
   font-display: swap;
 }
 
@@ -9,7 +9,7 @@
 [data-ams-visual="true"]:not(.eng-text):not([data-eng="true"]),
 .font-ams *:not(.eng-text):not([data-eng="true"]):not(.eng-text *):not([data-eng="true"] *),
 [data-ams-visual="true"] *:not(.eng-text):not([data-eng="true"]):not(.eng-text *):not([data-eng="true"] *) {
-  font-family: "Font_ams", "AMS Mantra", "AMS Kirti", "AMS Aaditya", "AMS Calligraphy", "Indiafont", monospace !important;
+  font-family: "Font_ams", "AMS 1", "AMS1", "AMS Mantra", "AMS Kirti", "Indiafont", monospace !important;
   letter-spacing: 0.02em;
 }
 

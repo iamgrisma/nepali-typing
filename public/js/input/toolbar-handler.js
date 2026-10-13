@@ -660,6 +660,17 @@ export function bindToolbarEvents() {
     const qMode = params.get('mode') || wb?.dataset.defaultMode;
     const qExam = params.get('exam');
     const qDuration = params.get('duration') || wb?.dataset.defaultDuration;
+    const qKeys = params.get('keys');
+
+    if (qKeys) {
+      const parsedKeys = qKeys.split(/[\s,]+/).map(k => k.trim().toLowerCase()).filter(Boolean);
+      if (parsedKeys.length > 0) {
+        state.targetWeakKeys = parsedKeys;
+        state.adaptivePrimaryTarget = parsedKeys[0];
+        state.adaptiveSecondaryTarget = parsedKeys[1] || '';
+        state.isAdaptiveDiagnostic = false;
+      }
+    }
 
     if (qLang && ['nepali_unicode', 'nepali_romanized', 'nepali_preeti', 'english'].includes(qLang)) {
       state.lang = qLang;

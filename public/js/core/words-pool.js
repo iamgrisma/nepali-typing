@@ -11,7 +11,8 @@ import {
   getWeakKeysAnalysis, 
   generateAdaptiveWords, 
   generateDiagnosticWords,
-  calculateTargetGoal 
+  calculateTargetGoal,
+  getStrokeProfile
 } from '../utils/adaptive-engine.js';
 import { 
   getRandomStory, 
@@ -81,13 +82,26 @@ export function getWordsPool() {
 
   // 3. ADAPTIVE DRILL MODE: Targeted high-density weak keys
   if (state.mode === 'adaptive') {
-    const analysis = getWeakKeysAnalysis(state.lang, 3);
     const targetTags = document.getElementById('adaptive-target-tags');
     const metaPill = document.getElementById('adaptive-meta-pill');
     const accDisp = document.getElementById('adaptive-acc-display');
     const nextDisp = document.getElementById('adaptive-next-display');
 
-    if (!analysis.hasEnoughData || analysis.keys.length === 0) {
+    // Priority 1: Use explicitly targeted weak keys (from URL or user selection)
+    let primaryKey = (state.targetWeakKeys && state.targetWeakKeys.length > 0) ? state.targetWeakKeys[0] : null;
+    let secondaryKey = (state.targetWeakKeys && state.targetWeakKeys.length > 1) ? state.targetWeakKeys[1] : null;
+
+    // Priority 2: If no explicit target keys, dynamically analyze keystroke history
+    if (!primaryKey) {
+      const analysis = getWeakKeysAnalysis(state.lang, 3);
+      if (analysis.hasEnoughData && analysis.keys.length > 0) {
+        primaryKey = analysis.keys[0].char;
+        secondaryKey = analysis.keys[1] ? analysis.keys[1].char : null;
+        state.targetWeakKeys = [primaryKey, ...(secondaryKey ? [secondaryKey] : [])];
+      }
+    }
+
+    if (!primaryKey) {
       state.isAdaptiveDiagnostic = true;
       state.targetWeakKeys = [];
       state.adaptivePrimaryTarget = '';
@@ -98,27 +112,34 @@ export function getWordsPool() {
       list = generateDiagnosticWords(state.lang, 35);
     } else {
       state.isAdaptiveDiagnostic = false;
-      const primary = analysis.keys[0];
-      const secondary = analysis.keys[1] || null;
-      state.adaptivePrimaryTarget = primary.char;
-      state.adaptiveSecondaryTarget = secondary ? secondary.char : '';
-      state.targetWeakKeys = [primary.char, ...(secondary ? [secondary.char] : [])];
+      state.adaptivePrimaryTarget = primaryKey;
+      state.adaptiveSecondaryTarget = secondaryKey || '';
+      if (!state.targetWeakKeys || state.targetWeakKeys.length === 0) {
+        state.targetWeakKeys = [primaryKey, ...(secondaryKey ? [secondaryKey] : [])];
+      }
 
-      const goal = calculateTargetGoal(primary.accuracy);
+      const profile = getStrokeProfile();
+      const pData = profile[primaryKey.toLowerCase()];
+      let currentAcc = 50;
+      if (pData && pData.hits > 0) {
+        const errs = pData.errors || 0;
+        currentAcc = Math.max(0, Math.round((1 - errs / pData.hits) * 100));
+      }
+      const goal = calculateTargetGoal(currentAcc);
       state.adaptiveTargetGoal = goal;
 
-      const badgeLabel = primary.accuracy >= 95 ? 'Perfection' : (primary.accuracy >= 88 ? 'Refinement' : 'Weak-Key');
-      const badgeColor = primary.accuracy >= 95 ? 'text-teal-400 bg-teal-500/20' : (primary.accuracy >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
+      const badgeLabel = currentAcc >= 95 ? 'Perfection' : (currentAcc >= 88 ? 'Refinement' : 'Weak-Key');
+      const badgeColor = currentAcc >= 95 ? 'text-teal-400 bg-teal-500/20' : (currentAcc >= 88 ? 'text-blue-400 bg-blue-500/20' : 'text-amber-400 bg-amber-500/20');
 
       if (targetTags) {
-        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${primary.char}</b> (Current: ${primary.accuracy}% ➔ Goal: ${goal}%)`;
+        targetTags.innerHTML = `<span class="${badgeColor} text-[10px] font-bold uppercase px-1.5 py-0.5 rounded tracking-wide">${badgeLabel}</span> Target: <b class="${badgeColor} font-mono text-xs uppercase px-1.5 py-0.5 rounded">${primaryKey}</b> (Current: ${currentAcc}% ➔ Goal: ${goal}%)`;
       }
       if (metaPill) {
         metaPill.classList.remove('hidden');
-        if (accDisp) accDisp.textContent = `${primary.accuracy}%`;
+        if (accDisp) accDisp.textContent = `${currentAcc}%`;
         const goalDisp = document.getElementById('adaptive-goal-display');
         if (goalDisp) goalDisp.textContent = `${goal}%`;
-        if (nextDisp) nextDisp.textContent = secondary ? secondary.char.toUpperCase() : 'None';
+        if (nextDisp) nextDisp.textContent = secondaryKey ? secondaryKey.toUpperCase() : 'None';
       }
 
       list = generateAdaptiveWords({
