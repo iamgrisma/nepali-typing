@@ -380,55 +380,9 @@ export function triggerAdaptiveMastery(masteredKey, achievedAcc) {
       if (nextDisp) nextDisp.textContent = secondTargetKey ? secondTargetKey.toUpperCase() : 'None';
     }, 1200);
 
-    // SEAMLESS BUFFER RETARGETING:
-    // Keep ongoing sentence and at least the next 5 words completely untouched.
-    const curIdx = state.wordIdx;
-    let sentenceEndIdx = -1;
-    for (let i = curIdx; i < Math.min(curIdx + 15, state.words.length); i++) {
-      const w = state.words[i] || '';
-      if (/[।\.?!]/.test(w)) {
-        sentenceEndIdx = i;
-        break;
-      }
-    }
-
-    const safeIdx = Math.max(curIdx + 5, sentenceEndIdx !== -1 ? sentenceEndIdx + 1 : curIdx + 5);
-
-    // Generate new words for the new target key
-    const newWords = generateAdaptiveWords({
-      lang: state.lang,
-      targetKeys: state.targetWeakKeys,
-      targetCount: 35
-    });
-
-    // Splice in newWords silently after safeIdx
-    state.words = [...state.words.slice(0, safeIdx), ...newWords];
-
-    // Silently remove DOM word nodes at and beyond safeIdx, then append new ones
-    const container = document.getElementById('words-container');
-    if (container) {
-      const existingSpans = container.querySelectorAll('.word-node');
-      existingSpans.forEach(span => {
-        const idx = parseInt(span.dataset.wordIndex, 10);
-        if (idx >= safeIdx) {
-          span.remove();
-        }
-      });
-
-      newWords.forEach((w, offset) => {
-        const wIdx = safeIdx + offset;
-        const wSpan = document.createElement('span');
-        wSpan.className = 'word-node';
-        wSpan.dataset.wordIndex = `${wIdx}`;
-        const clusters = getGraphemes(w, state.lang);
-        wSpan.innerHTML = clusters.map((cl, cI) => `<span class="char-node" data-char-index="${cI}">${cl}</span>`).join('');
-        container.appendChild(wSpan);
-      });
-    }
-
     setTimeout(() => {
       isMasteryTransitioning = false;
-    }, 800);
+    }, 1200);
   } else {
     if (targetTags) {
       targetTags.innerHTML = `<span class="text-emerald-400 font-bold">🏆 All weak keys mastered (>90%)! Great work!</span>`;

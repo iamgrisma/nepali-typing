@@ -467,58 +467,35 @@ export function generateAdaptiveWords(options = {}) {
 
   const resultWords = [];
 
-  // Determine quotas: High-density target words form the core of the drill (~70%)
-  const wordQuota = scoredWords.length > 0 ? Math.ceil(targetCount * 0.70) : 0;
-  const sentenceQuota = targetCount - wordQuota;
-
-  // 1. Gather high-density target words
-  const chosenWords = [];
-  if (scoredWords.length > 0) {
-    const topCandidates = scoredWords.slice(0, Math.min(80, scoredWords.length));
-    const shuffledCandidates = [...topCandidates].sort(() => 0.5 - Math.random());
-    let cIdx = 0;
-    while (chosenWords.length < wordQuota) {
-      chosenWords.push(shuffledCandidates[cIdx % shuffledCandidates.length].word);
-      cIdx++;
-    }
-  }
-
-  // 2. Gather authentic contextual sentence tokens with priority on high target-key density
-  const chosenSentenceTokens = [];
-  if (scoredSentences.length > 0 && sentenceQuota > 0) {
-    const topSentences = scoredSentences.slice(0, Math.min(15, scoredSentences.length));
-    const shuffledSentences = [...topSentences].sort(() => 0.5 - Math.random());
-    for (const item of shuffledSentences) {
+  if (scoredSentences.length > 0) {
+    // Select authentic sentences from language corpus that contain words with the target stroke
+    const topCandidates = scoredSentences.slice(0, Math.min(30, scoredSentences.length));
+    const shuffled = [...topCandidates].sort(() => 0.5 - Math.random());
+    let sIdx = 0;
+    while (resultWords.length < targetCount && sIdx < shuffled.length * 3) {
+      const item = shuffled[sIdx % shuffled.length];
       const tokens = item.sentence.split(/\s+/).filter(Boolean);
-      chosenSentenceTokens.push(...tokens);
-      if (chosenSentenceTokens.length >= sentenceQuota) break;
+      resultWords.push(...tokens);
+      sIdx++;
     }
   }
 
-  // 3. Interleave high-density words with contextual sentence tokens for natural motor rhythm
-  let wI = 0;
-  let sI = 0;
-  while (resultWords.length < targetCount && (wI < chosenWords.length || sI < chosenSentenceTokens.length)) {
-    const wordsToTake = Math.min(3, chosenWords.length - wI);
-    for (let k = 0; k < wordsToTake && resultWords.length < targetCount; k++) {
-      resultWords.push(chosenWords[wI++]);
+  // Fallback: If no sentences contain the stroke, use high-density target words
+  if (resultWords.length === 0 && scoredWords.length > 0) {
+    const topWords = scoredWords.slice(0, Math.min(50, scoredWords.length)).map(sw => sw.word);
+    const shuffled = [...topWords].sort(() => 0.5 - Math.random());
+    let wIdx = 0;
+    while (resultWords.length < targetCount && wIdx < shuffled.length * 3) {
+      resultWords.push(shuffled[wIdx % shuffled.length]);
+      wIdx++;
     }
-    const sentTokensToTake = Math.min(2, chosenSentenceTokens.length - sI);
-    for (let k = 0; k < sentTokensToTake && resultWords.length < targetCount; k++) {
-      resultWords.push(chosenSentenceTokens[sI++]);
+    if (resultWords.length > 0) {
+      const last = resultWords[resultWords.length - 1];
+      const term = (lang === 'english' ? '.' : '।');
+      if (!last.endsWith(term)) {
+        resultWords[resultWords.length - 1] = last + term;
+      }
     }
-    if (sI >= chosenSentenceTokens.length && wI < chosenWords.length) {
-      resultWords.push(chosenWords[wI++]);
-    }
-    if (wI >= chosenWords.length && sI < chosenSentenceTokens.length) {
-      resultWords.push(chosenSentenceTokens[sI++]);
-    }
-  }
-
-  // If still under targetCount, pad with high-density words
-  while (resultWords.length < targetCount && scoredWords.length > 0) {
-    const pick = scoredWords[Math.floor(Math.random() * Math.min(40, scoredWords.length))].word;
-    resultWords.push(pick);
   }
 
   // Fallback if still empty
@@ -529,8 +506,8 @@ export function generateAdaptiveWords(options = {}) {
 
   // Preeti mode conversion and keyboard-safe sanitization
   if (lang === 'nepali_preeti') {
-    return sanitizePreetiWords(resultWords.slice(0, targetCount).map(w => toPreeti(w)));
+    return sanitizePreetiWords(resultWords.map(w => toPreeti(w)));
   }
 
-  return resultWords.slice(0, targetCount);
+  return resultWords;
 }
