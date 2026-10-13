@@ -9,8 +9,10 @@ export default defineConfig({
   integrations: [icon()],
   output: 'static',
   site: 'https://typing.topnepali.com',
+  trailingSlash: 'never',
   compressHTML: true,
   build: {
+    format: 'file',
     inlineStylesheets: 'auto',
   },
   server: {
