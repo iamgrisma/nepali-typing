@@ -40,15 +40,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     });
   }
 
-  // 2. Trailing slash normalization: in-memory rewrite (zero redirect hops)
-  let requestToProcess = context.request;
-  if (url.pathname !== '/' && url.pathname.endsWith('/')) {
-    const cleanUrl = new URL(url.pathname.replace(/\/+$/, '') + url.search, url.origin);
-    requestToProcess = new Request(cleanUrl, context.request);
-  }
-
-  // 3. Process downstream response
-  const response = await context.next(requestToProcess);
+  // 2. Process downstream response
+  const response = await context.next();
 
   // 4. Attach strict noindex headers & meta tags on non-production hosts
   if (isPreview) {
