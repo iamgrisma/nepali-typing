@@ -81,7 +81,7 @@ const faqSchema = {
   schema={[softwareSchema, faqSchema]}
   activeNav="traditional"
 >
-  <div class="container px-4">
+  <div class="container">
     
     <!-- Hero Introduction Header -->
     <header class="text-center max-w-3xl mx-auto pt-2 pb-5">
@@ -105,6 +105,26 @@ const faqSchema = {
 
     <!-- Interactive Hardware Keyboard Visualizer -->
     <KeyboardVisualizer defaultLang="nepali_unicode" />
+
+    <!-- Download Layout Driver Cross-Link Card -->
+    <div class="mt-8 p-4 sm:p-5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-rose-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xs">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold text-[10px] uppercase tracking-wider">Official Drivers</span>
+          <span class="text-xs text-[var(--text-secondary)] font-medium">Windows, macOS &amp; Linux (Ubuntu, Fedora, Arch)</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-[var(--text-primary)]">
+          Need the official Nepali Traditional keyboard layout driver?
+        </h3>
+        <p class="text-xs text-[var(--text-secondary)] max-w-xl mt-0.5">
+          Download MPP Traditional Unicode drivers, Alt+Shift language switching guides, and step-by-step setup manuals on Top Nepali Fonts.
+        </p>
+      </div>
+      <a href="https://fonts.topnepali.com/nepali-unicode-traditional" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-xs font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm shrink-0">
+        <span>Download Layout Drivers</span>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </a>
+    </div>
 
     <!-- Comprehensive Educational & SEO Guide for Traditional Unicode -->
     <section class="mt-10 pt-8 border-t border-[var(--border-subtle)] space-y-10">

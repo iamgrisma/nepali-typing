@@ -4,15 +4,39 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
 
-# Long-term caching for fonts
+# Long-term immutable caching for fonts (Preeti, Kokila, AMS)
 /fonts/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 
-# Long-term caching for hashed Astro assets
+# Long-term immutable caching for hashed Astro assets
 /_astro/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
+
+# Long-term immutable caching for logos and device icons
+/*.svg
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
+/*.png
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
+/*.ico
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
+/*.webp
+  Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: public, max-age=31536000, immutable
 
 # Cache control for static JavaScript
 /js/*
-  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800
+  CDN-Cache-Control: public, max-age=604800
+  Cloudflare-CDN-Cache-Control: public, max-age=604800

@@ -10,7 +10,7 @@ const { activeNav = 'test' } = Astro.props;
 ---
 
 <header id="site-header" class="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
-  <div class="container flex items-center justify-between h-16 px-4">
+  <div class="container flex items-center justify-between h-16">
     
     <!-- Logo & Brand -->
     <a href="/" class="flex items-center gap-2.5 text-decoration-none group shrink-0 mr-3 sm:mr-4" title="TypeshalaBench Home">
@@ -158,6 +158,17 @@ const { activeNav = 'test' } = Astro.props;
         title="Biometric Typing Analytics"
       >
         <span>Analytics</span>
+      </a>
+
+      <a 
+        href="https://fonts.topnepali.com" 
+        target="_blank"
+        rel="noopener"
+        class="px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap text-[var(--text-secondary)] hover:text-rose-600 hover:bg-[var(--bg-surface-subtle)]"
+        title="Explore 2,100+ Free Nepali & Devanagari Fonts"
+      >
+        <svg class="w-3.5 h-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+        <span>Fonts</span>
       </a>
     </nav>
 
@@ -326,6 +337,21 @@ const { activeNav = 'test' } = Astro.props;
         class={`px-3 py-2.5 rounded-xl transition-colors ${activeNav === 'analytics' ? 'bg-[var(--bg-surface-subtle)] text-blue-600 dark:text-blue-400 font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-subtle)]'}`}
       >
         Analytics
+      </a>
+
+      <div class="my-1 border-t border-[var(--border-subtle)]"></div>
+
+      <a 
+        href="https://fonts.topnepali.com" 
+        target="_blank"
+        rel="noopener"
+        class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors text-rose-600 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-950/50"
+      >
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+          <span>Download 2,100+ Fonts (TNF)</span>
+        </div>
+        <span class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-rose-500/15 text-rose-600 font-bold">FontsDir &rarr;</span>
       </a>
     </div>
   </div>

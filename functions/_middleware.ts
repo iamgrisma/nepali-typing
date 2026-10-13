@@ -40,13 +40,44 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     });
   }
 
-  // 2. Process downstream response
-  const response = await context.next();
+  // 2. Trailing slash normalization: in-memory rewrite (zero redirect hops)
+  let requestToProcess = context.request;
+  if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+    const cleanUrl = new URL(url.pathname.replace(/\/+$/, '') + url.search, url.origin);
+    requestToProcess = new Request(cleanUrl, context.request);
+  }
 
-  // 3. Attach strict noindex headers on non-production hosts
+  // 3. Process downstream response
+  const response = await context.next(requestToProcess);
+
+  // 4. Attach strict noindex headers & meta tags on non-production hosts
   if (isPreview) {
     const newHeaders = new Headers(response.headers);
     newHeaders.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      const rewriter = new HTMLRewriter()
+        .on('meta[name="robots"]', {
+          element(el) {
+            el.setAttribute('content', 'noindex, nofollow, noarchive, nosnippet');
+          },
+        })
+        .on('head', {
+          element(el) {
+            el.append('<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet" />', { html: true });
+          },
+        });
+
+      return rewriter.transform(
+        new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: newHeaders,
+        })
+      );
+    }
+
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,

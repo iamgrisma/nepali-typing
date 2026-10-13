@@ -8,6 +8,7 @@ interface Props {
   ogType?: string;
   activeNav?: string;
   schema?: Record<string, any> | Array<Record<string, any>>;
+  robots?: string;
 }
 
 const {
@@ -18,7 +19,8 @@ const {
   ogImage = 'https://img.topnepali.com/typing.tn/og/default-svg.webp',
   ogType = 'website',
   activeNav = 'test',
-  schema
+  schema,
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
 } = Astro.props;
 
 const hasCustomWebAppSchema = Array.isArray(schema)
@@ -36,6 +38,11 @@ const defaultWebApplicationSchema = {
   "url": canonicalUrl,
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "All",
+  "author": {
+    "@type": "Organization",
+    "name": "TopNepali",
+    "url": "https://typing.topnepali.com"
+  },
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -74,7 +81,7 @@ const breadcrumbSchema = {
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content="TopNepali / Grisma" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content={robots} />
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph / Social Media -->
@@ -119,8 +126,12 @@ const breadcrumbSchema = {
       />
     </noscript>
 
-    <!-- Local Font Preload (Only Primary Devanagari Font) -->
-    <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
+    <!-- Contextual Critical Font Preloads (Optimized byte payload & eliminates FOUT/CLS) -->
+    {activeNav === 'preeti' ? (
+      <link rel="preload" href="/fonts/preeti.ttf" as="font" type="font/ttf" crossorigin />
+    ) : (activeNav !== 'english' && !['converter', 'ams-converter', 'verify', 'privacy', 'terms', 'about', 'contact'].includes(activeNav)) ? (
+      <link rel="preload" href="/fonts/kokila.ttf" as="font" type="font/ttf" crossorigin />
+    ) : null}
 
     <!-- Module Preloads for Instant Script Startup without Waterfall Chains -->
     <link rel="modulepreload" href="/js/typing-app.js" />

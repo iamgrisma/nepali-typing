@@ -252,28 +252,21 @@ input, textarea {
   color: inherit;
 }
 
-/* Container */
+/* Container — Unified with TopNepali Network responsive gutters (px-4 sm:px-6) */
 .container {
   width: 100%;
   max-width: 1180px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
   .container {
-    padding-left: 1.75rem;
-    padding-right: 1.75rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 
@@ -1337,6 +1330,13 @@ kbd {
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .converter-wrapper {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 
 .converter-toolbar {
