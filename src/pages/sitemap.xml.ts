@@ -5,9 +5,10 @@ export const prerender = true;
 export const GET: APIRoute = async () => {
   const currentDate = new Date().toISOString().split('T')[0];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://typing.topnepali.com/</loc>
+    <loc>https://typing.topnepali.com</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -125,7 +126,8 @@ export const GET: APIRoute = async () => {
   return new Response(sitemap, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=86400',
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+      'Cloudflare-CDN-Cache-Control': 'max-age=86400',
     },
   });
 };

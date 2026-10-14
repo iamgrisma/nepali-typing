@@ -17,8 +17,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     hostname === 'localhost' ||
     hostname === '127.0.0.1';
 
-  // 0. Instant bot shield (0ms)
-  if (BLOCKED_BOT_REGEX.test(userAgent)) {
+  // 0. Instant bot shield (0ms) - Never block sitemaps
+  if (BLOCKED_BOT_REGEX.test(userAgent) && !url.pathname.startsWith('/sitemap')) {
     return new Response('Access Denied: Automated scraping prohibited.', {
       status: 403,
       headers: {
