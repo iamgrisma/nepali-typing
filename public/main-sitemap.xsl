@@ -11,200 +11,315 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style type="text/css">
-          body {
-            font-size: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+          * {
+            box-sizing: border-box;
             margin: 0;
-            color: #545353;
-            background: #fff;
+            padding: 0;
           }
-          a {
-            color: #05809e;
-            text-decoration: none;
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 2rem 1rem;
+            line-height: 1.5;
           }
-          a:hover {
-            text-decoration: underline;
+          .page-card {
+            max-width: 76rem;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            border: 1px solid #e2e8f0;
+          }
+          .header-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 2.25rem 2.5rem;
+          }
+          .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+          }
+          .network-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.075em;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            color: #ffffff;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
           }
           h1 {
-            font-size: 24px;
-            font-family: Verdana, Geneva, sans-serif;
-            font-weight: normal;
-            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
           }
-          #description {
-            background-color: #4275f4;
-            padding: 20px 40px;
-            color: #fff;
-            padding: 30px 30px 20px;
+          p.lead {
+            font-size: 0.95rem;
+            color: #e0e7ff;
+            max-width: 50rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
           }
-          #description h1,
-          #description p,
-          #description a {
-            color: #fff;
-            margin: 0;
-            font-size: 1.1em;
+          .quick-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.85rem;
           }
-          #description h1 {
-            font-size: 2em;
-            margin-bottom: 1em;
+          .quick-links a {
+            color: #ffffff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            opacity: 0.95;
+            transition: opacity 0.15s ease;
           }
-          #description p {
-            margin-top: 5px;
+          .quick-links a:hover {
+            opacity: 1;
           }
-          #description a {
-            border-bottom: 1px dotted;
-            color: #fff;
+          .content-body {
+            padding: 2rem 2.5rem;
           }
-          #content {
-            padding: 20px 30px;
-            background: #fff;
-            max-width: 75%;
-            margin: 0 auto;
+          .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.875rem 1.25rem;
+            margin-bottom: 1.75rem;
+            font-size: 0.9rem;
+            color: #475569;
           }
-          @media (max-width: 768px) {
-            #content {
-              max-width: 100%;
-              padding: 15px;
-            }
-            #description {
-              padding: 20px 15px;
-            }
+          .stats-bar strong {
+            color: #0f172a;
           }
-          .expl {
-            margin-bottom: 15px;
+          .back-link {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
           }
-          .expl a {
-            font-weight: bold;
+          .back-link:hover {
+            text-decoration: underline;
           }
           .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
           }
           table {
-            border: none;
-            border-collapse: collapse;
-            font-size: .9em;
             width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            text-align: left;
           }
           th {
-            background-color: #4275f4;
-            color: #fff;
-            text-align: left;
-            padding: 15px 10px;
-            font-size: 14px;
-            cursor: pointer;
+            background-color: #f8fafc;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.875rem 1.25rem;
+            border-bottom: 1px solid #cbd5e1;
             white-space: nowrap;
           }
           td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 0.875rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+          }
+          tr:nth-child(even) {
+            background-color: #fafbfc;
+          }
+          tr:hover {
+            background-color: #f0f7ff;
+          }
+          a.item-link {
+            color: #2563eb;
+            font-weight: 500;
+            text-decoration: none;
             word-break: break-all;
           }
-          tbody tr:nth-child(even) {
-            background-color: #f7f7f7;
+          a.item-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
           }
-          tbody tr:hover {
-            background-color: #f0f4ff;
+          .date-cell {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.8rem;
+            color: #64748b;
+            white-space: nowrap;
           }
-          table td a {
-            display: block;
+          .footer-bar {
+            padding: 1.25rem 2.5rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.825rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
           }
-          table td a img {
-            max-height: 30px;
-            margin: 6px 3px;
+          .footer-bar a {
+            color: #2563eb;
+            text-decoration: none;
+          }
+          .footer-bar a:hover {
+            text-decoration: underline;
+          }
+          @media (max-width: 768px) {
+            body {
+              padding: 0.75rem 0.5rem;
+            }
+            .header-banner {
+              padding: 1.5rem 1.25rem;
+            }
+            .content-body {
+              padding: 1.25rem 1rem;
+            }
+            .footer-bar {
+              padding: 1rem 1.25rem;
+            }
+            h1 {
+              font-size: 1.5rem;
+            }
+            th, td {
+              padding: 0.75rem 0.875rem;
+            }
           }
         </style>
       </head>
       <body>
-        <div id="description">
-          <h1>XML Sitemap</h1>
-          <p>
-            This XML Sitemap is generated by <a href="https://rankmath.com/" target="_blank" rel="noopener">Rank Math WordPress SEO Plugin</a>. It is what search engines like Google use to crawl and re-crawl posts/pages/products/images/archives on your website.
-          </p>
-          <p>
-            Learn more about <a href="https://sitemaps.org" target="_blank" rel="noopener">XML Sitemaps</a>.
-          </p>
-        </div>
-        <div id="content">
-          <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &gt; 0">
-            <p class="expl">
-              This XML Sitemap Index file contains <strong><xsl:value-of select="count(sitemap:sitemapindex/sitemap:sitemap)"/></strong> sitemaps.
-            </p>
-            <div class="table-wrapper">
-              <table id="sitemap" cellpadding="3">
-                <thead>
-                  <tr>
-                    <th width="75%">Sitemap</th>
-                    <th width="25%">Last Modified</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <xsl:for-each select="sitemap:sitemapindex/sitemap:sitemap">
-                    <xsl:variable name="sitemapURL">
-                      <xsl:value-of select="sitemap:loc"/>
-                    </xsl:variable>
-                    <tr>
-                      <td>
-                        <a href="{$sitemapURL}"><xsl:value-of select="sitemap:loc"/></a>
-                      </td>
-                      <td>
-                        <xsl:choose>
-                          <xsl:when test="string-length(sitemap:lastmod) &gt; 10">
-                            <xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"/>
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <xsl:value-of select="sitemap:lastmod"/>
-                          </xsl:otherwise>
-                        </xsl:choose>
-                      </td>
-                    </tr>
-                  </xsl:for-each>
-                </tbody>
-              </table>
+        <div class="page-card">
+          <div class="header-banner">
+            <div class="badge-row">
+              <span class="network-badge">TOP NEPALI TYPING</span>
             </div>
-          </xsl:if>
-          <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &lt; 1">
-            <p class="expl">
-              This XML Sitemap contains <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> URLs.
+            <h1>XML Sitemap</h1>
+            <p class="lead">
+              This is the official XML sitemap for Top Nepali Typing, provided to assist search engine crawlers (Google, Bing, Yahoo) in discovering and indexing typing tests, conversion tools, and guides.
             </p>
-            <p class="expl">
-              <a href="https://topnepali.com/sitemap.xml">&#8592; Top Nepali Sitemap Index</a>
-            </p>
-            <div class="table-wrapper">
-              <table id="sitemap" cellpadding="3">
-                <thead>
-                  <tr>
-                    <th width="75%">URL</th>
-                    <th title="Last Modification Time" width="25%">Last Mod.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <xsl:for-each select="sitemap:urlset/sitemap:url">
-                    <tr>
-                      <td>
-                        <xsl:variable name="itemURL">
-                          <xsl:value-of select="sitemap:loc"/>
-                        </xsl:variable>
-                        <a href="{$itemURL}">
-                          <xsl:value-of select="sitemap:loc"/>
-                        </a>
-                      </td>
-                      <td>
-                        <xsl:choose>
-                          <xsl:when test="string-length(sitemap:lastmod) &gt; 10">
-                            <xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"/>
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <xsl:value-of select="sitemap:lastmod"/>
-                          </xsl:otherwise>
-                        </xsl:choose>
-                      </td>
-                    </tr>
-                  </xsl:for-each>
-                </tbody>
-              </table>
+            <div class="quick-links">
+              <a href="https://typing.topnepali.com">Typing Home</a>
+              <span>&#8226;</span>
+              <a href="https://topnepali.com">Top Nepali Home</a>
+              <span>&#8226;</span>
+              <a href="https://topnepali.com/sitemap.xml">Network Sitemap Index</a>
+              <span>&#8226;</span>
+              <a href="https://sitemaps.org" target="_blank" rel="noopener">About XML Sitemaps</a>
             </div>
-          </xsl:if>
+          </div>
+          
+          <div class="content-body">
+            <!-- Sitemap Index View -->
+            <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &gt; 0">
+              <div class="stats-bar">
+                <span>This Sitemap Index contains <strong><xsl:value-of select="count(sitemap:sitemapindex/sitemap:sitemap)"/></strong> sub-sitemaps.</span>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 75%;">Sitemap Resource</th>
+                      <th style="width: 25%;">Last Modified</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <xsl:for-each select="sitemap:sitemapindex/sitemap:sitemap">
+                      <xsl:variable name="sitemapURL">
+                        <xsl:value-of select="sitemap:loc"/>
+                      </xsl:variable>
+                      <tr>
+                        <td>
+                          <a class="item-link" href="{$sitemapURL}">
+                            <xsl:value-of select="sitemap:loc"/>
+                          </a>
+                        </td>
+                        <td class="date-cell">
+                          <xsl:choose>
+                            <xsl:when test="string-length(sitemap:lastmod) &gt; 10">
+                              <xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="sitemap:lastmod"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </tbody>
+                </table>
+              </div>
+            </xsl:if>
+
+            <!-- URL Set View -->
+            <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &lt; 1">
+              <div class="stats-bar">
+                <span>This Sitemap contains <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> indexed URLs.</span>
+                <a href="https://topnepali.com/sitemap.xml" class="back-link">&#8592; Network Sitemap Index</a>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 75%;">URL Location</th>
+                      <th style="width: 25%;">Last Modified</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <xsl:for-each select="sitemap:urlset/sitemap:url">
+                      <xsl:variable name="itemURL">
+                        <xsl:value-of select="sitemap:loc"/>
+                      </xsl:variable>
+                      <tr>
+                        <td>
+                          <a class="item-link" href="{$itemURL}">
+                            <xsl:value-of select="sitemap:loc"/>
+                          </a>
+                        </td>
+                        <td class="date-cell">
+                          <xsl:choose>
+                            <xsl:when test="string-length(sitemap:lastmod) &gt; 10">
+                              <xsl:value-of select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="sitemap:lastmod"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </td>
+                      </tr>
+                    </xsl:for-each>
+                  </tbody>
+                </table>
+              </div>
+            </xsl:if>
+          </div>
+
+          <div class="footer-bar">
+            <span>Top Nepali Typing &#8226; Free Online Typing Tests &amp; Tools</span>
+            <span><a href="https://typing.topnepali.com">typing.topnepali.com</a></span>
+          </div>
         </div>
       </body>
     </html>
