@@ -23,6 +23,20 @@ const {
   robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
 } = Astro.props;
 
+// Enforce non-trailing slash canonical URLs (except root '/')
+function sanitizeCanonical(rawUrl: string): string {
+  try {
+    const u = new URL(rawUrl);
+    if (u.pathname !== '/' && u.pathname.endsWith('/')) {
+      u.pathname = u.pathname.replace(/\/+$/, '');
+    }
+    return u.toString();
+  } catch {
+    return rawUrl.length > 1 ? rawUrl.replace(/\/+$/, '') : rawUrl;
+  }
+}
+const canonical = sanitizeCanonical(canonicalUrl);
+
 const hasCustomWebAppSchema = Array.isArray(schema)
   ? schema.some((s: any) => s?.['@type'] === 'WebApplication' || s?.['@type'] === 'SoftwareApplication')
   : ((schema as any)?.['@type'] === 'WebApplication' || (schema as any)?.['@type'] === 'SoftwareApplication');
@@ -35,7 +49,7 @@ const defaultWebApplicationSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "Typeshala Bench — Nepali & English Typing Platform",
-  "url": canonicalUrl,
+  "url": canonical,
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "All",
   "author": {
@@ -62,11 +76,11 @@ const breadcrumbSchema = {
       "name": "Home",
       "item": "https://typing.topnepali.com"
     },
-    ...(canonicalUrl !== 'https://typing.topnepali.com' ? [{
+    ...(canonical !== 'https://typing.topnepali.com' ? [{
       "@type": "ListItem",
       "position": 2,
       "name": title.split('—')[0].trim(),
-      "item": canonicalUrl
+      "item": canonical
     }] : [])
   ]
 };
@@ -82,12 +96,12 @@ const breadcrumbSchema = {
     <meta name="keywords" content={keywords} />
     <meta name="author" content="TopNepali / Grisma" />
     <meta name="robots" content={robots} />
-    <link rel="canonical" href={canonicalUrl} />
+    <link rel="canonical" href={canonical} />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:site_name" content="TopNepali Typing Platform" />
     <meta property="og:type" content={ogType} />
-    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />

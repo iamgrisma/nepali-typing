@@ -1,7 +1,7 @@
 ---
 // TopNepaliNetwork.astro — Ultra-lightweight, zero-emoji, minimal DOM 9-dot launcher
 interface Props {
-  currentApp?: 'blog' | 'tools' | 'typing' | 'fonts' | 'share' | 'election' | 'constitution';
+  currentApp?: 'blog' | 'tools' | 'typing' | 'fonts' | 'share' | 'election' | 'constitution' | 'weather';
 }
 
 const { currentApp = 'typing' } = Astro.props;
@@ -11,6 +11,7 @@ const networkApps = [
   { id: 'tools', name: 'TopTools', url: 'https://topnepali.com/tools', icon: 'tool' },
   { id: 'typing', name: 'Nepali Typing', url: 'https://typing.topnepali.com', icon: 'keyboard' },
   { id: 'fonts', name: 'FontsDir', url: 'https://fonts.topnepali.com', icon: 'type' },
+  { id: 'weather', name: 'Nepal Weather', url: 'https://weather.topnepali.com', icon: 'cloud-sun' },
   { id: 'share', name: 'Flashare', url: 'https://share.topnepali.com', icon: 'zap' },
   { id: 'election', name: 'Election Nepal', url: 'https://election.topnepali.com', icon: 'landmark' },
   { id: 'constitution', name: 'Constitution', url: 'https://constitution.topnepali.com', icon: 'scale' }
@@ -102,6 +103,16 @@ const networkApps = [
                   <path d="M7 21h10"/>
                   <path d="M12 3v18"/>
                   <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                </svg>
+              )}
+              {app.icon === 'cloud-sun' && (
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v2"/>
+                  <path d="m4.93 4.93 1.41 1.41"/>
+                  <path d="M20 12h2"/>
+                  <path d="m19.07 4.93-1.41 1.41"/>
+                  <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/>
+                  <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>
                 </svg>
               )}
 
